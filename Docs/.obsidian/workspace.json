@@ -1,0 +1,218 @@
+{
+  "main": {
+    "id": "80ca944370fff98c",
+    "type": "split",
+    "children": [
+      {
+        "id": "f5bea53ec5a87ca9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "da26c3740949b219",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {}
+            }
+          },
+          {
+            "id": "4fb5842985df21d9",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "2349502f9d8cbc38",
+    "type": "split",
+    "children": [
+      {
+        "id": "041804dfe0bc0f7b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "18d45ed6a9ed5b07",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "2f1255494f0d2edc",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "6aacddc7eb77d5d9",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "4d9356324e75e6e6",
+    "type": "split",
+    "children": [
+      {
+        "id": "49853b82cdce272c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ccc0b0607bef8877",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "dc0e6e558fdf4dad",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "b37b00930ede2765",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "fefa17fdfd67db84",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {}
+            }
+          },
+          {
+            "id": "e1747e84eb685729",
+            "type": "leaf",
+            "state": {
+              "type": "advanced-tables-toolbar",
+              "state": {}
+            }
+          },
+          {
+            "id": "67551a59631cfd93",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "audio-recorder:Start/stop recording": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "templater-obsidian:Templater": false
+    }
+  },
+  "active": "da26c3740949b219",
+  "lastOpenFiles": [
+    "Zettelkasten/New computer setup.md",
+    "Project/Mysql Railway Api database.md",
+    "Zettelkasten/Rust.md",
+    "Zettelkasten/~syncthing~Things to setup on new windows setup.md.tmp",
+    "Project/Railway API Backend.md",
+    "Project/Railway API node.md",
+    "Project/TODO.md",
+    "Zettelkasten/aft @{13-12-2023}.md",
+    "Zettelkasten/Useful Websites.md",
+    "Zettelkasten/Untitled 1.md",
+    "Zettelkasten/Untitled.md",
+    "Untitled.canvas",
+    "Zettelkasten/Railway API Planner.md",
+    "Zettelkasten/Railway API Scrapper.md",
+    "Zettelkasten/Git.md",
+    "Zettelkasten/Helix.md",
+    "Zettelkasten/SSH.md",
+    "Zettelkasten/VS Code Shortcuts.md",
+    "Zettelkasten/Node.md",
+    "Zettelkasten/Things to setup on new windows setup.md",
+    "Zettelkasten/Things to setup on new computer.md",
+    "Project/Railway API web docs.md",
+    "Project/Railway Demo Website.md",
+    "Zettelkasten/Portainer.md",
+    "Zettelkasten/Home server.md",
+    "Zettelkasten/Certbot.md",
+    "Zettelkasten/Manhwa-Manga.md",
+    "Zettelkasten/Anime.md",
+    "_assets/Pasted image 20230824094023.png",
+    "Project/images/example-2.png",
+    "_assets/Pasted image 20230813192729.png",
+    "Project/images/example-1.png",
+    "Project/images",
+    "_assets/Pasted image 20230813192621.png",
+    "_assets/Pasted image 20230813192523.png",
+    "_assets/Pasted image 20230813192505.png",
+    "_assets/Pasted image 20230813192256.png",
+    "_assets/Pasted image 20230813192116.png",
+    "Project",
+    "Zettelkasten",
+    "Templates",
+    "Reference Notes",
+    "Daily",
+    "_assets",
+    "Master/_assets",
+    "Master/Zettelkasten"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "alwaysUpdateLinks": true,
+  "attachmentFolderPath": "_assets",
+  "showLineNumber": false,
+  "spellcheck": true,
+  "spellcheckLanguages": null,
+  "vimMode": false,
+  "readableLineLength": true,
+  "strictLineBreaks": false,
+  "showFrontmatter": false,
+  "trashOption": "system",
+  "newFileLocation": "folder",
+  "newFileFolderPath": "Zettelkasten",
+  "pdfExportSettings": {
+    "includeName": true,
+    "pageSize": "Letter",
+    "landscape": false,
+    "margin": "0",
+    "downscalePercent": 100
+  }
+}
