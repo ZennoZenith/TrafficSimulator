@@ -11,19 +11,27 @@
             "id": "da26c3740949b219",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "kanban",
+              "state": {
+                "file": "Traffic Simulator Knaban.md"
+              }
             }
           },
           {
             "id": "4fb5842985df21d9",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "Road Generation.md",
+                "mode": "source",
+                "backlinks": true,
+                "source": false
+              }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -73,8 +81,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "4d9356324e75e6e6",
@@ -90,6 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Road Generation.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -106,6 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "Road Generation.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -127,7 +136,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "Road Generation.md"
+              }
             }
           },
           {
@@ -166,8 +177,11 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "da26c3740949b219",
+  "active": "4fb5842985df21d9",
   "lastOpenFiles": [
+    "Traffic Simulator Knaban.md",
+    "Road Generation.md",
+    "Traffic Simulator.md",
     "Zettelkasten/New computer setup.md",
     "Project/Mysql Railway Api database.md",
     "Zettelkasten/Rust.md",
@@ -193,9 +207,6 @@
     "Project/Railway Demo Website.md",
     "Zettelkasten/Portainer.md",
     "Zettelkasten/Home server.md",
-    "Zettelkasten/Certbot.md",
-    "Zettelkasten/Manhwa-Manga.md",
-    "Zettelkasten/Anime.md",
     "_assets/Pasted image 20230824094023.png",
     "Project/images/example-2.png",
     "_assets/Pasted image 20230813192729.png",
