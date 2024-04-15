@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Splines;
 
 
 [RequireComponent(typeof(SplineSampler))]
@@ -21,13 +22,23 @@ public class RoadMeshGenerator : MonoBehaviour {
     List<Vector3> vertsP1;
     List<Vector3> vertsP2;
 
-    private void Update() {
-        SetVerts();
-        BuildMesh();
+    //private void Update() {
+    //    SetVerts();
+    //    BuildMesh();
+    //}
+
+    private void OnEnable() {
+        Spline.Changed += OnSplineChanged;
+    }
+
+    private void OnDisable() {
+        Spline.Changed -= OnSplineChanged;
     }
 
     private void Start() {
         splineSampler = GetComponent<SplineSampler>();
+        SetVerts();
+        BuildMesh();
     }
 
     private void OnDrawGizmos() {
@@ -98,6 +109,11 @@ public class RoadMeshGenerator : MonoBehaviour {
         m.SetTriangles(tris, 0);
 
         meshFilter.mesh = m;
+    }
+
+    private void OnSplineChanged(Spline arg1, int arg2, SplineModification arg3) {
+        SetVerts();
+        BuildMesh();
     }
 
 }
