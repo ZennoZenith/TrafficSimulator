@@ -573,7 +573,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1298318638}
   - component: {fileID: 1298318639}
-  - component: {fileID: 1298318640}
+  - component: {fileID: 1298318641}
   m_Layer: 0
   m_Name: Spline
   m_TagString: Untagged
@@ -625,9 +625,9 @@ MonoBehaviour:
   - m_EditModeType: 1
     m_Knots:
     - Position:
-        x: 0.8170539
+        x: -1.3
         y: 0
-        z: 3.0075936
+        z: -1.43
       TangentIn:
         x: -0
         y: -0
@@ -649,17 +649,17 @@ MonoBehaviour:
       TangentIn:
         x: -0
         y: -0
-        z: -1.4762608
+        z: -1.5639656
       TangentOut:
         x: 0
         y: 0
-        z: 1.0841248
+        z: 1.3438461
       Rotation:
         value:
-          x: 0.000000007492731
-          y: -0.48135328
-          z: -0.000000013643986
-          w: 0.87652665
+          x: 0.000000005210942
+          y: -0.3366831
+          z: -0.000000014573694
+          w: 0.94161797
     - Position:
         x: -7.544277
         y: 0
@@ -721,35 +721,35 @@ MonoBehaviour:
       TangentIn:
         x: -0
         y: -0
-        z: -1.3572835
+        z: -1.3816196
       TangentOut:
         x: 0
         y: 0
-        z: 1.6993423
+        z: 1.824769
       Rotation:
         value:
-          x: 0.0000000034120589
-          y: 0.9990744
-          z: -1.4691207e-10
-          w: -0.043016866
+          x: -7.7727613e-10
+          y: 0.9983604
+          z: 4.4565948e-11
+          w: -0.057242047
     - Position:
-        x: 3.0470538
+        x: 2.52
         y: 0
-        z: 1.7275934
+        z: 1.2
       TangentIn:
         x: -0
         y: -0
-        z: -0.5834795
+        z: -1.880567
       TangentOut:
         x: 0
         y: 0
-        z: 0.5834795
+        z: 1.5893644
       Rotation:
         value:
-          x: -0.000000008003642
-          y: 0.99115795
-          z: 0.0000000010714568
-          w: -0.13268745
+          x: 0.0000000010134916
+          y: 0.94836867
+          z: -3.3894945e-10
+          w: -0.3171699
     m_MetaData:
     - Mode: 4
       Tension: 0.5
@@ -765,7 +765,7 @@ MonoBehaviour:
       Tension: 0.5
     - Mode: 0
       Tension: 0.5
-    m_Closed: 0
+    m_Closed: 1
     m_IntData:
       m_Data: []
     m_FloatData:
@@ -776,7 +776,7 @@ MonoBehaviour:
       m_Data: []
   m_Knots:
     m_KnotsLink: []
---- !u!114 &1298318640
+--- !u!114 &1298318641
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -785,13 +785,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1298318637}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b714f4615f939bb408c657508bcdb4fa, type: 3}
+  m_Script: {fileID: 11500000, guid: 5a4428a366d0f29428bdbc44eb77be56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  splines:
-  - {fileID: 1298318639}
+  spline: {fileID: 1298318639}
+  roadMeshType: {fileID: 11400000, guid: e25d9921eaf5db44882467204113e60c, type: 2}
   splineIndex: 0
-  time: 0.203
+  time: 0.59
+  width: 0.6
 --- !u!1 &1414066339
 GameObject:
   m_ObjectHideFlags: 0
@@ -968,7 +969,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

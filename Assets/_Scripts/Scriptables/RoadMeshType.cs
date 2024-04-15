@@ -4,6 +4,7 @@ using UnityEngine;
 public class RoadMeshType : ScriptableObject {
 
     public int resoulution = 10;
-    public int numberOfLanes = 1;
+    public int numberOfOngoingLanes = 1;
+    public int numberOfOncomingLanes = 1;
     public bool isTwoWay = false;
 }

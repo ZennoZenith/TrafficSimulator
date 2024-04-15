@@ -6,7 +6,7 @@ public class Singleton<T> : MonoBehaviour
     public static T Instance {
         get {
             if (_instance == null) {
-                var objs = FindObjectsOfType(typeof(T)) as T[];
+                T[] objs = Object.FindObjectsByType<T>(0);
                 if (objs.Length > 0)
                     _instance = objs[0];
                 if (objs.Length > 1) {
