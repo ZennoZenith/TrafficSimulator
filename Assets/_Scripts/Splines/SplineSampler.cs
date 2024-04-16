@@ -4,7 +4,7 @@ using UnityEngine.Splines;
 
 [RequireComponent(typeof(SplineContainer))]
 public class SplineSampler : MonoBehaviour {
-    private SplineContainer[] splines;
+    [SerializeField] private SplineContainer[] splines;
 
     [SerializeField] private int splineIndex;
 
@@ -18,9 +18,9 @@ public class SplineSampler : MonoBehaviour {
     float3 upVector;
 
     private void Start() {
-        //if (splines?.Length > 0) {
-        //    return;
-        //}
+        if (splines?.Length > 0) {
+            return;
+        }
         splines = GetComponents<SplineContainer>();
 
     }
@@ -34,6 +34,9 @@ public class SplineSampler : MonoBehaviour {
     public void SampleSplineWidth(float time, float width, out Vector3 p1, out Vector3 p2) {
         splines[splineIndex].Evaluate(splineIndex, time, out position, out forwardTangent, out upVector);
         float3 right = Vector3.Cross(forwardTangent, upVector).normalized;
+
+        position = transform.InverseTransformPoint(position);
+        //position = transform.TransformPoint(position);
         p1 = position + (right * width);
         p2 = position + (-right * width);
     }

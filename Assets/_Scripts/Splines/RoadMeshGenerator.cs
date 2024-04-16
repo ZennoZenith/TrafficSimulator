@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 
 
-[RequireComponent(typeof(SplineSampler))]
+[RequireComponent(typeof(SplineSampler), typeof(MeshFilter), typeof(MeshRenderer))]
 public class RoadMeshGenerator : MonoBehaviour {
     [SerializeField] private SplineSampler splineSampler;
 
@@ -36,19 +36,21 @@ public class RoadMeshGenerator : MonoBehaviour {
     }
 
     private void Start() {
-        splineSampler = GetComponent<SplineSampler>();
+        if (splineSampler == null) {
+            splineSampler = GetComponent<SplineSampler>();
+        }
         SetVerts();
         BuildMesh();
     }
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmosSelected() {
         if (!Application.isPlaying)
             return;
 
         for (int i = 0; i < vertsP1.Count; i++) {
-            Handles.SphereHandleCap(0, vertsP1[i], Quaternion.identity, 0.5f, EventType.Repaint);
-            Handles.SphereHandleCap(0, vertsP2[i], Quaternion.identity, 0.5f, EventType.Repaint);
-            Handles.DrawLine(vertsP1[i], vertsP2[i]);
+            Handles.SphereHandleCap(0, transform.TransformPoint(vertsP1[i]), Quaternion.identity, 0.5f, EventType.Repaint);
+            Handles.SphereHandleCap(0, transform.TransformPoint(vertsP2[i]), Quaternion.identity, 0.5f, EventType.Repaint);
+            Handles.DrawLine(transform.TransformPoint(vertsP1[i]), transform.TransformPoint(vertsP2[i]));
         }
 
     }
@@ -58,7 +60,7 @@ public class RoadMeshGenerator : MonoBehaviour {
         vertsP2 = new List<Vector3>();
 
         float step = 1f / (float)resolution;
-        for (int i = 0; i < resolution; i++) {
+        for (int i = 0; i < resolution + 1; i++) {
             float t = step * i;
             splineSampler.SampleSplineWidth(t, width, out Vector3 p1, out Vector3 p2);
             vertsP1.Add(p1);
@@ -83,8 +85,9 @@ public class RoadMeshGenerator : MonoBehaviour {
             Vector3 p4;
 
             if (i == numberOfVerts) {
-                p3 = vertsP1[0];
-                p4 = vertsP2[0];
+                //p3 = vertsP1[0];
+                //p4 = vertsP2[0];
+                continue;
             }
             else {
                 p3 = vertsP1[i];
@@ -112,6 +115,10 @@ public class RoadMeshGenerator : MonoBehaviour {
     }
 
     private void OnSplineChanged(Spline arg1, int arg2, SplineModification arg3) {
+        Rebuild();
+    }
+
+    public void Rebuild() {
         SetVerts();
         BuildMesh();
     }
