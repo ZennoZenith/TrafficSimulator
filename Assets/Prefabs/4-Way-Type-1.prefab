@@ -9,7 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4348080253358282896}
-  m_Layer: 0
+  - component: {fileID: 5861780075638038928}
+  - component: {fileID: 4774439281047748166}
+  m_Layer: 6
   m_Name: D
   m_TagString: Untagged
   m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
@@ -31,6 +33,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2013798674348572681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &5861780075638038928
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2348842439581223618}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_LayerOverridePriority: 1
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4774439281047748166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2348842439581223618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1e7913356dc7244b14ebe96e049b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ParentRoadSetup>k__BackingField: {fileID: 5089281458586516534}
+  detectionSphereRadius: 0.5
+  <AdjecentRoadConnector>k__BackingField: {fileID: 0}
+  <roadConnectorType>k__BackingField: 0
 --- !u!1 &4165404390503354325
 GameObject:
   m_ObjectHideFlags: 0
@@ -75,7 +114,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8435511321049446267}
-  m_Layer: 0
+  - component: {fileID: 7852082475067391264}
+  - component: {fileID: 9151036745339438006}
+  m_Layer: 6
   m_Name: R
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
@@ -97,6 +138,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3435554258749365272}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &7852082475067391264
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4486155660267869120}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_LayerOverridePriority: 1
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9151036745339438006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4486155660267869120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1e7913356dc7244b14ebe96e049b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ParentRoadSetup>k__BackingField: {fileID: 5089281458586516534}
+  detectionSphereRadius: 0.5
+  <AdjecentRoadConnector>k__BackingField: {fileID: 0}
+  <roadConnectorType>k__BackingField: 1
 --- !u!1 &4839716375595067920
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,7 +184,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2754129779604001314}
-  m_Layer: 0
+  - component: {fileID: 6588719047382775391}
+  - component: {fileID: 8398008342377502761}
+  m_Layer: 6
   m_Name: S
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
@@ -128,6 +208,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3435554258749365272}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &6588719047382775391
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4839716375595067920}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_LayerOverridePriority: 1
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8398008342377502761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4839716375595067920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1e7913356dc7244b14ebe96e049b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ParentRoadSetup>k__BackingField: {fileID: 5089281458586516534}
+  detectionSphereRadius: 0.5
+  <AdjecentRoadConnector>k__BackingField: {fileID: 0}
+  <roadConnectorType>k__BackingField: 1
 --- !u!1 &4890491053990186170
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,7 +254,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7686589520154637925}
-  m_Layer: 0
+  - component: {fileID: 7027127022000084672}
+  - component: {fileID: 7643676288651091314}
+  m_Layer: 6
   m_Name: A
   m_TagString: Untagged
   m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
@@ -159,6 +278,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2013798674348572681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &7027127022000084672
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4890491053990186170}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_LayerOverridePriority: 1
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7643676288651091314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4890491053990186170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1e7913356dc7244b14ebe96e049b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ParentRoadSetup>k__BackingField: {fileID: 5089281458586516534}
+  detectionSphereRadius: 0.5
+  <AdjecentRoadConnector>k__BackingField: {fileID: 0}
+  <roadConnectorType>k__BackingField: 0
 --- !u!1 &5418595224889372832
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,7 +324,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8667484158551514146}
-  m_Layer: 0
+  - component: {fileID: 3099523999390493717}
+  - component: {fileID: 1046256611679106076}
+  m_Layer: 6
   m_Name: C
   m_TagString: Untagged
   m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
@@ -190,6 +348,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2013798674348572681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &3099523999390493717
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5418595224889372832}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_LayerOverridePriority: 1
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1046256611679106076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5418595224889372832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1e7913356dc7244b14ebe96e049b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ParentRoadSetup>k__BackingField: {fileID: 5089281458586516534}
+  detectionSphereRadius: 0.5
+  <AdjecentRoadConnector>k__BackingField: {fileID: 0}
+  <roadConnectorType>k__BackingField: 0
 --- !u!1 &5426086232171192742
 GameObject:
   m_ObjectHideFlags: 0
@@ -199,7 +394,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3931329970086322130}
-  m_Layer: 0
+  - component: {fileID: 1400068980002224151}
+  - component: {fileID: 8651485777942340493}
+  m_Layer: 6
   m_Name: P
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
@@ -221,6 +418,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3435554258749365272}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1400068980002224151
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5426086232171192742}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_LayerOverridePriority: 1
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8651485777942340493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5426086232171192742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1e7913356dc7244b14ebe96e049b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ParentRoadSetup>k__BackingField: {fileID: 5089281458586516534}
+  detectionSphereRadius: 0.5
+  <AdjecentRoadConnector>k__BackingField: {fileID: 0}
+  <roadConnectorType>k__BackingField: 1
 --- !u!1 &5546853285950791381
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,7 +464,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6550876147114728323}
-  m_Layer: 0
+  - component: {fileID: 5011106773390207843}
+  - component: {fileID: 3477961798876090436}
+  m_Layer: 6
   m_Name: B
   m_TagString: Untagged
   m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
@@ -252,6 +488,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2013798674348572681}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &5011106773390207843
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5546853285950791381}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_LayerOverridePriority: 1
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3477961798876090436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5546853285950791381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1e7913356dc7244b14ebe96e049b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ParentRoadSetup>k__BackingField: {fileID: 5089281458586516534}
+  detectionSphereRadius: 0.5
+  <AdjecentRoadConnector>k__BackingField: {fileID: 0}
+  <roadConnectorType>k__BackingField: 0
 --- !u!1 &6351238791947960249
 GameObject:
   m_ObjectHideFlags: 0
@@ -1076,40 +1349,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roadType: {fileID: 11400000, guid: 3e444fad0df884b4c89d8c16e9bb896c, type: 2}
-  from:
-  - from: 0
-    fromTransform: {fileID: 7686589520154637925}
-    incomingFrom: {fileID: 0}
-  - from: 1
-    fromTransform: {fileID: 6550876147114728323}
-    incomingFrom: {fileID: 0}
-  - from: 2
-    fromTransform: {fileID: 8667484158551514146}
-    incomingFrom: {fileID: 0}
-  - from: 3
-    fromTransform: {fileID: 4348080253358282896}
-    incomingFrom: {fileID: 0}
-  to:
-  - to: 9
-    toTransform: {fileID: 3931329970086322130}
-    outgoingTo: {fileID: 0}
-  - to: 10
-    toTransform: {fileID: 5843888187798558118}
-    outgoingTo: {fileID: 0}
-  - to: 11
-    toTransform: {fileID: 8435511321049446267}
-    outgoingTo: {fileID: 0}
-  - to: 12
-    toTransform: {fileID: 2754129779604001314}
-    outgoingTo: {fileID: 0}
+  incomming:
+  - {fileID: 7643676288651091314}
+  - {fileID: 3477961798876090436}
+  - {fileID: 1046256611679106076}
+  - {fileID: 4774439281047748166}
+  outgoing:
+  - {fileID: 8651485777942340493}
+  - {fileID: 6842605971078287367}
+  - {fileID: 9151036745339438006}
+  - {fileID: 8398008342377502761}
   routesMap:
-  - from: 0
-    to: 11
+  - from: {fileID: 0}
+    to: {fileID: 0}
     routes:
     - splineIndex: 0
       priority: 0
-  - from: 0
-    to: 10
+  - from: {fileID: 0}
+    to: {fileID: 0}
     routes:
     - splineIndex: 1
       priority: 0
@@ -1230,7 +1487,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5843888187798558118}
-  m_Layer: 0
+  - component: {fileID: 1359829333848327519}
+  - component: {fileID: 6842605971078287367}
+  m_Layer: 6
   m_Name: Q
   m_TagString: Untagged
   m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
@@ -1252,3 +1511,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3435554258749365272}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1359829333848327519
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8655426422561103949}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_LayerOverridePriority: 1
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.3
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &6842605971078287367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8655426422561103949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1e7913356dc7244b14ebe96e049b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ParentRoadSetup>k__BackingField: {fileID: 5089281458586516534}
+  detectionSphereRadius: 0.5
+  <AdjecentRoadConnector>k__BackingField: {fileID: 0}
+  <roadConnectorType>k__BackingField: 1

@@ -1,11 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 
 public class RoadSetup : MonoBehaviour {
 
-    public enum Labels {
-        A, B, C, D, E, F, G, H, I, P, Q, R, S, T, U, V, W, X
-    }
+    //public enum Labels {
+    //    A, B, C, D, E, F, G, H, I, P, Q, R, S, T, U, V, W, X
+    //}
 
 
 
@@ -17,29 +18,61 @@ public class RoadSetup : MonoBehaviour {
 
     [System.Serializable]
     public struct RoutesMap {
-        public Labels from;
-        public Labels to;
+        public RoadConnector from;
+        public RoadConnector to;
         public RoutesPriorities[] routes;
     }
 
-    [System.Serializable]
-    public struct IncomingFrom {
-        public Labels from;
-        public Transform fromTransform;
-        public Transform incomingFrom;
-    }
+    //[System.Serializable]
+    //public struct ConnectorType {
+    //    public Labels from;
+    //    //public Transform fromTransform;
+    //    //public RoadSetup incomingFromNode;
+    //    public RoadConnector connector;
+    //}
 
-    [System.Serializable]
-    public struct OutgoingTo {
-        public Labels to;
-        public Transform toTransform;
-        public Transform outgoingTo;
-    }
 
     [SerializeField] private RoadTypeScriptableObject roadType;
-    [SerializeField] private IncomingFrom[] from;
-    [SerializeField] private OutgoingTo[] to;
+    [SerializeField] private RoadConnector[] incomming;
+    [SerializeField] private RoadConnector[] outgoing;
     [SerializeField] private RoutesMap[] routesMap;
+
+    public RoadConnector[] GetFromConnectors() {
+        return incomming;
+    }
+
+    public RoadConnector[] GetToConnectors() {
+        return outgoing;
+    }
+
+    #region Graph related     
+    private readonly List<EdgeData> edges = new();
+    public List<EdgeData> Edges {
+        get {
+            return edges;
+        }
+    }
+
+    public bool AddEdge(EdgeData edgeData) {
+        edges.Add(edgeData);
+        return true;
+    }
+
+    public bool CheckEdge(RoadSetup dest) {
+        if (GetEdge(dest) == null)
+            return false;
+        return true;
+    }
+
+    public EdgeData GetEdge(RoadSetup dest) {
+        return edges.Find(ne => ne.Dest == dest);
+    }
+
+    public void Clear() {
+        edges.Clear();
+    }
+
+    #endregion
 
 
 
