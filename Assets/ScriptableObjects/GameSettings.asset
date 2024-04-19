@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb1855ac492903458ed042e55e91304, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
-  showDebugGraphLine: 1
+  showGraphNode: 1
+  showGraphLine: 1
+  printGraphDetails: 0
+  nodeSphereRadius: 0.4
+  showDebugPathfindingLines: 1
