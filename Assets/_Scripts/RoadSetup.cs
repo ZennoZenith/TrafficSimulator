@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -39,6 +40,7 @@ public class RoadSetup : MonoBehaviour {
     [SerializeField] private RoadConnector[] incomming;
     [SerializeField] private RoadConnector[] outgoing;
     [SerializeField] private RoutesMap[] routesMap;
+    private readonly List<List<Vector3>> routesAsVectors = new();
 
     private void Awake() {
         if (splineContainer == null)
@@ -52,6 +54,31 @@ public class RoadSetup : MonoBehaviour {
     public RoadConnector[] GetToConnectors() {
         return outgoing;
     }
+
+    // Use this function when initializing graph
+    public void ConvertSplinesToVectors(int resolution) {
+        int numberOfSplines = splineContainer.Splines.Count;
+        routesAsVectors.Clear();
+        for (int i = 0; i < numberOfSplines; i++) {
+            routesAsVectors.Add(new List<Vector3> { splineContainer.EvaluatePosition(i, 0) });
+            for (int j = 1; j <= resolution; j++) {
+                routesAsVectors[i].Add(splineContainer.EvaluatePosition(i, (float)j / (resolution + 1)));
+            }
+            routesAsVectors[i].Add(splineContainer.EvaluatePosition(i, 1));
+        }
+    }
+
+    //private void OnDrawGizmosSelected() {
+    //    if (routesAsVectors.Count < 1)
+    //        ConvertSplinesToVectors(1);
+
+    //    Gizmos.color = Color.red;
+    //    foreach (var vectors in routesAsVectors) {
+    //        foreach (var vec in vectors) {
+    //            Gizmos.DrawSphere(vec, 0.1f);
+    //        }
+    //    }
+    //}
 
     public EdgeData GetIncommingConnector(RoadSetup adjecentIncommingNode) {
         foreach (var incommingNode in incomming) {
@@ -75,13 +102,9 @@ public class RoadSetup : MonoBehaviour {
         return null;
     }
 
-    [Range(0f, 2f)]
-    public float t;
-    public Spline GetRouteFromConnectors(RoadConnector fromConnector, RoadConnector toConnector) {
-        Spline result = null;
-
+    public List<Vector3> GetRouteFromConnectors(RoadConnector fromConnector, RoadConnector toConnector) {
         if (fromConnector == null && toConnector == null)
-            return result;
+            return null;
 
         if (fromConnector == null && toConnector != null) {
             foreach (var route in routesMap) {
@@ -89,19 +112,23 @@ public class RoadSetup : MonoBehaviour {
                     int splineIndex = route.routes[0].splineIndex;
                     //float3 tempF = splineContainer.EvaluatePosition();
                     //result.Add(new Vector3(tempF.x, tempF.y, tempF.z));
-                    return splineContainer.Splines[splineIndex];
+                    return routesAsVectors[splineIndex];
                 }
             }
         }
 
         if (fromConnector != null && toConnector == null) {
 
-            return result;
+            return null;
         }
 
+        foreach (var route in routesMap) {
+            if (route.from == fromConnector && route.to == toConnector) {
+                return routesAsVectors[route.routes.Max(t => t.priority)];
+            }
+        }
 
-
-        return result;
+        return null;
     }
 
 

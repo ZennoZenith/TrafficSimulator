@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -19,7 +21,15 @@ public class VehicleDriverAI : MonoBehaviour {
     public RoadSetup toNode;
 
     public void Initialize(RoadSetup fromNode, RoadSetup toNode) {
+
+        /* 
+         * TODO: Path finding now working for scenerion when
+         * there is an incomming node and an outgoing node
+         * but there in no spline route that specific incomming 
+         * and outgoing node
+        */
         shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
+        pointsToFollow.Clear();
 
         if (shortestPathNodes.Count < 2)
             DeInitialize();
@@ -34,15 +44,25 @@ public class VehicleDriverAI : MonoBehaviour {
     }
 
     private void SetPathToFollowVectors() {
-        pointsToFollow.Clear();
 
         // For first node
-        EdgeData temp = shortestPathNodes[0].GetOutgoingConnector(shortestPathNodes[1]);
+        EdgeData edgeData = shortestPathNodes[0].GetOutgoingConnector(shortestPathNodes[1]);
+        EdgeData previousEdge;
 
-        Spline spline = shortestPathNodes[0].GetRouteFromConnectors(null, temp.FromRoadConnector);
-        pointsToFollow.Add(shortestPathNodes[0].transform.TransformPoint(spline.EvaluatePosition(t)));
-        //Debug.Log(pointsToFollow.Count);
-        // -------------
+        var found = shortestPathNodes[0].GetRouteFromConnectors(null, edgeData.FromRoadConnector);
+        if (found != null)
+            pointsToFollow.AddRange(found);
+
+
+        int len = shortestPathNodes.Count;
+        previousEdge = edgeData;
+        for (int i = 1; i < len - 1; i++) {
+            edgeData = shortestPathNodes[i].GetOutgoingConnector(shortestPathNodes[i + 1]);
+            found = shortestPathNodes[i].GetRouteFromConnectors(previousEdge.ToRoadConnector, edgeData.FromRoadConnector);
+            if (found != null)
+                pointsToFollow.AddRange(found);
+            previousEdge = edgeData;
+        }
 
         // For in between nodes
 
@@ -54,6 +74,13 @@ public class VehicleDriverAI : MonoBehaviour {
     }
 
     public void DeInitialize() {
+    }
+
+    public Vector3[] GetVectorsFromSpline(Spline spline, Transform transformPoint) {
+        Vector3[] points = { };
+        //Debug.Log(spline.EvaluatePosition(t));
+        points.Append(transformPoint.TransformPoint(spline.EvaluatePosition(t)));
+        return points;
     }
 
 

@@ -1329,15 +1329,55 @@ MonoBehaviour:
   - {fileID: 9151036745339438006}
   - {fileID: 8398008342377502761}
   routesMap:
-  - from: {fileID: 0}
-    to: {fileID: 0}
+  - from: {fileID: 7643676288651091314}
+    to: {fileID: 9151036745339438006}
     routes:
     - splineIndex: 0
       priority: 0
-  - from: {fileID: 0}
-    to: {fileID: 0}
+  - from: {fileID: 7643676288651091314}
+    to: {fileID: 6842605971078287367}
     routes:
     - splineIndex: 1
+      priority: 0
+  - from: {fileID: 3477961798876090436}
+    to: {fileID: 8651485777942340493}
+    routes:
+    - splineIndex: 2
+      priority: 0
+  - from: {fileID: 3477961798876090436}
+    to: {fileID: 8398008342377502761}
+    routes:
+    - splineIndex: 3
+      priority: 0
+  - from: {fileID: 3477961798876090436}
+    to: {fileID: 9151036745339438006}
+    routes:
+    - splineIndex: 4
+      priority: 0
+  - from: {fileID: 1046256611679106076}
+    to: {fileID: 8651485777942340493}
+    routes:
+    - splineIndex: 5
+      priority: 0
+  - from: {fileID: 1046256611679106076}
+    to: {fileID: 8398008342377502761}
+    routes:
+    - splineIndex: 6
+      priority: 0
+  - from: {fileID: 4774439281047748166}
+    to: {fileID: 8651485777942340493}
+    routes:
+    - splineIndex: 7
+      priority: 0
+  - from: {fileID: 4774439281047748166}
+    to: {fileID: 6842605971078287367}
+    routes:
+    - splineIndex: 8
+      priority: 0
+  - from: {fileID: 4774439281047748166}
+    to: {fileID: 9151036745339438006}
+    routes:
+    - splineIndex: 9
       priority: 0
 --- !u!1 &8510046841790495281
 GameObject:

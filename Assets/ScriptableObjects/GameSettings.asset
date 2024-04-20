@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb1855ac492903458ed042e55e91304, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
+  splineResolution: 2
   showGraphNode: 1
   showGraphLine: 1
   printGraphDetails: 0

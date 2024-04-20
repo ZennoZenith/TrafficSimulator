@@ -2,6 +2,8 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "GameSettings", menuName = "ScriptableObjects/GameSettings", order = 1)]
 public class GameSettingsScriptableObject : ScriptableObject {
+    public int splineResolution;
+
     [Header("Graph")]
     public bool showGraphNode;
     public bool showGraphLine;

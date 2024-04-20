@@ -15,6 +15,7 @@ public class GraphGenerator : MonoBehaviour {
         DirectedGraph.Clear();
 
         foreach (RoadSetup node in transform.GetComponentsInChildren<RoadSetup>()) {
+            node.ConvertSplinesToVectors(gameSettings.splineResolution);
             nodes.Add(node);
         }
 
