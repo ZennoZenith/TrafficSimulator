@@ -14,6 +14,10 @@ public class EdgeData {
         ToRoadConnector = to;
         this.Weight = weight;
     }
+
+    public override string ToString() {
+        return "(" + this.Src.name + "," + this.Dest.name + "," + this.FromRoadConnector.name + "," + this.ToRoadConnector.name + ")";
+    }
 }
 public class Graph {
     private readonly List<RoadSetup> adjencyList;

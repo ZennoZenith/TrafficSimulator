@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Splines;
 
 
+[RequireComponent(typeof(SplineContainer))]
 public class RoadSetup : MonoBehaviour {
 
     //public enum Labels {
@@ -33,9 +35,15 @@ public class RoadSetup : MonoBehaviour {
 
 
     [SerializeField] private RoadTypeScriptableObject roadType;
+    [SerializeField] private SplineContainer splineContainer;
     [SerializeField] private RoadConnector[] incomming;
     [SerializeField] private RoadConnector[] outgoing;
     [SerializeField] private RoutesMap[] routesMap;
+
+    private void Awake() {
+        if (splineContainer == null)
+            splineContainer = GetComponent<SplineContainer>();
+    }
 
     public RoadConnector[] GetFromConnectors() {
         return incomming;
@@ -44,6 +52,58 @@ public class RoadSetup : MonoBehaviour {
     public RoadConnector[] GetToConnectors() {
         return outgoing;
     }
+
+    public EdgeData GetIncommingConnector(RoadSetup adjecentIncommingNode) {
+        foreach (var incommingNode in incomming) {
+            if (incommingNode.AdjecentRoadConnector.ParentRoadSetup == adjecentIncommingNode) {
+                foreach (var edge in incommingNode.AdjecentRoadConnector.ParentRoadSetup.Edges) {
+                    if (edge.Dest == this)
+                        return edge;
+                }
+            }
+            //if (edge.Dest == adjecentIncommingNode)
+            //    return edge;
+        }
+        return null;
+    }
+
+    public EdgeData GetOutgoingConnector(RoadSetup adjecentOutgoingNode) {
+        foreach (var edge in edges) {
+            if (edge.Dest == adjecentOutgoingNode)
+                return edge;
+        }
+        return null;
+    }
+
+    [Range(0f, 2f)]
+    public float t;
+    public Spline GetRouteFromConnectors(RoadConnector fromConnector, RoadConnector toConnector) {
+        Spline result = null;
+
+        if (fromConnector == null && toConnector == null)
+            return result;
+
+        if (fromConnector == null && toConnector != null) {
+            foreach (var route in routesMap) {
+                if (route.to == toConnector) {
+                    int splineIndex = route.routes[0].splineIndex;
+                    //float3 tempF = splineContainer.EvaluatePosition();
+                    //result.Add(new Vector3(tempF.x, tempF.y, tempF.z));
+                    return splineContainer.Splines[splineIndex];
+                }
+            }
+        }
+
+        if (fromConnector != null && toConnector == null) {
+
+            return result;
+        }
+
+
+
+        return result;
+    }
+
 
     #region Graph related     
     private readonly List<EdgeData> edges = new();
@@ -73,8 +133,6 @@ public class RoadSetup : MonoBehaviour {
     }
 
     #endregion
-
-
 
     //[SerializeField] private Transform 
 
