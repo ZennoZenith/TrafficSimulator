@@ -468,12 +468,12 @@ MonoBehaviour:
     to: {fileID: 1648697809512173217}
     routes:
     - splineIndex: 0
-      priority: 0
+      priority: 1
   - from: {fileID: 4834353892871475802}
     to: {fileID: 4030614866350475631}
     routes:
     - splineIndex: 1
-      priority: 0
+      priority: 1
 --- !u!1 &8655426422561103949
 GameObject:
   m_ObjectHideFlags: 0
