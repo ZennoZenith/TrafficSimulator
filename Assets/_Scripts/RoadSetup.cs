@@ -141,15 +141,21 @@ public class RoadSetup : MonoBehaviour {
                     continue;
                 if (route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
                     int splineIndex = route.routes[0].splineIndex;
-                    //float3 tempF = splineContainer.EvaluatePosition();
-                    //result.Add(new Vector3(tempF.x, tempF.y, tempF.z));
                     return routesAsVectors[splineIndex];
                 }
             }
+            return null;
         }
 
         if (fromNode != null && toNode == null) {
-
+            foreach (var route in routesMap) {
+                if (route.from.AdjecentRoadConnector == null)
+                    continue;
+                if (route.from.AdjecentRoadConnector.ParentRoadSetup == fromNode) {
+                    int splineIndex = route.routes[0].splineIndex;
+                    return routesAsVectors[splineIndex];
+                }
+            }
             return null;
         }
 

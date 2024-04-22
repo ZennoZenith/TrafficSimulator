@@ -20,39 +20,13 @@ public class VehicleDriverAI : MonoBehaviour {
     public bool showDebugLines;
     public RoadSetup fromNode;
     public RoadSetup toNode;
-    public RoadSetup roadSetup;
-    public RoadConnector outgoingConnector;
 
     public void Initialize(RoadSetup fromNode, RoadSetup toNode) {
-        //foreach (var test in roadSetup.GetAdjecentIncommingRoadSetupForOutgoingConnector(outgoingConnector)) {
-        //    Debug.Log(test.name, test);
-        //}
-        //String s = "";
-        foreach (var edge in roadSetup.Edges) {
-            Debug.Log($"ToRoadConnector: {edge.ToRoadConnector.name}\n" +
-                $"FromRoadConnector: {edge.FromRoadConnector.name}\n" +
-                $"Src: {edge.Src.name}\n" +
-                $"Dest: {edge.Dest.name}\n" +
-                $"IncommingFrom: {edge.IncommingFrom.name}\n"
-                );
-        }
-
-        /* 
-         * TODO: Path finding now working for scenerion when
-         * there is an incomming node and an outgoing node
-         * but there in no spline route that specific incomming 
-         * and outgoing node
-        */
         shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
         pointsToFollow.Clear();
 
         if (shortestPathNodes.Count < 2)
             DeInitialize();
-
-        //// Setup graph node buffer
-        //graphNodeBuffer.Item1 = null;
-        //graphNodeBuffer.Item1 = shortestPathNodes[0];
-        //graphNodeBuffer.Item1 = shortestPathNodes[1];
 
         SetPathToFollowVectors();
 
@@ -61,31 +35,26 @@ public class VehicleDriverAI : MonoBehaviour {
     private void SetPathToFollowVectors() {
 
         // For first node
-        EdgeData edgeData = shortestPathNodes[0].GetOutgoingConnector(shortestPathNodes[1]);
-        EdgeData previousEdge;
-
         //var found = shortestPathNodes[0].GetRouteFromConnectors(null, edgeData.FromRoadConnector);
         var found = shortestPathNodes[0].GetRouteFromToNode(null, shortestPathNodes[1]);
         if (found != null)
             pointsToFollow.AddRange(found);
 
+        // For in between nodes
         int len = shortestPathNodes.Count;
-        previousEdge = edgeData;
         for (int i = 1; i < len - 1; i++) {
-            edgeData = shortestPathNodes[i].GetOutgoingConnector(shortestPathNodes[i + 1]);
             //found = shortestPathNodes[i].GetRouteFromConnectors(previousEdge.ToRoadConnector, edgeData.FromRoadConnector);
             found = shortestPathNodes[i].GetRouteFromToNode(shortestPathNodes[i - 1], shortestPathNodes[i + 1]);
 
             if (found != null)
                 pointsToFollow.AddRange(found);
-            previousEdge = edgeData;
         }
-
-        // For in between nodes
-
         // -------------
 
         // For last node
+        found = shortestPathNodes[len - 1].GetRouteFromToNode(shortestPathNodes[len - 2], null);
+        if (found != null)
+            pointsToFollow.AddRange(found);
         // -------------
 
     }
@@ -111,7 +80,7 @@ public class VehicleDriverAI : MonoBehaviour {
 
             Gizmos.color = Color.cyan;
             foreach (var point in pointsToFollow) {
-                Gizmos.DrawSphere(point, 0.4f);
+                Gizmos.DrawSphere(point, 0.1f);
             }
         }
     }
