@@ -5,11 +5,13 @@ public class EdgeData {
     public int Weight { get; private set; }
     public RoadSetup Src { get; private set; }
     public RoadSetup Dest { get; private set; }
+    public RoadSetup IncommingFrom { get; private set; }
     public RoadConnector FromRoadConnector { get; private set; }
     public RoadConnector ToRoadConnector { get; private set; }
-    public EdgeData(RoadSetup src, RoadSetup dest, RoadConnector from, RoadConnector to, int weight = 1) {
+    public EdgeData(RoadSetup src, RoadSetup dest, RoadSetup incommingFrom, RoadConnector from, RoadConnector to, int weight = 1) {
         Src = src;
         Dest = dest;
+        IncommingFrom = incommingFrom;
         FromRoadConnector = from;
         ToRoadConnector = to;
         this.Weight = weight;
@@ -115,11 +117,13 @@ public class Graph {
                 continue;
 
             foreach (EdgeData nodeEdge in edgeNodesOfNode) {
-                queue.Enqueue(new QueueStruct {
-                    fromNode = queueStruct.toNode,
-                    toNode = nodeEdge.Dest,
-                    weight = queueStruct.weight + nodeEdge.Weight
-                });
+                if (queueStruct.fromNode == queueStruct.toNode || queueStruct.fromNode == nodeEdge.IncommingFrom) {
+                    queue.Enqueue(new QueueStruct {
+                        fromNode = nodeEdge.Src,
+                        toNode = nodeEdge.Dest,
+                        weight = queueStruct.weight + nodeEdge.Weight
+                    });
+                }
             }
         }
 

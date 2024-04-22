@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
 
+
 public class VehicleDriverAI : MonoBehaviour {
     //private (RoadSetup, RoadSetup, RoadSetup) graphNodeBuffer = (null, null, null);
 
@@ -19,8 +20,22 @@ public class VehicleDriverAI : MonoBehaviour {
     public bool showDebugLines;
     public RoadSetup fromNode;
     public RoadSetup toNode;
+    public RoadSetup roadSetup;
+    public RoadConnector outgoingConnector;
 
     public void Initialize(RoadSetup fromNode, RoadSetup toNode) {
+        //foreach (var test in roadSetup.GetAdjecentIncommingRoadSetupForOutgoingConnector(outgoingConnector)) {
+        //    Debug.Log(test.name, test);
+        //}
+        //String s = "";
+        foreach (var edge in roadSetup.Edges) {
+            Debug.Log($"ToRoadConnector: {edge.ToRoadConnector.name}\n" +
+                $"FromRoadConnector: {edge.FromRoadConnector.name}\n" +
+                $"Src: {edge.Src.name}\n" +
+                $"Dest: {edge.Dest.name}\n" +
+                $"IncommingFrom: {edge.IncommingFrom.name}\n"
+                );
+        }
 
         /* 
          * TODO: Path finding now working for scenerion when
@@ -49,16 +64,18 @@ public class VehicleDriverAI : MonoBehaviour {
         EdgeData edgeData = shortestPathNodes[0].GetOutgoingConnector(shortestPathNodes[1]);
         EdgeData previousEdge;
 
-        var found = shortestPathNodes[0].GetRouteFromConnectors(null, edgeData.FromRoadConnector);
+        //var found = shortestPathNodes[0].GetRouteFromConnectors(null, edgeData.FromRoadConnector);
+        var found = shortestPathNodes[0].GetRouteFromToNode(null, shortestPathNodes[1]);
         if (found != null)
             pointsToFollow.AddRange(found);
-
 
         int len = shortestPathNodes.Count;
         previousEdge = edgeData;
         for (int i = 1; i < len - 1; i++) {
             edgeData = shortestPathNodes[i].GetOutgoingConnector(shortestPathNodes[i + 1]);
-            found = shortestPathNodes[i].GetRouteFromConnectors(previousEdge.ToRoadConnector, edgeData.FromRoadConnector);
+            //found = shortestPathNodes[i].GetRouteFromConnectors(previousEdge.ToRoadConnector, edgeData.FromRoadConnector);
+            found = shortestPathNodes[i].GetRouteFromToNode(shortestPathNodes[i - 1], shortestPathNodes[i + 1]);
+
             if (found != null)
                 pointsToFollow.AddRange(found);
             previousEdge = edgeData;

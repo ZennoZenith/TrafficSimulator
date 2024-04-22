@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -102,13 +101,45 @@ public class RoadSetup : MonoBehaviour {
         return null;
     }
 
-    public List<Vector3> GetRouteFromConnectors(RoadConnector fromConnector, RoadConnector toConnector) {
-        if (fromConnector == null && toConnector == null)
+    //public List<Vector3> GetRouteFromConnectors(RoadConnector fromConnector, RoadConnector toConnector) {
+    //    if (fromConnector == null && toConnector == null)
+    //        return null;
+
+    //    if (fromConnector == null && toConnector != null) {
+    //        foreach (var route in routesMap) {
+    //            if (route.to == toConnector) {
+    //                int splineIndex = route.routes[0].splineIndex;
+    //                //float3 tempF = splineContainer.EvaluatePosition();
+    //                //result.Add(new Vector3(tempF.x, tempF.y, tempF.z));
+    //                return routesAsVectors[splineIndex];
+    //            }
+    //        }
+    //    }
+
+    //    if (fromConnector != null && toConnector == null) {
+
+    //        return null;
+    //    }
+
+    //    foreach (var route in routesMap) {
+    //        if (route.from == fromConnector && route.to == toConnector) {
+    //            return routesAsVectors[route.routes.Max(t => t.priority)];
+    //        }
+    //    }
+
+    //    return null;
+    //}
+
+
+    public List<Vector3> GetRouteFromToNode(RoadSetup fromNode, RoadSetup toNode) {
+        if (fromNode == null && toNode == null)
             return null;
 
-        if (fromConnector == null && toConnector != null) {
+        if (fromNode == null && toNode != null) {
             foreach (var route in routesMap) {
-                if (route.to == toConnector) {
+                if (route.to.AdjecentRoadConnector == null)
+                    continue;
+                if (route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
                     int splineIndex = route.routes[0].splineIndex;
                     //float3 tempF = splineContainer.EvaluatePosition();
                     //result.Add(new Vector3(tempF.x, tempF.y, tempF.z));
@@ -117,18 +148,49 @@ public class RoadSetup : MonoBehaviour {
             }
         }
 
-        if (fromConnector != null && toConnector == null) {
+        if (fromNode != null && toNode == null) {
 
             return null;
         }
 
         foreach (var route in routesMap) {
-            if (route.from == fromConnector && route.to == toConnector) {
-                return routesAsVectors[route.routes.Max(t => t.priority)];
+            if (route.from.AdjecentRoadConnector == null)
+                continue;
+            if (route.to.AdjecentRoadConnector == null)
+                continue;
+            if (route.from.AdjecentRoadConnector.ParentRoadSetup == fromNode
+                && route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
+                int splineIndex = route.routes[MaxIndex(route.routes)].splineIndex;
+                //return routesAsVectors[route.routes.Max(t => t.priority)];
+                return routesAsVectors[splineIndex];
+
             }
         }
 
         return null;
+    }
+
+    private int MaxIndex(RoutesPriorities[] route) {
+        int max = 0;
+        int maxIndex = 0;
+        for (int i = 0; i < route.Length; i++) {
+
+            if (route[i].priority > max) {
+                max = route[i].priority;
+                maxIndex = i;
+            }
+        }
+        return maxIndex;
+    }
+
+    public List<RoadSetup> GetAdjecentIncommingRoadSetupForOutgoingConnector(RoadConnector outgoingConnector) {
+        List<RoadSetup> roadSetups = new();
+        foreach (var route in routesMap) {
+            if (route.to == outgoingConnector && route.from.AdjecentRoadConnector != null) {
+                roadSetups.Add(route.from.AdjecentRoadConnector.ParentRoadSetup);
+            }
+        }
+        return roadSetups;
     }
 
 

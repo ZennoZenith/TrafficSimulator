@@ -19,6 +19,8 @@ public class GraphGenerator : MonoBehaviour {
             nodes.Add(node);
         }
 
+        //Debug.Log($"Number of nodes: {nodes.Count}");
+
         // Setup adjecent road connector for each node
         foreach (var node in nodes) {
             node.Clear();
@@ -39,7 +41,10 @@ public class GraphGenerator : MonoBehaviour {
         foreach (var node in nodes) {
             foreach (var outgoingConnector in node.GetToConnectors()) {
                 if (outgoingConnector.AdjecentRoadConnector == null) continue;
-                DirectedGraph.AddEdge(new EdgeData(node, outgoingConnector.AdjecentRoadConnector.ParentRoadSetup, outgoingConnector, outgoingConnector.AdjecentRoadConnector));
+
+                foreach (var incommingRoadSetup in node.GetAdjecentIncommingRoadSetupForOutgoingConnector(outgoingConnector)) {
+                    DirectedGraph.AddEdge(new EdgeData(node, outgoingConnector.AdjecentRoadConnector.ParentRoadSetup, incommingRoadSetup, outgoingConnector, outgoingConnector.AdjecentRoadConnector));
+                }
             }
         }
 
