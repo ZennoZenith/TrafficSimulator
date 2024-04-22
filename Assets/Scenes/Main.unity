@@ -245,18 +245,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 62623570}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &62623572 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5089281458586516534, guid: 653f8767dc0c88e488e07705b50b98ea,
-    type: 3}
-  m_PrefabInstance: {fileID: 62623570}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c5c3f03604c58343a7be0b4e0155e57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &68352962 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5089281458586516534, guid: 653f8767dc0c88e488e07705b50b98ea,
@@ -1829,18 +1817,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!114 &1866984647 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5089281458586516534, guid: 4e65c847ae9e1744d85ac8a24e152d29,
-    type: 3}
-  m_PrefabInstance: {fileID: 1182822192}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c5c3f03604c58343a7be0b4e0155e57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1939241151
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2118,6 +2094,7 @@ GameObject:
   - component: {fileID: 2118246360}
   - component: {fileID: 2118246359}
   - component: {fileID: 2118246363}
+  - component: {fileID: 2118246364}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -2229,15 +2206,27 @@ MonoBehaviour:
   gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
   graphGenerator: {fileID: 1166472726}
   shortestPathNodes:
-  - {fileID: 1866984647}
-  - {fileID: 68352962}
-  - {fileID: 885378049}
   - {fileID: 8056761132732310820}
-  - {fileID: 62623572}
+  - {fileID: 885378049}
+  - {fileID: 68352962}
   showDebugLines: 1
-  fromNode: {fileID: 1866984647}
-  toNode: {fileID: 62623572}
+  fromNode: {fileID: 8056761132732310820}
+  toNode: {fileID: 68352962}
   t: 0.19
+--- !u!114 &2118246364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118246358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10251fc85f294284a97779812c2df9b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vehicleDriverAI: {fileID: 0}
+  vehicleData: {fileID: 0}
 --- !u!114 &1994243377564522452 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1046256611679106076, guid: 19b295b97371b504d91feefb6b26ff9f,

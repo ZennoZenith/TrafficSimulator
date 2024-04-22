@@ -130,7 +130,7 @@ public class Graph {
         /// Printing shortest path
         if (!pathAndCost.ContainsKey(dest)) {
             Debug.Log($"No path found between {src.transform.name} and {dest.transform.name}.");
-            return nodes;
+            return null;
         }
 
         RoadSetup tempNode = dest;

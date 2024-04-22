@@ -455,6 +455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c5c3f03604c58343a7be0b4e0155e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
   roadType: {fileID: 11400000, guid: 3e444fad0df884b4c89d8c16e9bb896c, type: 2}
   splineContainer: {fileID: 8209699488292506040}
   incomming:

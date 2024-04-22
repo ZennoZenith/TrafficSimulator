@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -34,6 +35,7 @@ public class RoadSetup : MonoBehaviour {
     //}
 
 
+    [SerializeField] private GameSettingsScriptableObject gameSettings;
     [SerializeField] private RoadTypeScriptableObject roadType;
     [SerializeField] private SplineContainer splineContainer;
     [SerializeField] private RoadConnector[] incomming;
@@ -54,17 +56,25 @@ public class RoadSetup : MonoBehaviour {
         return outgoing;
     }
 
-    // Use this function when initializing graph
+    /// <summary>
+    /// Use this function when initializing graph
+    /// sets vector.y to 0
+    /// </summary>
+    /// <param name="resolution"></param>
     public void ConvertSplinesToVectors(int resolution) {
         int numberOfSplines = splineContainer.Splines.Count;
         routesAsVectors.Clear();
         for (int i = 0; i < numberOfSplines; i++) {
-            routesAsVectors.Add(new List<Vector3> { splineContainer.EvaluatePosition(i, 0) });
+            routesAsVectors.Add(new List<Vector3> { SetVectorY(splineContainer.EvaluatePosition(i, 0)) });
             for (int j = 1; j <= resolution; j++) {
-                routesAsVectors[i].Add(splineContainer.EvaluatePosition(i, (float)j / (resolution + 1)));
+                routesAsVectors[i].Add(SetVectorY(splineContainer.EvaluatePosition(i, (float)j / (resolution + 1))));
             }
-            routesAsVectors[i].Add(splineContainer.EvaluatePosition(i, 1));
+            routesAsVectors[i].Add(SetVectorY(splineContainer.EvaluatePosition(i, 1)));
         }
+    }
+
+    private Vector3 SetVectorY(float3 position) {
+        return new Vector3(position.x, gameSettings.pathVectorY, position.z);
     }
 
     //private void OnDrawGizmosSelected() {

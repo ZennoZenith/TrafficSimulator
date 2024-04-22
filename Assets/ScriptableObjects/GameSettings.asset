@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   splineResolution: 10
+  pathVectorY: 0.5
   showGraphNode: 1
   showGraphLine: 1
   printGraphDetails: 0

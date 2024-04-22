@@ -13,7 +13,7 @@ public class VehicleDriverAI : MonoBehaviour {
     [SerializeField] private GameSettingsScriptableObject gameSettings;
     [SerializeField] private GraphGenerator graphGenerator;
     [SerializeField] private List<RoadSetup> shortestPathNodes;
-    [SerializeField] private readonly List<Vector3> pointsToFollow = new();
+    public List<Vector3> PointsToFollow { get; private set; } = new();
 
 
     [Header("Debug")]
@@ -23,7 +23,7 @@ public class VehicleDriverAI : MonoBehaviour {
 
     public void Initialize(RoadSetup fromNode, RoadSetup toNode) {
         shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
-        pointsToFollow.Clear();
+        PointsToFollow.Clear();
 
         if (shortestPathNodes.Count < 2)
             DeInitialize();
@@ -38,7 +38,7 @@ public class VehicleDriverAI : MonoBehaviour {
         //var found = shortestPathNodes[0].GetRouteFromConnectors(null, edgeData.FromRoadConnector);
         var found = shortestPathNodes[0].GetRouteFromToNode(null, shortestPathNodes[1]);
         if (found != null)
-            pointsToFollow.AddRange(found);
+            PointsToFollow.AddRange(found);
 
         // For in between nodes
         int len = shortestPathNodes.Count;
@@ -47,14 +47,14 @@ public class VehicleDriverAI : MonoBehaviour {
             found = shortestPathNodes[i].GetRouteFromToNode(shortestPathNodes[i - 1], shortestPathNodes[i + 1]);
 
             if (found != null)
-                pointsToFollow.AddRange(found);
+                PointsToFollow.AddRange(found);
         }
         // -------------
 
         // For last node
         found = shortestPathNodes[len - 1].GetRouteFromToNode(shortestPathNodes[len - 2], null);
         if (found != null)
-            pointsToFollow.AddRange(found);
+            PointsToFollow.AddRange(found);
         // -------------
 
     }
@@ -79,7 +79,7 @@ public class VehicleDriverAI : MonoBehaviour {
             DisplayShortestPathDebug();
 
             Gizmos.color = Color.cyan;
-            foreach (var point in pointsToFollow) {
+            foreach (var point in PointsToFollow) {
                 Gizmos.DrawSphere(point, 0.1f);
             }
         }
