@@ -12,12 +12,14 @@ public class VehicleDriverAI : MonoBehaviour {
     [SerializeField] private VehicleDataScriptableObject vehicleType;
     [SerializeField] private GameSettingsScriptableObject gameSettings;
     [SerializeField] private GraphGenerator graphGenerator;
+    [SerializeField] private Transform carFrontPosition;
     [SerializeField] private VehicleSpawnerManager vehicleSpawnerManager;
     [SerializeField] private List<RoadSetup> shortestPathNodes;
     public bool Initialized { get; private set; } = false;
 
     public List<Vector3> PointsToFollow { get; private set; } = new();
-
+    int pointsToFollowLength;
+    int currentFollowingPointIndex;
 
     [Header("Debug")]
     public bool showDebugLines;
@@ -25,13 +27,24 @@ public class VehicleDriverAI : MonoBehaviour {
     public RoadSetup toNode;
 
     public void Initialize(RoadSetup fromNode, RoadSetup toNode) {
+        this.fromNode = fromNode;
+        this.toNode = toNode;
+        Initialize();
+    }
+
+    public void Initialize() {
         shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
+        if (shortestPathNodes == null && gameSettings.showDebugMessage) {
+            Debug.Log($"No path found between {fromNode.transform.name} and {toNode.transform.name}.");
+        }
         PointsToFollow.Clear();
 
         if (shortestPathNodes.Count < 2)
             DeInitialize();
 
         SetPathToFollowVectors();
+        pointsToFollowLength = PointsToFollow.Count;
+        currentFollowingPointIndex = 0;
         Initialized = true;
     }
 
@@ -73,11 +86,60 @@ public class VehicleDriverAI : MonoBehaviour {
         return points;
     }
 
+    float forwardAmount;
+    float turnAmount;
+    Vector3 inputVector;
+
     public (Vector3, bool) CalculateAiInput() {
+        while (currentFollowingPointIndex < pointsToFollowLength) {
+            if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < vehicleType.triggerDistance) {
+                currentFollowingPointIndex++;
+            }
+            else { break; }
+
+        }
+
+        if (currentFollowingPointIndex >= pointsToFollowLength)
+            return (PointsToFollow[pointsToFollowLength - 1], true);
+
+        return (PointsToFollow[currentFollowingPointIndex], false);
+
+        //MoveDirectionCorrection();
+        //TurnSpeedCorrection();
+
+
+
         //(inputVector, isBrakePressed) = vehicleDriverAI.GetData();
 
-        return (Vector3.zero, false);
     }
+
+    //private void MoveDirectionCorrection() {
+    //    forwardAmount = 0f;
+    //    turnAmount = 0f;
+
+    //    Vector3 dirToMovePositionNormalizedLS = carFrontPosition.InverseTransformDirection(PointsToFollow[currentFollowingPointIndex] - carFrontPosition.position).normalized;
+    //    forwardAmount = dirToMovePositionNormalizedLS.z;
+    //    if (Mathf.Abs(forwardAmount) < 0.2f)
+    //        forwardAmount = -0.5f;
+
+    //    turnAmount = Mathf.Sign(forwardAmount) * dirToMovePositionNormalizedLS.x;
+
+    //    inputVector.x = turnAmount;
+    //    inputVector.z = forwardAmount;
+    //}
+
+    //void TurnSpeedCorrection() {
+    //    if (turnTargetSquaredDistance < GameSettings.APPLY_BRAKE_DISTANCE_SQUARE) {
+    //        float sqRt = Mathf.Sqrt(turnTargetSquaredDistance);
+    //        if (sqRt < 6f)
+    //            targetSpeed = GameSettings.TRUN_SPEED;
+    //        else
+    //            targetSpeed = Util.Interpolate(0, GameSettings.APPLY_BRAKE_DISTANCE, GameSettings.TRUN_SPEED, carPhysicsData.MaxSpeed, sqRt);
+    //    }
+    //    else {
+    //        targetSpeed = -1f;
+    //    }
+    //}
 
 
     #region Debug Methods

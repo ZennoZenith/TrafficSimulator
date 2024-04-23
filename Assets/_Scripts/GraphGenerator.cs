@@ -9,6 +9,9 @@ public class GraphGenerator : MonoBehaviour {
 
     private readonly List<RoadSetup> nodes = new();
 
+    private void Awake() {
+        GenerateGraph();
+    }
     public void GenerateGraph() {
         // Get all children gameobject with "RoadSetup" component
         nodes.Clear();

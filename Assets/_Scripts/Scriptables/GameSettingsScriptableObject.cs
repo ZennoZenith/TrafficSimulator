@@ -14,5 +14,6 @@ public class GameSettingsScriptableObject : ScriptableObject {
     //[Space(5)]
     [Header("Pathfinding")]
     public bool showDebugPathfindingLines;
+    public bool showDebugMessage;
 
 }
