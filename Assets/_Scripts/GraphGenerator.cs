@@ -38,12 +38,24 @@ public class GraphGenerator : MonoBehaviour {
             DirectedGraph.AddNode(node);
         }
 
+        // Setup edges of graph
         foreach (var node in nodes) {
             foreach (var outgoingConnector in node.GetToConnectors()) {
                 if (outgoingConnector.AdjecentRoadConnector == null) continue;
 
                 foreach (var incommingRoadSetup in node.GetAdjecentIncommingRoadSetupForOutgoingConnector(outgoingConnector)) {
                     DirectedGraph.AddEdge(new EdgeData(node, outgoingConnector.AdjecentRoadConnector.ParentRoadSetup, incommingRoadSetup, outgoingConnector, outgoingConnector.AdjecentRoadConnector));
+                }
+            }
+        }
+
+        // Setup reachable nodes from current node
+        foreach (RoadSetup from in nodes) {
+            foreach (RoadSetup to in nodes) {
+                if (from == to) continue;
+
+                if (DirectedGraph.FindShortestPath(from, to) != null) {
+                    from.AddReachableNode(to);
                 }
             }
         }

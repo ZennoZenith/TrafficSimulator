@@ -12,7 +12,10 @@ public class VehicleDriverAI : MonoBehaviour {
     [SerializeField] private VehicleDataScriptableObject vehicleType;
     [SerializeField] private GameSettingsScriptableObject gameSettings;
     [SerializeField] private GraphGenerator graphGenerator;
+    [SerializeField] private VehicleSpawnerManager vehicleSpawnerManager;
     [SerializeField] private List<RoadSetup> shortestPathNodes;
+    public bool Initialized { get; private set; } = false;
+
     public List<Vector3> PointsToFollow { get; private set; } = new();
 
 
@@ -29,7 +32,7 @@ public class VehicleDriverAI : MonoBehaviour {
             DeInitialize();
 
         SetPathToFollowVectors();
-
+        Initialized = true;
     }
 
     private void SetPathToFollowVectors() {
@@ -60,6 +63,7 @@ public class VehicleDriverAI : MonoBehaviour {
     }
 
     public void DeInitialize() {
+        Initialized = false;
     }
 
     public Vector3[] GetVectorsFromSpline(Spline spline, Transform transformPoint) {
@@ -67,6 +71,12 @@ public class VehicleDriverAI : MonoBehaviour {
         //Debug.Log(spline.EvaluatePosition(t));
         points.Append(transformPoint.TransformPoint(spline.EvaluatePosition(t)));
         return points;
+    }
+
+    public (Vector3, bool) CalculateAiInput() {
+        //(inputVector, isBrakePressed) = vehicleDriverAI.GetData();
+
+        return (Vector3.zero, false);
     }
 
 

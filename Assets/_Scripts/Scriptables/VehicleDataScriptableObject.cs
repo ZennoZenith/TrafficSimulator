@@ -9,4 +9,7 @@ public class VehicleDataScriptableObject : ScriptableObject {
     [Tooltip("in kmph")]
     public float maxSpeed;
 
+    [Tooltip("Trigger distance to get next target point")]
+    public float triggerDistance = 0.1f;
+
 }

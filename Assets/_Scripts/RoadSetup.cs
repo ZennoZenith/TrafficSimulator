@@ -7,12 +7,6 @@ using UnityEngine.Splines;
 [RequireComponent(typeof(SplineContainer))]
 public class RoadSetup : MonoBehaviour {
 
-    //public enum Labels {
-    //    A, B, C, D, E, F, G, H, I, P, Q, R, S, T, U, V, W, X
-    //}
-
-
-
     [System.Serializable]
     public struct RoutesPriorities {
         public int splineIndex;
@@ -42,10 +36,11 @@ public class RoadSetup : MonoBehaviour {
     [SerializeField] private RoadConnector[] outgoing;
     [SerializeField] private RoutesMap[] routesMap;
     private readonly List<List<Vector3>> routesAsVectors = new();
+    public bool Initialized { get; private set; } = false;
+    public List<RoadSetup> ReachableNodes { get; private set; } = new();
 
-    private void Awake() {
-        if (splineContainer == null)
-            splineContainer = GetComponent<SplineContainer>();
+    public void AddReachableNode(RoadSetup node) {
+        ReachableNodes.Add(node);
     }
 
     public RoadConnector[] GetFromConnectors() {
@@ -55,6 +50,21 @@ public class RoadSetup : MonoBehaviour {
     public RoadConnector[] GetToConnectors() {
         return outgoing;
     }
+
+    private void Awake() {
+        if (splineContainer == null)
+            splineContainer = GetComponent<SplineContainer>();
+    }
+
+    public void Initialize() {
+        Initialized = true;
+    }
+
+    public void DeInitialize() {
+        ReachableNodes.Clear();
+        Initialized = false;
+    }
+
 
     /// <summary>
     /// Use this function when initializing graph
