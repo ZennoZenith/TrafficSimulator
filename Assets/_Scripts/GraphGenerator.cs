@@ -1,15 +1,22 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using static VehicleSpawnerManager;
 
+[RequireComponent(typeof(VehicleSpawnerManager))]
 public class GraphGenerator : MonoBehaviour {
     // Start is called before the first frame update
     [SerializeField] private GameSettingsScriptableObject gameSettings;
+    [SerializeField] private VehicleSpawnerManager vehicleSpawnerManager;
     public Graph DirectedGraph { get; private set; } = new();
 
     private readonly List<RoadSetup> nodes = new();
 
     private void Awake() {
+        vehicleSpawnerManager = GetComponent<VehicleSpawnerManager>();
+    }
+
+    private void Start() {
         GenerateGraph();
     }
     public void GenerateGraph() {
@@ -50,15 +57,16 @@ public class GraphGenerator : MonoBehaviour {
                     DirectedGraph.AddEdge(new EdgeData(node, outgoingConnector.AdjecentRoadConnector.ParentRoadSetup, incommingRoadSetup, outgoingConnector, outgoingConnector.AdjecentRoadConnector));
                 }
             }
+            node.Initialize();
         }
 
         // Setup reachable nodes from current node
-        foreach (RoadSetup from in nodes) {
-            foreach (RoadSetup to in nodes) {
-                if (from == to) continue;
+        foreach (SpawnerInfo from in vehicleSpawnerManager.Spawners) {
+            foreach (RoadSetup to in vehicleSpawnerManager.Despawners) {
+                if (from.roadSetup == to) continue;
 
-                if (DirectedGraph.FindShortestPath(from, to) != null) {
-                    from.AddReachableNode(to);
+                if (DirectedGraph.FindShortestPath(from.roadSetup, to) != null) {
+                    from.roadSetup.AddReachableNode(to);
                 }
             }
         }

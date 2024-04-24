@@ -16,7 +16,7 @@ MonoBehaviour:
   maxSpeed: 20
   maxAcceleration: 5
   brakeAcceleration: 5
-  turnSpeed: 0.3
+  turnSpeed: 0.2
   triggerDistance: 1
   accelerationCurve:
     serializedVersion: 2

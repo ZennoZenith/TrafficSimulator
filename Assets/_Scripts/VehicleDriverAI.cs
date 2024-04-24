@@ -11,10 +11,10 @@ public class VehicleDriverAI : MonoBehaviour {
 
     [SerializeField] private VehicleDataScriptableObject vehicleType;
     [SerializeField] private GameSettingsScriptableObject gameSettings;
-    [SerializeField] private GraphGenerator graphGenerator;
     [SerializeField] private Transform carFrontPosition;
-    [SerializeField] private VehicleSpawnerManager vehicleSpawnerManager;
     [SerializeField] private List<RoadSetup> shortestPathNodes;
+    [field: SerializeField] public GraphGenerator GraphGenerator { get; private set; }
+
     public bool Initialized { get; private set; } = false;
 
     public List<Vector3> PointsToFollow { get; private set; } = new();
@@ -26,19 +26,27 @@ public class VehicleDriverAI : MonoBehaviour {
     int shortestPathNodesLength;
     public int currentNodeIndex;
 
+
     [Header("Debug")]
     public bool showDebugLines;
     public RoadSetup fromNode;
     public RoadSetup toNode;
 
-    public void Initialize(RoadSetup fromNode, RoadSetup toNode) {
+    public void Initialize(GraphGenerator gg, RoadSetup fromNode, RoadSetup toNode) {
         this.fromNode = fromNode;
         this.toNode = toNode;
-        Initialize();
-    }
 
-    public void Initialize() {
-        shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
+        Initialize(gg);
+    }
+    public void Initialize(GraphGenerator gg) {
+        if (gg == null && GraphGenerator == null) {
+            return;
+        }
+        else if (GraphGenerator == null && gg != null) {
+            GraphGenerator = gg;
+        }
+
+        shortestPathNodes = GraphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
         if (shortestPathNodes == null && gameSettings.showDebugMessage) {
             Debug.Log($"No path found between {fromNode.transform.name} and {toNode.transform.name}.");
         }
@@ -63,11 +71,13 @@ public class VehicleDriverAI : MonoBehaviour {
         currentFollowingPointIndex = 0;
 
 
-        string temp = "";
-        foreach (var item in HeuristicMaxSpeed) {
-            temp += $"{item}, ";
-        }
-        Debug.Log(temp);
+        //string temp = "";
+        //foreach (var item in HeuristicMaxSpeed) {
+        //    temp += $"{item}, ";
+        //}
+        //Debug.Log(temp);
+
+        Initialized = true;
     }
 
     public void DeInitialize() {
@@ -200,6 +210,10 @@ public class VehicleDriverAI : MonoBehaviour {
     /// <br>item4: BrakeState</br>
     /// </returns>
     public (Vector3, Vector3, float, BrakeState) CalculateAiInput() {
+        if (!Initialized)
+            return (Vector3.zero, Vector3.zero, 0f, BrakeState.HandBrake);
+
+
         while (currentFollowingPointIndex < pointsToFollowLength) {
             if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < vehicleType.triggerDistance) {
                 currentFollowingPointIndex++;
@@ -209,9 +223,11 @@ public class VehicleDriverAI : MonoBehaviour {
 
         }
 
-        if (currentFollowingPointIndex >= pointsToFollowLength)
-            return (Vector3.zero, PointsToFollow[pointsToFollowLength - 1], 0f, BrakeState.HandBrake);
-
+        if (currentFollowingPointIndex >= pointsToFollowLength) {
+            DeInitialize();
+            return (Vector3.zero, Vector3.zero, 0f, BrakeState.HandBrake);
+            //return (Vector3.zero, PointsToFollow[pointsToFollowLength - 1], 0f, BrakeState.HandBrake);
+        }
         //return (PointsToFollow[currentFollowingPointIndex], false);
 
         MoveDirectionCorrection();
@@ -276,7 +292,7 @@ public class VehicleDriverAI : MonoBehaviour {
     }
 
     public void DisplayShortestPathDebug() {
-        List<RoadSetup> shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
+        List<RoadSetup> shortestPathNodes = GraphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
 
         if (fromNode == null || toNode == null || shortestPathNodes == null)
             return;
@@ -309,7 +325,6 @@ public class VehicleDriverAI : MonoBehaviour {
 # if UNITY_EDITOR
 [CustomEditor(typeof(VehicleDriverAI))]
 public class VehicleDriverAIEditor : Editor {
-
     public override void OnInspectorGUI() {
         //base.OnInspectorGUI();
 
@@ -318,7 +333,7 @@ public class VehicleDriverAIEditor : Editor {
         VehicleDriverAI vehicleDriverAI = (VehicleDriverAI)target;
 
         if (GUILayout.Button("Initialize")) {
-            vehicleDriverAI.Initialize(vehicleDriverAI.fromNode, vehicleDriverAI.toNode);
+            vehicleDriverAI.Initialize(null, vehicleDriverAI.fromNode, vehicleDriverAI.toNode);
         }
 
     }

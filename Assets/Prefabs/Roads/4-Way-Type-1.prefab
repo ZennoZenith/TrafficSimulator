@@ -1360,6 +1360,8 @@ MonoBehaviour:
   roadType: {fileID: 11400000, guid: 3e444fad0df884b4c89d8c16e9bb896c, type: 2}
   <MaxAllowedSpeed>k__BackingField: 7
   splineContainer: {fileID: 7620330052715335176}
+  overridenSplineResolution: 50
+  overrideSplineResolution: 1
   incomming:
   - {fileID: 7643676288651091314}
   - {fileID: 3477961798876090436}

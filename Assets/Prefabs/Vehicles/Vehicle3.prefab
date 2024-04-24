@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 240012781351095075}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.546}
+  m_LocalPosition: {x: 0, y: 0.65, z: 2.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 1385407100798231856}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.543, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -74,9 +74,10 @@ GameObject:
   - component: {fileID: 4098387665314085129}
   - component: {fileID: 473570593322093136}
   - component: {fileID: 3937444468051832230}
-  m_Layer: 0
+  - component: {fileID: 7392599933119132188}
+  m_Layer: 7
   m_Name: Vehicle3
-  m_TagString: Untagged
+  m_TagString: Vehicle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,6 +121,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  currentNodeIndex: 0
   showDebugLines: 0
   fromNode: {fileID: 0}
   toNode: {fileID: 0}
@@ -136,11 +138,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10251fc85f294284a97779812c2df9b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UImanager: {fileID: 0}
+  speedTextUI: {fileID: 0}
   vehicleDriverAI: {fileID: 473570593322093136}
   vehicleData: {fileID: 11400000, guid: 5c18410eed8ebec48ac234f613856132, type: 2}
   targetPosition: {x: 0, y: 0, z: 0}
-  debugAcceleration: 0.52061635
+  brakeState: 0
+  targetSpeed: 0
+  debugAcceleration: 0.5135751
   debugSpeed: 0.9
+--- !u!65 &7392599933119132188
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6834951405783043257}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.9801526, y: 1.1123741, z: 4.6271896}
+  m_Center: {x: 0, y: 0.68, z: 0.059309006}
 --- !u!1001 &4430261869848355464
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -224,7 +251,8 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6753677065271027107, guid: a686086459191ea4994078fe68c2bf63, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

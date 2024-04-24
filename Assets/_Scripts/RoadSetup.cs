@@ -35,6 +35,8 @@ public class RoadSetup : MonoBehaviour {
     [Tooltip("in meter per second")]
     [field: SerializeField] public float MaxAllowedSpeed { get; private set; }
     [SerializeField] private SplineContainer splineContainer;
+    [SerializeField] private int overridenSplineResolution = 50;
+    [SerializeField] private bool overrideSplineResolution;
     [SerializeField] private RoadConnector[] incomming;
     [SerializeField] private RoadConnector[] outgoing;
     [SerializeField] private RoutesMap[] routesMap;
@@ -69,13 +71,19 @@ public class RoadSetup : MonoBehaviour {
     }
 
 
+
     /// <summary>
     /// Use this function when initializing graph
     /// sets vector.y to 0
     /// </summary>
     /// <param name="resolution"></param>
+
     public void ConvertSplinesToVectors(int resolution) {
         int numberOfSplines = splineContainer.Splines.Count;
+
+        if (overrideSplineResolution)
+            resolution = overridenSplineResolution;
+
         routesAsVectors.Clear();
         for (int i = 0; i < numberOfSplines; i++) {
             routesAsVectors.Add(new List<Vector3> { SetVectorY(splineContainer.EvaluatePosition(i, 0)) });

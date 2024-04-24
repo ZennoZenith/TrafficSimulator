@@ -8,6 +8,9 @@ public class GameSettingsScriptableObject : ScriptableObject {
     [Tooltip("Number of next points to consider for heuristic calculation")]
     public int numberOfHeuristicPoints;
 
+    [Header("Spawner")]
+    public int retrySpawnTime;
+
     [Header("Graph")]
     public bool showGraphNode;
     public bool showGraphLine;

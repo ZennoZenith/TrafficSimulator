@@ -15,6 +15,7 @@ MonoBehaviour:
   splineResolution: 10
   pathVectorY: 0.5
   numberOfHeuristicPoints: 1
+  retrySpawnTime: 0
   showGraphNode: 1
   showGraphLine: 1
   printGraphDetails: 0

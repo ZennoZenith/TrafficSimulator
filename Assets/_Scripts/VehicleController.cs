@@ -14,7 +14,7 @@ public enum BrakeState {
 public class VehicleController : MonoBehaviour {
     [SerializeField] private UIManagerScriptableObject UImanager;
     [SerializeField] private TextMeshProUGUI speedTextUI;
-    [SerializeField] private VehicleDriverAI vehicleDriverAI;
+    [field: SerializeField] public VehicleDriverAI VehicleDriverAI { get; private set; }
     [SerializeField] private VehicleDataScriptableObject vehicleData;
     [SerializeField] private Vector3 targetPosition;
 
@@ -38,18 +38,17 @@ public class VehicleController : MonoBehaviour {
     public bool Initialized { get; private set; } = false;
 
     private void Awake() {
-        if (vehicleDriverAI == null) {
-            vehicleDriverAI = GetComponent<VehicleDriverAI>();
+        if (VehicleDriverAI == null) {
+            VehicleDriverAI = GetComponent<VehicleDriverAI>();
         }
     }
 
     private void Start() {
         Initialize();
-
     }
 
     public void Initialize() {
-        vehicleDriverAI.Initialize();
+        //vehicleDriverAI.Initialize();
         //pointsToFollow = vehicleDriverAI.PointsToFollow;
         Initialized = true;
     }
@@ -66,7 +65,7 @@ public class VehicleController : MonoBehaviour {
         if (!Initialized) return;
         //(InputVector, isBrakePressed) = vehicleDriverAI.GetNextPointToFollow();
 
-        (InputVector, targetPosition, targetSpeed, brakeState) = vehicleDriverAI.CalculateAiInput();
+        (InputVector, targetPosition, targetSpeed, brakeState) = VehicleDriverAI.CalculateAiInput();
         if (InputVector == Vector3.zero) return;
 
         if (Speed > targetSpeed && brakeState == BrakeState.NoBrake)
