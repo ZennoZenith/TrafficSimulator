@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: GenericVehicle
   m_EditorClassIdentifier: 
   mass: 1000
-  maxSpeed: 11.111
-  maxAcceleration: 3.6
-  turnSpeed: 0.1
+  maxSpeed: 20
+  maxAcceleration: 5
+  brakeAcceleration: 5
+  turnSpeed: 0.3
   triggerDistance: 1
   accelerationCurve:
     serializedVersion: 2

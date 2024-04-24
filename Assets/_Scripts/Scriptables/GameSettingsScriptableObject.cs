@@ -5,6 +5,9 @@ public class GameSettingsScriptableObject : ScriptableObject {
     public int splineResolution;
     public float pathVectorY;
 
+    [Tooltip("Number of next points to consider for heuristic calculation")]
+    public int numberOfHeuristicPoints;
+
     [Header("Graph")]
     public bool showGraphNode;
     public bool showGraphLine;

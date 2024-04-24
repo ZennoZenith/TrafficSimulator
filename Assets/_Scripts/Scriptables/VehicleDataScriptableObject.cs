@@ -12,6 +12,7 @@ public class VehicleDataScriptableObject : ScriptableObject {
 
     [Tooltip("in meter per sec per sec")]
     public float maxAcceleration;
+    public float brakeAcceleration;
 
     public float turnSpeed;
 

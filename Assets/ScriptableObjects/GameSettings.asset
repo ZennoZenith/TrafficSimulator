@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   splineResolution: 10
   pathVectorY: 0.5
+  numberOfHeuristicPoints: 1
   showGraphNode: 1
   showGraphLine: 1
   printGraphDetails: 0
   nodeSphereRadius: 0.4
   showDebugPathfindingLines: 1
+  showDebugMessage: 0

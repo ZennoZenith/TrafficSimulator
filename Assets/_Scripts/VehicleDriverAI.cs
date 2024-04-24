@@ -18,8 +18,13 @@ public class VehicleDriverAI : MonoBehaviour {
     public bool Initialized { get; private set; } = false;
 
     public List<Vector3> PointsToFollow { get; private set; } = new();
+    public List<int> PointsToNodesIndex { get; private set; } = new();
+    public List<float> HeuristicMaxSpeed { get; private set; } = new();
+
     int pointsToFollowLength;
     int currentFollowingPointIndex;
+    int shortestPathNodesLength;
+    public int currentNodeIndex;
 
     [Header("Debug")]
     public bool showDebugLines;
@@ -42,19 +47,48 @@ public class VehicleDriverAI : MonoBehaviour {
         if (shortestPathNodes.Count < 2)
             DeInitialize();
 
-        SetPathToFollowVectors();
+        currentNodeIndex = 0;
+        shortestPathNodesLength = shortestPathNodes.Count;
+        SetAllPathToFollowVectors();
+        CalculateHeuristicSpeeds();
+
+        //SetPathToFollowVectors(shortestPathNodes[currentNodeIndex], null, shortestPathNodes[currentNodeIndex + 1]);
+
+        //if (shortestPathNodesLength > currentNodeIndex + 2)
+        //    SetPathToFollowVectors(shortestPathNodes[currentNodeIndex + 1], shortestPathNodes[currentNodeIndex], shortestPathNodes[currentNodeIndex + 2]);
+
+
+
         pointsToFollowLength = PointsToFollow.Count;
         currentFollowingPointIndex = 0;
-        Initialized = true;
+
+
+        string temp = "";
+        foreach (var item in HeuristicMaxSpeed) {
+            temp += $"{item}, ";
+        }
+        Debug.Log(temp);
     }
 
-    private void SetPathToFollowVectors() {
+    public void DeInitialize() {
+        PointsToFollow.Clear();
+        PointsToNodesIndex.Clear();
+        HeuristicMaxSpeed.Clear();
+
+        Initialized = false;
+    }
+
+    private int SetAllPathToFollowVectors() {
 
         // For first node
         //var found = shortestPathNodes[0].GetRouteFromConnectors(null, edgeData.FromRoadConnector);
+        int numberOfPointsAdded = 0;
         var found = shortestPathNodes[0].GetRouteFromToNode(null, shortestPathNodes[1]);
-        if (found != null)
+        if (found != null) {
             PointsToFollow.AddRange(found);
+            numberOfPointsAdded += found.Count;
+            PointsToNodesIndex.Add(numberOfPointsAdded);
+        }
 
         // For in between nodes
         int len = shortestPathNodes.Count;
@@ -62,22 +96,70 @@ public class VehicleDriverAI : MonoBehaviour {
             //found = shortestPathNodes[i].GetRouteFromConnectors(previousEdge.ToRoadConnector, edgeData.FromRoadConnector);
             found = shortestPathNodes[i].GetRouteFromToNode(shortestPathNodes[i - 1], shortestPathNodes[i + 1]);
 
-            if (found != null)
+            if (found != null) {
                 PointsToFollow.AddRange(found);
+                numberOfPointsAdded += found.Count;
+                PointsToNodesIndex.Add(numberOfPointsAdded);
+            }
         }
         // -------------
 
         // For last node
         found = shortestPathNodes[len - 1].GetRouteFromToNode(shortestPathNodes[len - 2], null);
-        if (found != null)
+        if (found != null) {
             PointsToFollow.AddRange(found);
+            numberOfPointsAdded += found.Count;
+            PointsToNodesIndex.Add(numberOfPointsAdded);
+        }
         // -------------
 
+        return numberOfPointsAdded;
+
     }
 
-    public void DeInitialize() {
-        Initialized = false;
+
+    private void CalculateHeuristicSpeeds() {
+        int i;
+        for (i = 0; i < shortestPathNodesLength - gameSettings.numberOfHeuristicPoints; i++) {
+            float speed = shortestPathNodes[i].MaxAllowedSpeed;
+            // Heuristic calculation algorithm
+            for (int j = 0; j < gameSettings.numberOfHeuristicPoints; j++) {
+                speed += Mathf.Clamp(shortestPathNodes[i + j + 1].MaxAllowedSpeed, 0, shortestPathNodes[i].MaxAllowedSpeed);
+            }
+            speed /= gameSettings.numberOfHeuristicPoints + 1;
+            HeuristicMaxSpeed.Add(speed);
+        }
+
+        for (; i < shortestPathNodesLength; i++) {
+            float speed = 0;
+            for (int j = i; j < shortestPathNodesLength; j++) {
+                speed += Mathf.Clamp(shortestPathNodes[j].MaxAllowedSpeed, 0, shortestPathNodes[i].MaxAllowedSpeed);
+            }
+            speed /= shortestPathNodesLength - i;
+            HeuristicMaxSpeed.Add(speed);
+
+        }
     }
+
+
+    private int GetNodeIndexFromVectorIndex(int pointToFollowIndex) {
+        for (int i = 0; i < shortestPathNodesLength; i++) {
+            if (pointToFollowIndex < PointsToNodesIndex[i])
+                return i;
+        }
+        return shortestPathNodesLength - 1;
+    }
+
+    //private int SetPathToFollowVectors(RoadSetup currentNode, RoadSetup fromNode, RoadSetup toNode) {
+    //    var found = currentNode.GetRouteFromToNode(fromNode, toNode);
+    //    int numberOfPointsAdded = 0;
+    //    if (found != null) {
+    //        PointsToFollow.AddRange(found);
+    //        numberOfPointsAdded += found.Count;
+    //    }
+    //    return numberOfPointsAdded;
+    //}
+
 
     public Vector3[] GetVectorsFromSpline(Spline spline, Transform transformPoint) {
         Vector3[] points = { };
@@ -90,50 +172,52 @@ public class VehicleDriverAI : MonoBehaviour {
     float turnAmount;
     Vector3 inputVector;
 
-    public (Vector3, bool) GetNextPointToFollow() {
+    //public (Vector3, bool) GetNextPointToFollow() {
+    //    while (currentFollowingPointIndex < pointsToFollowLength) {
+    //        if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < vehicleType.triggerDistance) {
+    //            currentFollowingPointIndex++;
+    //            currentNodeIndex = GetNodeIndexFromVectorIndex(currentFollowingPointIndex);
+    //        }
+    //        else { break; }
+
+    //    }
+
+    //    if (currentFollowingPointIndex >= pointsToFollowLength)
+    //        return (PointsToFollow[pointsToFollowLength - 1], false);
+
+    //    return (PointsToFollow[currentFollowingPointIndex], false);
+
+    //}
+
+
+    /// <summary>
+    /// <br>Calculates AI Input</br>
+    /// </summary>
+    /// <returns>
+    /// <br>item1: inputVector</br>
+    /// <br>item2: targetPosition</br>
+    /// <br>item3: targetSpeed</br>
+    /// <br>item4: BrakeState</br>
+    /// </returns>
+    public (Vector3, Vector3, float, BrakeState) CalculateAiInput() {
         while (currentFollowingPointIndex < pointsToFollowLength) {
             if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < vehicleType.triggerDistance) {
                 currentFollowingPointIndex++;
+                currentNodeIndex = GetNodeIndexFromVectorIndex(currentFollowingPointIndex);
             }
             else { break; }
 
         }
 
         if (currentFollowingPointIndex >= pointsToFollowLength)
-            return (PointsToFollow[pointsToFollowLength - 1], false);
-
-        return (PointsToFollow[currentFollowingPointIndex], false);
-
-        //MoveDirectionCorrection();
-        //TurnSpeedCorrection();
-
-        //(inputVector, isBrakePressed) = vehicleDriverAI.GetData();
-
-    }
-
-
-    public (Vector3, Vector3, bool) CalculateAiInput() {
-        while (currentFollowingPointIndex < pointsToFollowLength) {
-            if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < vehicleType.triggerDistance) {
-                currentFollowingPointIndex++;
-            }
-            else { break; }
-
-        }
-
-        if (currentFollowingPointIndex >= pointsToFollowLength)
-            return (Vector3.zero, PointsToFollow[pointsToFollowLength - 1], false);
+            return (Vector3.zero, PointsToFollow[pointsToFollowLength - 1], 0f, BrakeState.HandBrake);
 
         //return (PointsToFollow[currentFollowingPointIndex], false);
 
         MoveDirectionCorrection();
-        return (inputVector, PointsToFollow[currentFollowingPointIndex], false);
-
+        return (inputVector, PointsToFollow[currentFollowingPointIndex], HeuristicMaxSpeed[currentNodeIndex], BrakeState.NoBrake);
 
         //TurnSpeedCorrection();
-
-
-
         //(inputVector, isBrakePressed) = vehicleDriverAI.GetData();
 
     }

@@ -31,6 +31,9 @@ public class RoadSetup : MonoBehaviour {
 
     [SerializeField] private GameSettingsScriptableObject gameSettings;
     [SerializeField] private RoadTypeScriptableObject roadType;
+
+    [Tooltip("in meter per second")]
+    [field: SerializeField] public float MaxAllowedSpeed { get; private set; }
     [SerializeField] private SplineContainer splineContainer;
     [SerializeField] private RoadConnector[] incomming;
     [SerializeField] private RoadConnector[] outgoing;

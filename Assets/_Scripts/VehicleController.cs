@@ -2,6 +2,13 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
+public enum BrakeState {
+    NoBrake,
+    Brake,
+    HandBrake,
+    EmergencyBrake
+}
+
 [RequireComponent(typeof(VehicleDriverAI))]
 public class VehicleController : MonoBehaviour {
     [SerializeField] private VehicleDriverAI vehicleDriverAI;
@@ -19,8 +26,9 @@ public class VehicleController : MonoBehaviour {
 
     public Vector3 InputVector { get; private set; }
 
-    private bool isBrakePressed;
-    private float speed;
+    [SerializeField] private BrakeState brakeState = BrakeState.NoBrake;
+    [SerializeField] private float speed;
+    [SerializeField] private float targetSpeed;
     private float acceleration;
     Vector3 forward;
 
@@ -55,12 +63,16 @@ public class VehicleController : MonoBehaviour {
         if (!Initialized) return;
         //(InputVector, isBrakePressed) = vehicleDriverAI.GetNextPointToFollow();
 
-        (InputVector, targetPosition, isBrakePressed) = vehicleDriverAI.CalculateAiInput();
+        (InputVector, targetPosition, targetSpeed, brakeState) = vehicleDriverAI.CalculateAiInput();
         if (InputVector == Vector3.zero) return;
 
-        ProcessInput();
+        if (speed > targetSpeed && brakeState == BrakeState.NoBrake)
+            brakeState = BrakeState.Brake;
 
+        ProcessInput();
         ProcessRotation();
+
+        brakeState = BrakeState.NoBrake;
     }
 
     private void ProcessRotation() {
@@ -76,21 +88,23 @@ public class VehicleController : MonoBehaviour {
         //Debug.Log(speed);
         forward = transform.InverseTransformDirection(InputVector);
         transform.Translate(speed * Time.fixedDeltaTime * forward);
-
-
     }
 
-    //IEnumerator LookAt() {
-    //    Quaternion lookRotation = Quaternion.LookRotation(targetPosition - transform.position);
-    //    float time = 0;
-    //    while (time < 1) {
-    //        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, time);
-    //        time += vehicleData.rotationSpeed * Time.fixedDeltaTime;
-    //        yield return null;
-    //    }
-    //}
+    private void HandleBrake() {
+        if (brakeState == BrakeState.Brake) {
+            if (Mathf.Abs(speed) < 0.1f)
+                speed = 0;
+            else
+                speed -= Mathf.Sign(speed) * vehicleData.brakeAcceleration * Time.fixedDeltaTime;
+            return;
+        }
+    }
 
     void CalculateSpeed() {
+        if (brakeState != BrakeState.NoBrake) {
+            HandleBrake();
+            return;
+        }
         acceleration = vehicleData.maxAcceleration * vehicleData.accelerationCurve.Evaluate(Utils.InverseLerpUnclamped(0, vehicleData.maxSpeed, speed));
         speed += acceleration * Time.fixedDeltaTime;
     }
