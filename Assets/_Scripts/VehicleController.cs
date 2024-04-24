@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -20,8 +21,8 @@ public class VehicleController : MonoBehaviour {
 
     private bool isBrakePressed;
     private float speed;
-    private float previousSpeed;
     private float acceleration;
+    Vector3 forward;
 
     public bool Initialized { get; private set; } = false;
 
@@ -33,6 +34,7 @@ public class VehicleController : MonoBehaviour {
 
     private void Start() {
         Initialize();
+
     }
 
     public void Initialize() {
@@ -51,24 +53,42 @@ public class VehicleController : MonoBehaviour {
         //transform.Translate(Vector3.forward * Time.fixedDeltaTime);
 
         if (!Initialized) return;
-        (InputVector, isBrakePressed) = vehicleDriverAI.CalculateAiInput();
+        //(InputVector, isBrakePressed) = vehicleDriverAI.GetNextPointToFollow();
+
+        (InputVector, targetPosition, isBrakePressed) = vehicleDriverAI.CalculateAiInput();
         if (InputVector == Vector3.zero) return;
 
-        Debug.Log(speed);
-
         ProcessInput();
+
+        ProcessRotation();
     }
 
-    float step;
-    void ProcessInput() {
+    private void ProcessRotation() {
+        Vector3 direction = targetPosition - transform.position;
+        Quaternion rotGoal = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotGoal, vehicleData.turnSpeed);
+    }
+
+    //float step;
+    private void ProcessInput() {
         //transform.forward
         CalculateSpeed();
-        //transform.Translate(InputVector * speed);
-        step = speed * Time.fixedDeltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, InputVector, speed);
-        //transform.Translate(Vector3.forward * Time.deltaTime);
+        //Debug.Log(speed);
+        forward = transform.InverseTransformDirection(InputVector);
+        transform.Translate(speed * Time.fixedDeltaTime * forward);
+
 
     }
+
+    //IEnumerator LookAt() {
+    //    Quaternion lookRotation = Quaternion.LookRotation(targetPosition - transform.position);
+    //    float time = 0;
+    //    while (time < 1) {
+    //        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, time);
+    //        time += vehicleData.rotationSpeed * Time.fixedDeltaTime;
+    //        yield return null;
+    //    }
+    //}
 
     void CalculateSpeed() {
         acceleration = vehicleData.maxAcceleration * vehicleData.accelerationCurve.Evaluate(Utils.InverseLerpUnclamped(0, vehicleData.maxSpeed, speed));
@@ -84,8 +104,8 @@ public class VehicleController : MonoBehaviour {
         debugAcceleration = vehicleData.accelerationCurve.Evaluate(Utils.InverseLerpUnclamped(0, vehicleData.maxSpeed, debugSpeed));
         //debugAcceleration = Utils.InverseLerpUnclamped(0, vehicleData.maxSpeed, debugSpeed);
 
-        Gizmos.color = Color.black;
-        Gizmos.DrawSphere(InputVector, 0.3f);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(transform.position, InputVector * 10);
     }
     #endregion
 

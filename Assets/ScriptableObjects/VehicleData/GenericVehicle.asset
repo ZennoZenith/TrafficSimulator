@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 1000
   maxSpeed: 11.111
-  maxAcceleration: 1
-  triggerDistance: 0.1
+  maxAcceleration: 3.6
+  turnSpeed: 0.1
+  triggerDistance: 1
   accelerationCurve:
     serializedVersion: 2
     m_Curve:

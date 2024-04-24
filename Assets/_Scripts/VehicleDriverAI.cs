@@ -90,7 +90,7 @@ public class VehicleDriverAI : MonoBehaviour {
     float turnAmount;
     Vector3 inputVector;
 
-    public (Vector3, bool) CalculateAiInput() {
+    public (Vector3, bool) GetNextPointToFollow() {
         while (currentFollowingPointIndex < pointsToFollowLength) {
             if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < vehicleType.triggerDistance) {
                 currentFollowingPointIndex++;
@@ -100,11 +100,36 @@ public class VehicleDriverAI : MonoBehaviour {
         }
 
         if (currentFollowingPointIndex >= pointsToFollowLength)
-            return (PointsToFollow[pointsToFollowLength - 1], true);
+            return (PointsToFollow[pointsToFollowLength - 1], false);
 
         return (PointsToFollow[currentFollowingPointIndex], false);
 
         //MoveDirectionCorrection();
+        //TurnSpeedCorrection();
+
+        //(inputVector, isBrakePressed) = vehicleDriverAI.GetData();
+
+    }
+
+
+    public (Vector3, Vector3, bool) CalculateAiInput() {
+        while (currentFollowingPointIndex < pointsToFollowLength) {
+            if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < vehicleType.triggerDistance) {
+                currentFollowingPointIndex++;
+            }
+            else { break; }
+
+        }
+
+        if (currentFollowingPointIndex >= pointsToFollowLength)
+            return (Vector3.zero, PointsToFollow[pointsToFollowLength - 1], false);
+
+        //return (PointsToFollow[currentFollowingPointIndex], false);
+
+        MoveDirectionCorrection();
+        return (inputVector, PointsToFollow[currentFollowingPointIndex], false);
+
+
         //TurnSpeedCorrection();
 
 
@@ -113,20 +138,24 @@ public class VehicleDriverAI : MonoBehaviour {
 
     }
 
-    //private void MoveDirectionCorrection() {
-    //    forwardAmount = 0f;
-    //    turnAmount = 0f;
+    private void MoveDirectionCorrection() {
+        //forwardAmount = 0f;
+        //turnAmount = 0f;
 
-    //    Vector3 dirToMovePositionNormalizedLS = carFrontPosition.InverseTransformDirection(PointsToFollow[currentFollowingPointIndex] - carFrontPosition.position).normalized;
-    //    forwardAmount = dirToMovePositionNormalizedLS.z;
-    //    if (Mathf.Abs(forwardAmount) < 0.2f)
-    //        forwardAmount = -0.5f;
+        //Vector3 dirToMovePositionNormalizedLS = carFrontPosition.InverseTransformDirection(PointsToFollow[currentFollowingPointIndex] - carFrontPosition.position).normalized;
+        //forwardAmount = dirToMovePositionNormalizedLS.z;
+        //if (Mathf.Abs(forwardAmount) < 0.2f)
+        //    forwardAmount = -0.5f;
 
-    //    turnAmount = Mathf.Sign(forwardAmount) * dirToMovePositionNormalizedLS.x;
+        //turnAmount = Mathf.Sign(forwardAmount) * dirToMovePositionNormalizedLS.x;
 
-    //    inputVector.x = turnAmount;
-    //    inputVector.z = forwardAmount;
-    //}
+        //inputVector.x = turnAmount;
+        //inputVector.z = forwardAmount;
+
+        inputVector = (PointsToFollow[currentFollowingPointIndex] - transform.position).normalized;
+
+
+    }
 
     //void TurnSpeedCorrection() {
     //    if (turnTargetSquaredDistance < GameSettings.APPLY_BRAKE_DISTANCE_SQUARE) {
@@ -154,6 +183,11 @@ public class VehicleDriverAI : MonoBehaviour {
             foreach (var point in PointsToFollow) {
                 Gizmos.DrawSphere(point, 0.1f);
             }
+
+
+            Gizmos.color = Color.black;
+            if (currentFollowingPointIndex < pointsToFollowLength)
+                Gizmos.DrawSphere(PointsToFollow[currentFollowingPointIndex], 0.3f);
         }
     }
 

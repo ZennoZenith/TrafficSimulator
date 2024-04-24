@@ -13,6 +13,9 @@ public class VehicleDataScriptableObject : ScriptableObject {
     [Tooltip("in meter per sec per sec")]
     public float maxAcceleration;
 
+    public float turnSpeed;
+
+
     [Tooltip("Trigger distance to get next target point")]
     public float triggerDistance = 0.1f;
 
@@ -21,5 +24,4 @@ public class VehicleDataScriptableObject : ScriptableObject {
     /// </summary>
     [FormerlySerializedAs("acceleration")]
     public AnimationCurve accelerationCurve;
-
 }
