@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ public enum BrakeState {
 
 [RequireComponent(typeof(VehicleDriverAI))]
 public class VehicleController : MonoBehaviour {
+    [SerializeField] private UIManagerScriptableObject UImanager;
+    [SerializeField] private TextMeshProUGUI speedTextUI;
     [SerializeField] private VehicleDriverAI vehicleDriverAI;
     [SerializeField] private VehicleDataScriptableObject vehicleData;
     [SerializeField] private Vector3 targetPosition;
@@ -27,7 +30,7 @@ public class VehicleController : MonoBehaviour {
     public Vector3 InputVector { get; private set; }
 
     [SerializeField] private BrakeState brakeState = BrakeState.NoBrake;
-    [SerializeField] private float speed;
+    public float Speed { get; private set; }
     [SerializeField] private float targetSpeed;
     private float acceleration;
     Vector3 forward;
@@ -66,13 +69,16 @@ public class VehicleController : MonoBehaviour {
         (InputVector, targetPosition, targetSpeed, brakeState) = vehicleDriverAI.CalculateAiInput();
         if (InputVector == Vector3.zero) return;
 
-        if (speed > targetSpeed && brakeState == BrakeState.NoBrake)
+        if (Speed > targetSpeed && brakeState == BrakeState.NoBrake)
             brakeState = BrakeState.Brake;
 
         ProcessInput();
         ProcessRotation();
 
         brakeState = BrakeState.NoBrake;
+
+        if (speedTextUI)
+            speedTextUI.text = Math.Round(Speed, 2).ToString();
     }
 
     private void ProcessRotation() {
@@ -87,15 +93,15 @@ public class VehicleController : MonoBehaviour {
         CalculateSpeed();
         //Debug.Log(speed);
         forward = transform.InverseTransformDirection(InputVector);
-        transform.Translate(speed * Time.fixedDeltaTime * forward);
+        transform.Translate(Speed * Time.fixedDeltaTime * forward);
     }
 
     private void HandleBrake() {
         if (brakeState == BrakeState.Brake) {
-            if (Mathf.Abs(speed) < 0.1f)
-                speed = 0;
+            if (Mathf.Abs(Speed) < 0.1f)
+                Speed = 0;
             else
-                speed -= Mathf.Sign(speed) * vehicleData.brakeAcceleration * Time.fixedDeltaTime;
+                Speed -= Mathf.Sign(Speed) * vehicleData.brakeAcceleration * Time.fixedDeltaTime;
             return;
         }
     }
@@ -105,9 +111,10 @@ public class VehicleController : MonoBehaviour {
             HandleBrake();
             return;
         }
-        acceleration = vehicleData.maxAcceleration * vehicleData.accelerationCurve.Evaluate(Utils.InverseLerpUnclamped(0, vehicleData.maxSpeed, speed));
-        speed += acceleration * Time.fixedDeltaTime;
+        acceleration = vehicleData.maxAcceleration * vehicleData.accelerationCurve.Evaluate(Utils.InverseLerpUnclamped(0, vehicleData.maxSpeed, Speed));
+        Speed += acceleration * Time.fixedDeltaTime;
     }
+
 
     #region  Debug
     public float debugAcceleration;
@@ -140,7 +147,6 @@ public class VehicleControllerEditor : Editor {
         if (GUILayout.Button("Initialize")) {
             vehicleController.Initialize();
         }
-
     }
 }
 
