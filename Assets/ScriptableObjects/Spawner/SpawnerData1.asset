@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc2319abfa508ec458658b03ed776d87, type: 3}
   m_Name: SpawnerData1
   m_EditorClassIdentifier: 
-  spawnFrequency: 7
+  spawnFrequency: 9
   frequencyVariation: 3
   vehicles:
   - vehicle: {fileID: 6834951405783043257, guid: cd3cecfeef1952a41943d7d927d1fdc1,
