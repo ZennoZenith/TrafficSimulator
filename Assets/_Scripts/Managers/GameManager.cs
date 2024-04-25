@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour {
 
     void Start() {
         Time.timeScale = gameSettings.timeScale;
+        Application.targetFrameRate = gameSettings.defaultTargetFrameRate;
         timeLeft = updateInterval;
         UpdateGameSpeedUI();
     }

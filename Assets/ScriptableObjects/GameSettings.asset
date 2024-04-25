@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb1855ac492903458ed042e55e91304, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
+  bufferTime: 120
+  defaultTargetFrameRate: 144
   timeScale: 2
   splineResolution: 10
   pathVectorY: 0
+  considerStopSpeed: 0.1
   frontRaySensorLength: 30
   numberOfHeuristicPoints: 1
   retrySpawnTime: 0
@@ -25,6 +28,8 @@ MonoBehaviour:
   showDebugPathfindingLines: 1
   showDebugMessage: 0
   defautGreenTime: 40
-  defautYellowTime: 5
+  defautYellowTime: 3
   greenMaterial: {fileID: 2100000, guid: 7883f2b4ee78fb04ea5ad8b275998414, type: 2}
   redMaterial: {fileID: 2100000, guid: af757dfe5edcb1741a9e0e6a3ef9279a, type: 2}
+  minGreenLightTime: 0
+  maxGreenLightTime: 0

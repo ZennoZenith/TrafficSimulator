@@ -113,18 +113,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0161bc46f8c18994c833d2ee2c9d1841, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vehicleType: {fileID: 11400000, guid: 5c18410eed8ebec48ac234f613856132, type: 2}
+  <VehicleType>k__BackingField: {fileID: 11400000, guid: 5c18410eed8ebec48ac234f613856132,
+    type: 2}
   gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
   vehicleController: {fileID: 3937444468051832230}
   frontRay: {fileID: 8940631981808613281}
   sideRay: {fileID: 4903757316849147583}
-  shortestPathNodes:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  <ShortestPathNodes>k__BackingField: []
   <GraphGenerator>k__BackingField: {fileID: 0}
-  currentNodeIndex: 0
   showDebugLines: 0
   fromNode: {fileID: 0}
   toNode: {fileID: 0}
@@ -142,7 +138,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UImanager: {fileID: 0}
   speedTextUI: {fileID: 0}
-  <VehicleDriverAI>k__BackingField: {fileID: 0}
+  <VehicleDriverAI>k__BackingField: {fileID: 473570593322093136}
   vehicleData: {fileID: 11400000, guid: 5c18410eed8ebec48ac234f613856132, type: 2}
   targetPosition: {x: 0, y: 0, z: 0}
   brakeState: 0

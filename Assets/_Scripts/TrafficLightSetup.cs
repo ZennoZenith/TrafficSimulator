@@ -9,6 +9,8 @@ public class TrafficLightSetup : MonoBehaviour {
     public struct Phase {
         public List<int> splineIndex;
         public float greenLightTime;
+        public float minGreenLightTime;
+        public float maxGreenLightTime;
     }
 
     [field: SerializeField] public RoadSetup RoadSetup { get; private set; }

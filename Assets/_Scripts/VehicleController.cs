@@ -38,7 +38,6 @@ public class VehicleController : MonoBehaviour {
     public bool Initialized { get; private set; } = false;
 
     private void Awake() {
-        gameObject.SetActive(false);
         if (VehicleDriverAI == null) {
             VehicleDriverAI = GetComponent<VehicleDriverAI>();
         }
@@ -49,7 +48,6 @@ public class VehicleController : MonoBehaviour {
     }
 
     public void Initialize() {
-        gameObject.SetActive(true);
         //vehicleDriverAI.Initialize();
         //pointsToFollow = vehicleDriverAI.PointsToFollow;
         Initialized = true;

@@ -247,6 +247,7 @@ GameObject:
   - component: {fileID: 473570593322093136}
   - component: {fileID: 3937444468051832230}
   - component: {fileID: 5170384109660141381}
+  - component: {fileID: -663395833776644089}
   m_Layer: 7
   m_Name: Vehicle1
   m_TagString: Vehicle
@@ -283,19 +284,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0161bc46f8c18994c833d2ee2c9d1841, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  vehicleType: {fileID: 11400000, guid: 5c18410eed8ebec48ac234f613856132, type: 2}
+  <VehicleType>k__BackingField: {fileID: 11400000, guid: 5c18410eed8ebec48ac234f613856132,
+    type: 2}
   gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
   vehicleController: {fileID: 3937444468051832230}
   frontRay: {fileID: 5543694189479784521}
-  frontRayLength: 30
   sideRay: {fileID: 6491575356514691585}
-  shortestPathNodes:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  <ShortestPathNodes>k__BackingField: []
   <GraphGenerator>k__BackingField: {fileID: 0}
-  currentNodeIndex: 0
   showDebugLines: 0
   fromNode: {fileID: 0}
   toNode: {fileID: 0}
@@ -313,7 +309,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UImanager: {fileID: 0}
   speedTextUI: {fileID: 0}
-  <VehicleDriverAI>k__BackingField: {fileID: 0}
+  <VehicleDriverAI>k__BackingField: {fileID: 473570593322093136}
   vehicleData: {fileID: 11400000, guid: 5c18410eed8ebec48ac234f613856132, type: 2}
   targetPosition: {x: 0, y: 0, z: 0}
   brakeState: 0
@@ -339,6 +335,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.0678961, y: 1.2906935, z: 5.2718678}
   m_Center: {x: 0, y: 0.81, z: 0.0013734102}
+--- !u!114 &-663395833776644089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6834951405783043257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0412085732782924093f4aca7801f1ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
 --- !u!1001 &7393163828220736764
 PrefabInstance:
   m_ObjectHideFlags: 0

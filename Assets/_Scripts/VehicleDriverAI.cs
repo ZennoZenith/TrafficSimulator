@@ -6,12 +6,12 @@ using UnityEngine;
 public class VehicleDriverAI : MonoBehaviour {
     //private (RoadSetup, RoadSetup, RoadSetup) graphNodeBuffer = (null, null, null);
 
-    [SerializeField] private VehicleDataScriptableObject vehicleType;
+    [field: SerializeField] public VehicleDataScriptableObject VehicleType { get; private set; }
     [SerializeField] private GameSettingsScriptableObject gameSettings;
     [SerializeField] private VehicleController vehicleController;
     [SerializeField] private Transform frontRay;
     [SerializeField] private Transform sideRay;
-    [SerializeField] private List<RoadSetup> shortestPathNodes;
+    [field: SerializeField] public List<RoadSetup> ShortestPathNodes { get; private set; }
     [field: SerializeField] public GraphGenerator GraphGenerator { get; private set; }
 
     public bool Initialized { get; private set; } = false;
@@ -24,7 +24,7 @@ public class VehicleDriverAI : MonoBehaviour {
     int pointsToFollowLength;
     int currentFollowingPointIndex;
     int shortestPathNodesLength;
-    int currentNodeIndex;
+    public int CurrentNodeIndex { get; private set; }
 
 
     [Header("Debug")]
@@ -59,20 +59,20 @@ public class VehicleDriverAI : MonoBehaviour {
             GraphGenerator = gg;
         }
 
-        shortestPathNodes = GraphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
+        ShortestPathNodes = GraphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
         //if (shortestPathNodes == null && gameSettings.showDebugMessage) {
-        if (shortestPathNodes == null) {
+        if (ShortestPathNodes == null) {
             Debug.Log($"No path found between {fromNode.transform.name} and {toNode.transform.name}.");
             DeInitialize();
             return;
         }
         PointsToFollow.Clear();
 
-        if (shortestPathNodes.Count < 2)
+        if (ShortestPathNodes.Count < 2)
             DeInitialize();
 
-        currentNodeIndex = 0;
-        shortestPathNodesLength = shortestPathNodes.Count;
+        CurrentNodeIndex = 0;
+        shortestPathNodesLength = ShortestPathNodes.Count;
         SetAllPathToFollowVectors();
         CalculateHeuristicSpeeds();
 
@@ -114,7 +114,7 @@ public class VehicleDriverAI : MonoBehaviour {
         // For first node
         //var found = shortestPathNodes[0].GetRouteFromConnectors(null, edgeData.FromRoadConnector);
         int numberOfPointsAdded = 0;
-        var found = shortestPathNodes[0].GetRouteFromToNode(null, shortestPathNodes[1]);
+        var found = ShortestPathNodes[0].GetRouteFromToNode(null, ShortestPathNodes[1]);
         if (found != null) {
             PointsToFollow.AddRange(found);
             numberOfPointsAdded += found.Count;
@@ -122,10 +122,10 @@ public class VehicleDriverAI : MonoBehaviour {
         }
 
         // For in between nodes
-        int len = shortestPathNodes.Count;
+        int len = ShortestPathNodes.Count;
         for (int i = 1; i < len - 1; i++) {
             //found = shortestPathNodes[i].GetRouteFromConnectors(previousEdge.ToRoadConnector, edgeData.FromRoadConnector);
-            found = shortestPathNodes[i].GetRouteFromToNode(shortestPathNodes[i - 1], shortestPathNodes[i + 1]);
+            found = ShortestPathNodes[i].GetRouteFromToNode(ShortestPathNodes[i - 1], ShortestPathNodes[i + 1]);
 
             if (found != null) {
                 PointsToFollow.AddRange(found);
@@ -136,7 +136,7 @@ public class VehicleDriverAI : MonoBehaviour {
         // -------------
 
         // For last node
-        found = shortestPathNodes[len - 1].GetRouteFromToNode(shortestPathNodes[len - 2], null);
+        found = ShortestPathNodes[len - 1].GetRouteFromToNode(ShortestPathNodes[len - 2], null);
         if (found != null) {
             PointsToFollow.AddRange(found);
             numberOfPointsAdded += found.Count;
@@ -152,10 +152,10 @@ public class VehicleDriverAI : MonoBehaviour {
     private void CalculateHeuristicSpeeds() {
         int i;
         for (i = 0; i < shortestPathNodesLength - gameSettings.numberOfHeuristicPoints; i++) {
-            float speed = shortestPathNodes[i].MaxAllowedSpeed;
+            float speed = ShortestPathNodes[i].MaxAllowedSpeed;
             // Heuristic calculation algorithm
             for (int j = 0; j < gameSettings.numberOfHeuristicPoints; j++) {
-                speed += Mathf.Clamp(shortestPathNodes[i + j + 1].MaxAllowedSpeed, 0, shortestPathNodes[i].MaxAllowedSpeed);
+                speed += Mathf.Clamp(ShortestPathNodes[i + j + 1].MaxAllowedSpeed, 0, ShortestPathNodes[i].MaxAllowedSpeed);
             }
             speed /= gameSettings.numberOfHeuristicPoints + 1;
             HeuristicMaxSpeed.Add(speed);
@@ -164,7 +164,7 @@ public class VehicleDriverAI : MonoBehaviour {
         for (; i < shortestPathNodesLength; i++) {
             float speed = 0;
             for (int j = i; j < shortestPathNodesLength; j++) {
-                speed += Mathf.Clamp(shortestPathNodes[j].MaxAllowedSpeed, 0, shortestPathNodes[i].MaxAllowedSpeed);
+                speed += Mathf.Clamp(ShortestPathNodes[j].MaxAllowedSpeed, 0, ShortestPathNodes[i].MaxAllowedSpeed);
             }
             speed /= shortestPathNodesLength - i;
             HeuristicMaxSpeed.Add(speed);
@@ -209,9 +209,9 @@ public class VehicleDriverAI : MonoBehaviour {
 
 
         while (currentFollowingPointIndex < pointsToFollowLength) {
-            if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < vehicleType.triggerDistance) {
+            if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < VehicleType.triggerDistance) {
                 currentFollowingPointIndex++;
-                currentNodeIndex = GetNodeIndexFromVectorIndex(currentFollowingPointIndex);
+                CurrentNodeIndex = GetNodeIndexFromVectorIndex(currentFollowingPointIndex);
             }
             else { break; }
 
@@ -226,7 +226,7 @@ public class VehicleDriverAI : MonoBehaviour {
         MoveDirectionCorrection();
         brakeState = CollisionCorrection();
 
-        return (inputVector, PointsToFollow[currentFollowingPointIndex], HeuristicMaxSpeed[currentNodeIndex], brakeState);
+        return (inputVector, PointsToFollow[currentFollowingPointIndex], HeuristicMaxSpeed[CurrentNodeIndex], brakeState);
     }
 
     float hitDistance;
@@ -302,17 +302,17 @@ public class VehicleDriverAI : MonoBehaviour {
         int intersectionNodeIndex;
         if (routeSplineIndex == -1) {
 
-            if (shortestPathNodes[currentNodeIndex].transform == hitTrafficSignal.transform) {
-                intersectionNodeIndex = currentNodeIndex;
+            if (ShortestPathNodes[CurrentNodeIndex].transform == hitTrafficSignal.transform) {
+                intersectionNodeIndex = CurrentNodeIndex;
             }
-            else if (shortestPathNodes[currentNodeIndex + 1].transform == hitTrafficSignal.transform) {
-                intersectionNodeIndex = currentNodeIndex + 1;
+            else if (ShortestPathNodes[CurrentNodeIndex + 1].transform == hitTrafficSignal.transform) {
+                intersectionNodeIndex = CurrentNodeIndex + 1;
             }
             else {
                 return BrakeState.NoBrake;
             }
 
-            routeSplineIndex = hitTrafficSignal.RoadSetup.GetSplineIndexFromToNode(shortestPathNodes[intersectionNodeIndex - 1], shortestPathNodes[intersectionNodeIndex + 1]);
+            routeSplineIndex = hitTrafficSignal.RoadSetup.GetSplineIndexFromToNode(ShortestPathNodes[intersectionNodeIndex - 1], ShortestPathNodes[intersectionNodeIndex + 1]);
 
         }
 
@@ -338,20 +338,6 @@ public class VehicleDriverAI : MonoBehaviour {
     }
 
 
-
-    //public bool TrafficLightDetection(out RaycastHit hit) {
-    //    // if (Physics.Raycast(item.rayOrigin.position, item.rayOrigin.forward, out hit, item.rayLength))
-    //    if (Physics.Raycast(
-    //      frontRay.position,
-    //      new Vector3(frontRay.forward.x, 0, frontRay.forward.z),
-    //      out hit,
-    //      frontRayLength,
-    //      LayerMask.GetMask("TrafficLight"))) {
-    //        return true;
-    //    }
-    //    return false;
-    //}
-
     private bool FrontCollisionDetection(out RaycastHit hit) {
 
         return Physics.BoxCast(
@@ -362,6 +348,16 @@ public class VehicleDriverAI : MonoBehaviour {
           frontRay.rotation,
           gameSettings.frontRaySensorLength,
           LayerMask.GetMask("TrafficLight", "Vehicle"));
+
+    }
+
+    internal float DistanceToTravel() {
+        float distance = 0f;
+        for (int i = 0; i < shortestPathNodesLength - 2; i++) {
+            distance += Vector3.Distance(ShortestPathNodes[i].transform.position, ShortestPathNodes[i + 1].transform.position);
+        }
+        return distance;
+
 
     }
 
