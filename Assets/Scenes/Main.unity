@@ -4215,10 +4215,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7288747118822431638, guid: 19b295b97371b504d91feefb6b26ff9f,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7796917750450249160, guid: 19b295b97371b504d91feefb6b26ff9f,
         type: 3}
       propertyPath: m_Name
       value: 4-Way-Type-1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7796917750450249160, guid: 19b295b97371b504d91feefb6b26ff9f,
+        type: 3}
+      propertyPath: m_TagString
+      value: TrafficSignal
       objectReference: {fileID: 0}
     - target: {fileID: 8429160714622012160, guid: 19b295b97371b504d91feefb6b26ff9f,
         type: 3}

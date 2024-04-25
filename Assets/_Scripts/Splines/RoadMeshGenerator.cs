@@ -43,17 +43,6 @@ public class RoadMeshGenerator : MonoBehaviour {
         BuildMesh();
     }
 
-    private void OnDrawGizmosSelected() {
-        if (!Application.isPlaying)
-            return;
-
-        for (int i = 0; i < vertsP1.Count; i++) {
-            Handles.SphereHandleCap(0, transform.TransformPoint(vertsP1[i]), Quaternion.identity, 0.5f, EventType.Repaint);
-            Handles.SphereHandleCap(0, transform.TransformPoint(vertsP2[i]), Quaternion.identity, 0.5f, EventType.Repaint);
-            Handles.DrawLine(transform.TransformPoint(vertsP1[i]), transform.TransformPoint(vertsP2[i]));
-        }
-
-    }
 
     private void SetVerts() {
         vertsP1 = new List<Vector3>();
@@ -123,4 +112,21 @@ public class RoadMeshGenerator : MonoBehaviour {
         BuildMesh();
     }
 
+
+
+    #region debug
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected() {
+        if (!Application.isPlaying)
+            return;
+
+        for (int i = 0; i < vertsP1.Count; i++) {
+            Handles.SphereHandleCap(0, transform.TransformPoint(vertsP1[i]), Quaternion.identity, 0.5f, EventType.Repaint);
+            Handles.SphereHandleCap(0, transform.TransformPoint(vertsP2[i]), Quaternion.identity, 0.5f, EventType.Repaint);
+            Handles.DrawLine(transform.TransformPoint(vertsP1[i]), transform.TransformPoint(vertsP2[i]));
+        }
+
+    }
+#endif
+    #endregion
 }

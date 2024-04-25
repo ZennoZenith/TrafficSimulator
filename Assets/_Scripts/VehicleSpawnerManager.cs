@@ -23,7 +23,6 @@ public class VehicleSpawnerManager : MonoBehaviour {
     private void Start() {
         foreach (var spawnerInfo in Spawners) {
             StartCoroutine(SpawnCorouting(spawnerInfo));
-            break;
         }
 
     }

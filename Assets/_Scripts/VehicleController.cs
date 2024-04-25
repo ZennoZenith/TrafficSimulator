@@ -112,6 +112,10 @@ public class VehicleController : MonoBehaviour {
             Speed -= Mathf.Sign(Speed) * vehicleData.brakeAcceleration * 10 * Time.fixedDeltaTime;
             return;
         }
+        if (brakeState == BrakeState.EmergencyBrake) {
+            Speed = 0;
+            return;
+        }
     }
 
     void CalculateSpeed() {

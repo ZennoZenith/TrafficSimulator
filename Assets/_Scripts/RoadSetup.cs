@@ -223,6 +223,51 @@ public class RoadSetup : MonoBehaviour {
         return null;
     }
 
+    public int GetSplineIndexFromToNode(RoadSetup fromNode, RoadSetup toNode) {
+        if (fromNode == null && toNode == null)
+            return -1;
+
+        if (fromNode == null && toNode != null) {
+            foreach (var route in routesMap) {
+                if (route.to.AdjecentRoadConnector == null)
+                    continue;
+                if (route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
+                    int splineIndex = route.routes[0].splineIndex;
+                    return splineIndex;
+                }
+            }
+            return -1;
+        }
+
+        if (fromNode != null && toNode == null) {
+            foreach (var route in routesMap) {
+                if (route.from.AdjecentRoadConnector == null)
+                    continue;
+                if (route.from.AdjecentRoadConnector.ParentRoadSetup == fromNode) {
+                    int splineIndex = route.routes[0].splineIndex;
+                    return splineIndex;
+                }
+            }
+            return -1;
+        }
+
+        foreach (var route in routesMap) {
+            if (route.from.AdjecentRoadConnector == null)
+                continue;
+            if (route.to.AdjecentRoadConnector == null)
+                continue;
+            if (route.from.AdjecentRoadConnector.ParentRoadSetup == fromNode
+                && route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
+                int splineIndex = route.routes[MaxIndex(route.routes)].splineIndex;
+                //return routesAsVectors[route.routes.Max(t => t.priority)];
+                return splineIndex;
+
+            }
+        }
+
+        return -1;
+    }
+
     private int MaxIndex(RoutesPriorities[] route) {
         int max = 0;
         int maxIndex = 0;

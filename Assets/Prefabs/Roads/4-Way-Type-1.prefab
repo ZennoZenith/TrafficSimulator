@@ -575,7 +575,7 @@ GameObject:
   - component: {fileID: 8429160714622012160}
   m_Layer: 9
   m_Name: 4-Way-Type-1
-  m_TagString: Untagged
+  m_TagString: TrafficSignal
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -613,7 +613,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -1460,6 +1460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roadSetup: {fileID: 5089281458586516534}
+  gameSettings: {fileID: 0}
   LineRendererPrefab: {fileID: 769990336258863450, guid: c19da70a51fc11c4f8afaa6038f1a03a,
     type: 3}
   TimingUI: {fileID: 0}

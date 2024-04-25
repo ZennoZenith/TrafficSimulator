@@ -34,7 +34,7 @@ public class VehicleDriverAI : MonoBehaviour {
 
     private int ignoreLayer;
     private void Awake() {
-        ignoreLayer = ~LayerMask.GetMask("TrafficLight", "Ignore Raycast", "RoadConnector");
+        ignoreLayer = ~LayerMask.GetMask("Ignore Raycast", "RoadConnector");
         vehicleController = GetComponent<VehicleController>();
     }
 
@@ -230,7 +230,6 @@ public class VehicleDriverAI : MonoBehaviour {
     }
 
     float hitDistance;
-    Transform hitTransform;
     RaycastHit hit;
     //float previousRelativeVelocity;
     //float previousHitTime;
@@ -246,10 +245,11 @@ public class VehicleDriverAI : MonoBehaviour {
         if (hitTransform.TryGetComponent<VehicleController>(out var hitVehicle)) {
             return HandleVehicleCollision(hitVehicle);
         }
+        if (hitTransform.TryGetComponent<TrafficLightSetup>(out var hitTrafficSignal)) {
+            return HandleTrafficLightCollision(hitTrafficSignal);
+        }
 
-        return HandleTrafficLightCollision();
-
-        //hit.transform
+        return BrakeState.NoBrake;
     }
 
     private void MoveDirectionCorrection() {
@@ -257,17 +257,72 @@ public class VehicleDriverAI : MonoBehaviour {
     }
 
     private BrakeState HandleVehicleCollision(VehicleController hitVehicle) {
+        // Set to -1 means that most recent collision occured with vehicle
+        routeSplineIndex = -1;
+
+
         hitDistance = hit.distance;
+        float dot = Vector3.Dot(hitVehicle.transform.forward, frontRay.transform.forward);
+
+        // if angle btw this and hit vehicle is grater than 90+ then ignore collision
+        if (dot < -0.2f) {
+            return BrakeState.NoBrake;
+        }
+
+
         Vector3 relativeVector = (hitVehicle.transform.forward * hitVehicle.Speed) - (frontRay.transform.forward * vehicleController.Speed);
-        //float dot = Vector3.Dot(hitVehicle.transform.forward * hitVehicle.Speed, frontRay.transform.forward * vehicleController.Speed);
         float relativeVelocity = Vector3.Dot(relativeVector, frontRay.transform.forward);
         //float relativeVelocity = hitVehicle.Speed - dot * vehicleController.Speed;
         //Debug.Log(relativeVelocity);
 
-        if (hitVehicle.Speed < 0.2f && hitDistance < 1f) {
+        if (hitDistance < 0.1f) {
+            return BrakeState.EmergencyBrake;
+        }
+
+        if (hitVehicle.Speed < 0.2f && hitDistance < 0.2f) {
             return BrakeState.HandBrake;
         }
 
+        // if following vehicle is > 8 meters away
+        if (hitDistance < 1f && relativeVelocity < 1f) {
+            return BrakeState.HandBrake;
+        }
+        else if (hitDistance < 15f && relativeVelocity < -3f) {
+            return BrakeState.Brake;
+        }
+        else if (hitDistance < 20f && relativeVelocity < -5f) {
+            return BrakeState.Brake;
+        }
+
+        return BrakeState.NoBrake;
+    }
+
+    int routeSplineIndex = -1;
+    private BrakeState HandleTrafficLightCollision(TrafficLightSetup hitTrafficSignal) {
+        int intersectionNodeIndex;
+        if (routeSplineIndex == -1) {
+
+            if (shortestPathNodes[currentNodeIndex].transform == hitTrafficSignal.transform) {
+                intersectionNodeIndex = currentNodeIndex;
+            }
+            else if (shortestPathNodes[currentNodeIndex + 1].transform == hitTrafficSignal.transform) {
+                intersectionNodeIndex = currentNodeIndex + 1;
+            }
+            else {
+                return BrakeState.NoBrake;
+            }
+
+            routeSplineIndex = hitTrafficSignal.RoadSetup.GetSplineIndexFromToNode(shortestPathNodes[intersectionNodeIndex - 1], shortestPathNodes[intersectionNodeIndex + 1]);
+
+        }
+
+        /// hitTrafficSignal.GetPhaseFromSplineIndex(routeSplineIndex) returns number of seconds remaining for changing signal
+        if (routeSplineIndex == -1 || hitTrafficSignal.GetPhaseFromSplineIndex(routeSplineIndex) > 1) {
+            return BrakeState.NoBrake;
+        }
+
+        hitDistance = hit.distance;
+        float relativeVelocity = -vehicleController.Speed;
         // if following vehicle is > 8 meters away
         if (hitDistance < 0.5f && relativeVelocity < 1f) {
             return BrakeState.HandBrake;
@@ -281,9 +336,8 @@ public class VehicleDriverAI : MonoBehaviour {
 
         return BrakeState.NoBrake;
     }
-    private BrakeState HandleTrafficLightCollision() {
-        return BrakeState.NoBrake;
-    }
+
+
 
     //public bool TrafficLightDetection(out RaycastHit hit) {
     //    // if (Physics.Raycast(item.rayOrigin.position, item.rayOrigin.forward, out hit, item.rayLength))
@@ -333,6 +387,7 @@ public class VehicleDriverAI : MonoBehaviour {
             // ----------------------------------------------------------------
             Gizmos.color = Color.red;
             bool m_HitDetect = Physics.BoxCast(frontRay.position, frontRay.localScale / 2, new Vector3(frontRay.forward.x, 0, frontRay.forward.z), out RaycastHit m_Hit, frontRay.rotation, gameSettings.frontRaySensorLength, ignoreLayer);
+            //bool m_HitDetect = Physics.BoxCast(frontRay.position, frontRay.localScale / 2, new Vector3(frontRay.forward.x, 0, frontRay.forward.z), out RaycastHit m_Hit, frontRay.rotation, 30, ignoreLayer);
 
             //Check if there has been a hit yet
             if (m_HitDetect) {
@@ -343,6 +398,7 @@ public class VehicleDriverAI : MonoBehaviour {
             }
 
             Gizmos.DrawRay(frontRay.position, frontRay.forward * gameSettings.frontRaySensorLength);
+            //Gizmos.DrawRay(frontRay.position, frontRay.forward * 30);
         }
     }
 
@@ -357,10 +413,9 @@ public class VehicleDriverAI : MonoBehaviour {
             Vector3 p2 = shortestPathNodes[i + 1].transform.position;
             //Debug.Log(shortestPathNodes[i].name);
 
-            float thickness = 3f;
             // Handles.Label((p1 + p2) / 2, $"{weights[i]}");
 #if UNITY_EDITOR
-
+            float thickness = 3f;
             Handles.DrawBezier(p1, p2, p1, p2, Color.magenta, null, thickness);
 #endif
         }

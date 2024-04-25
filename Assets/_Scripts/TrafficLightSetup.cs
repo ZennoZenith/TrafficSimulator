@@ -11,7 +11,7 @@ public class TrafficLightSetup : MonoBehaviour {
         public float greenLightTime;
     }
 
-    [SerializeField] private RoadSetup roadSetup;
+    [field: SerializeField] public RoadSetup RoadSetup { get; private set; }
     [SerializeField] private GameSettingsScriptableObject gameSettings;
     [SerializeField] private GameObject LineRendererPrefab;
     [SerializeField] private TextMeshProUGUI TimingUI;
@@ -22,7 +22,7 @@ public class TrafficLightSetup : MonoBehaviour {
     [field: SerializeField] public int PreviousPhaseIndex { get; private set; }
 
     private void Awake() {
-        roadSetup = GetComponent<RoadSetup>();
+        RoadSetup = GetComponent<RoadSetup>();
     }
     void Start() {
         CurrentPhaseIndex = 0;
@@ -37,15 +37,15 @@ public class TrafficLightSetup : MonoBehaviour {
     private List<LineRenderer> lineRenderers;
     void SetupLineRenderer() {
         lineRenderers = new();
-        for (int i = 0; i < roadSetup.RoutesAsVectors.Count; i++) {
+        for (int i = 0; i < RoadSetup.RoutesAsVectors.Count; i++) {
             var t = Instantiate(LineRendererPrefab).transform;
             t.SetParent(transform);
 
             lineRenderers.Add(t.GetComponent<LineRenderer>());
             lineRenderers[i].material = gameSettings.redMaterial;
-            lineRenderers[i].positionCount = roadSetup.RoutesAsVectors[i].Count;
-            for (int j = 0; j < roadSetup.RoutesAsVectors[i].Count; j++) {
-                lineRenderers[i].SetPosition(j, roadSetup.RoutesAsVectors[i][j]);
+            lineRenderers[i].positionCount = RoadSetup.RoutesAsVectors[i].Count;
+            for (int j = 0; j < RoadSetup.RoutesAsVectors[i].Count; j++) {
+                lineRenderers[i].SetPosition(j, RoadSetup.RoutesAsVectors[i][j]);
             }
 
         }
@@ -89,6 +89,13 @@ public class TrafficLightSetup : MonoBehaviour {
         foreach (var splineIndex in Phases[CurrentPhaseIndex].splineIndex) {
             lineRenderers[splineIndex].material = gameSettings.greenMaterial;
         }
+    }
+
+    public float GetPhaseFromSplineIndex(int splineIndex) {
+        foreach (var sp in Phases[CurrentPhaseIndex].splineIndex) {
+            if (sp == splineIndex) return Phases[CurrentPhaseIndex].greenLightTime - timePassed;
+        }
+        return -1;
     }
 
 
