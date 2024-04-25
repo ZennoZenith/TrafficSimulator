@@ -14,6 +14,7 @@ public class VehicleSpawnerManager : MonoBehaviour {
     [field: SerializeField] public SpawnerInfo[] Spawners { get; private set; }
     [field: SerializeField] public RoadSetup[] Despawners { get; private set; }
     [SerializeField] private GameSettingsScriptableObject gameSettings;
+
     private GraphGenerator graphGenerator;
 
     private void Awake() {
@@ -79,7 +80,8 @@ public class VehicleSpawnerManager : MonoBehaviour {
             return null;
         }
 
-        GameObject vehicle = Instantiate(vehicles[spawnVehicleIndex].vehicle, fromRoad.transform.position, Quaternion.identity);
+        //GameObject vehicle = Instantiate(vehicles[spawnVehicleIndex].vehicle, fromRoad.transform.position, Quaternion.identity);
+        GameObject vehicle = ObjectPoolManager.SpawnObject(vehicles[spawnVehicleIndex].vehicle, ObjectPoolManager.PoolType.GameObject);
 
         VehicleController vc = vehicle.GetComponent<VehicleController>();
 

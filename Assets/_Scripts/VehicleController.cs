@@ -57,7 +57,8 @@ public class VehicleController : MonoBehaviour {
 
     public void DeInitialize() {
         Initialized = false;
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
+        ObjectPoolManager.ReturnObjectToPool(gameObject);
     }
 
     private void FixedUpdate() {

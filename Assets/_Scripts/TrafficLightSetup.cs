@@ -14,7 +14,7 @@ public class TrafficLightSetup : MonoBehaviour {
     [field: SerializeField] public RoadSetup RoadSetup { get; private set; }
     [SerializeField] private GameSettingsScriptableObject gameSettings;
     [SerializeField] private GameObject LineRendererPrefab;
-    [SerializeField] private TextMeshProUGUI TimingUI;
+    [SerializeField] private TextMeshPro TimingUI;
     [field: SerializeField] public Phase[] Phases { get; private set; }
 
 

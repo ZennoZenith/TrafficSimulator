@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb1855ac492903458ed042e55e91304, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
+  timeScale: 2
   splineResolution: 10
   pathVectorY: 0
   frontRaySensorLength: 30
