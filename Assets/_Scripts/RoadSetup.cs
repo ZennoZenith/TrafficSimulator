@@ -41,7 +41,7 @@ public class RoadSetup : MonoBehaviour {
     [SerializeField] private RoadConnector[] incomming;
     [SerializeField] private RoadConnector[] outgoing;
     [SerializeField] private RoutesMap[] routesMap;
-    private readonly List<List<Vector3>> routesAsVectors = new();
+    public List<List<Vector3>> RoutesAsVectors { get; private set; } = new();
     public bool Initialized { get; private set; } = false;
     public List<RoadSetup> ReachableNodes { get; private set; } = new();
 
@@ -100,13 +100,13 @@ public class RoadSetup : MonoBehaviour {
         if (overrideSplineResolution)
             resolution = overridenSplineResolution;
 
-        routesAsVectors.Clear();
+        RoutesAsVectors.Clear();
         for (int i = 0; i < numberOfSplines; i++) {
-            routesAsVectors.Add(new List<Vector3> { SetVectorY(splineContainer.EvaluatePosition(i, 0)) });
+            RoutesAsVectors.Add(new List<Vector3> { SetVectorY(splineContainer.EvaluatePosition(i, 0)) });
             for (int j = 1; j <= resolution; j++) {
-                routesAsVectors[i].Add(SetVectorY(splineContainer.EvaluatePosition(i, (float)j / (resolution + 1))));
+                RoutesAsVectors[i].Add(SetVectorY(splineContainer.EvaluatePosition(i, (float)j / (resolution + 1))));
             }
-            routesAsVectors[i].Add(SetVectorY(splineContainer.EvaluatePosition(i, 1)));
+            RoutesAsVectors[i].Add(SetVectorY(splineContainer.EvaluatePosition(i, 1)));
         }
     }
 
@@ -188,7 +188,7 @@ public class RoadSetup : MonoBehaviour {
                     continue;
                 if (route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
                     int splineIndex = route.routes[0].splineIndex;
-                    return routesAsVectors[splineIndex];
+                    return RoutesAsVectors[splineIndex];
                 }
             }
             return null;
@@ -200,7 +200,7 @@ public class RoadSetup : MonoBehaviour {
                     continue;
                 if (route.from.AdjecentRoadConnector.ParentRoadSetup == fromNode) {
                     int splineIndex = route.routes[0].splineIndex;
-                    return routesAsVectors[splineIndex];
+                    return RoutesAsVectors[splineIndex];
                 }
             }
             return null;
@@ -215,7 +215,7 @@ public class RoadSetup : MonoBehaviour {
                 && route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
                 int splineIndex = route.routes[MaxIndex(route.routes)].splineIndex;
                 //return routesAsVectors[route.routes.Max(t => t.priority)];
-                return routesAsVectors[splineIndex];
+                return RoutesAsVectors[splineIndex];
 
             }
         }

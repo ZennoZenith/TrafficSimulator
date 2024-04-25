@@ -24,4 +24,12 @@ public class GameSettingsScriptableObject : ScriptableObject {
     public bool showDebugPathfindingLines;
     public bool showDebugMessage;
 
+    [Header("Trafic Signal Timings")]
+    public float defautGreenTime;
+    public float defautYellowTime;
+    public Material greenMaterial;
+    public Material redMaterial;
+    //public float defautRedTime;
+
+
 }
