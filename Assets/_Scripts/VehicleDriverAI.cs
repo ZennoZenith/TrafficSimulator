@@ -317,6 +317,9 @@ public class VehicleDriverAI : MonoBehaviour {
         }
 
         /// hitTrafficSignal.GetPhaseFromSplineIndex(routeSplineIndex) returns number of seconds remaining for changing signal
+        if (routeSplineIndex == -1)
+            Debug.Log("route index was 1", this.transform);
+
         if (routeSplineIndex == -1 || hitTrafficSignal.GetPhaseFromSplineIndex(routeSplineIndex) > 1) {
             return BrakeState.NoBrake;
         }

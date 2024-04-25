@@ -23,27 +23,29 @@ public class StoreData : SingletonPersistent<MonoBehaviour> {
 
     //[MenuItem("Tools/Write file")]
     public static void WriteString(string dataToWrite, string fileName = null) {
-        if (Time.time < bufferTime) {
-            return;
-        }
-
         if (string.IsNullOrEmpty(fileName)) {
             fileName = "Unknown";
-        }
-
-        if (fileNamesWritten.FindIndex(v => fileName == v) == -1) {
-            if (fileName == "vehicle")
-                dataToWrite = $"vehicleName,TotalWaitTime,TotalDistanceTraveled,TotalTimeTaken\n{dataToWrite}";
-            if (fileName == "intersection_wait_time")
-                dataToWrite = $"intersectionName,vehicleName,waitTime";
-            fileNamesWritten.Add(fileName);
         }
 
         //Write some text to the file.txt file
         string path = $"{PATH}{fileNameBase}_{fileName}.csv";
         StreamWriter writer = new(path, append: true);
+        if (fileNamesWritten.FindIndex(v => fileName == v) == -1) {
+            string headerData = "header";
+            if (fileName == "vehicle")
+                headerData = $"vehicleName,TotalWaitTime(sec),TotalDistanceTraveled(meter),TotalTimeTaken(sec),AvgSpeed(kmph)";
+            if (fileName == "intersection_wait_time")
+                headerData = $"intersectionName,vehicleName,waitTime";
+            fileNamesWritten.Add(fileName);
+            writer.WriteLine(headerData);
+        }
 
-        writer.WriteLine(dataToWrite);
+
+
+        if (Time.time > bufferTime) {
+            writer.WriteLine(dataToWrite);
+        }
+
         writer.Flush();
         writer.Close();
 
@@ -67,7 +69,7 @@ public class StoreData : SingletonPersistent<MonoBehaviour> {
 
 
     public static void WriteVehicleRuntimeData(VehicleRuntimeData data) {
-        string dataToWrite = $"{data.vehicleName},{data.TotalWaitTime},{Math.Round(data.TotalDistanceTraveled, 2)},{data.TotalTimeTaken}";
+        string dataToWrite = $"{data.vehicleName},{data.TotalWaitTime},{Math.Round(data.TotalDistanceTraveled, 2)},{data.TotalTimeTaken},{Math.Round((data.TotalDistanceTraveled / data.TotalTimeTaken) / 3.6f, 2)}";
         WriteString(dataToWrite, "vehicle");
     }
 
@@ -81,6 +83,8 @@ public class StoreData : SingletonPersistent<MonoBehaviour> {
         fileNameBase = DateTime.Now.ToString("ddMMyyyy_HH-mm-ss");
         Directory.CreateDirectory(Application.streamingAssetsPath + "/Runtime_Data/");
     }
+
+
 }
 
 
