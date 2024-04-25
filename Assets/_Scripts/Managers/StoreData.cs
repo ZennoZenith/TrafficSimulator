@@ -34,8 +34,10 @@ public class StoreData : SingletonPersistent<MonoBehaviour> {
             string headerData = "header";
             if (fileName == "vehicle")
                 headerData = $"vehicleName,TotalWaitTime(sec),TotalDistanceTraveled(meter),TotalTimeTaken(sec),AvgSpeed(kmph)";
-            if (fileName == "intersection_wait_time")
+            else if (fileName == "intersection_wait_time")
                 headerData = $"intersectionName,vehicleName,waitTime";
+            else if (fileName == "intersection_throughput")
+                headerData = $"intersectionName,throughput";
             fileNamesWritten.Add(fileName);
             writer.WriteLine(headerData);
         }
@@ -69,13 +71,17 @@ public class StoreData : SingletonPersistent<MonoBehaviour> {
 
 
     public static void WriteVehicleRuntimeData(VehicleRuntimeData data) {
-        string dataToWrite = $"{data.vehicleName},{data.TotalWaitTime},{Math.Round(data.TotalDistanceTraveled, 2)},{data.TotalTimeTaken},{Math.Round((data.TotalDistanceTraveled / data.TotalTimeTaken) / 3.6f, 2)}";
+        string dataToWrite = $"{data.vehicleName},{data.TotalWaitTime},{Math.Round(data.TotalDistanceTraveled, 2)},{data.TotalTimeTaken},{Math.Round((data.TotalDistanceTraveled / data.TotalTimeTaken) * 3.6f, 2)}";
         WriteString(dataToWrite, "vehicle");
     }
 
     public static void WriteIntesectionWaitTime(string intersectionName, string vehicleName, int waitTime) {
         string dataToWrite = $"{intersectionName},{vehicleName},{waitTime}";
         WriteString(dataToWrite, "intersection_wait_time");
+    }
+    public static void WriteIntesectionThroughput(string intersectionName, int throughput) {
+        string dataToWrite = $"{intersectionName},{throughput}";
+        WriteString(dataToWrite, "intersection_throughput");
     }
 
     [RuntimeInitializeOnLoadMethod]
