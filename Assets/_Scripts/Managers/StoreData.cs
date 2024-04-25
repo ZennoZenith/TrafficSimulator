@@ -79,6 +79,7 @@ public class StoreData : SingletonPersistent<MonoBehaviour> {
     [RuntimeInitializeOnLoadMethod]
     private static void Initialize() {
         fileNameBase = DateTime.Now.ToString("ddMMyyyy_HH-mm-ss");
+        Directory.CreateDirectory(Application.streamingAssetsPath + "/Runtime_Data/");
     }
 }
 

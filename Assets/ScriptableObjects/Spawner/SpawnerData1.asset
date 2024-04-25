@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc2319abfa508ec458658b03ed776d87, type: 3}
   m_Name: SpawnerData1
   m_EditorClassIdentifier: 
-  spawnFrequency: 30
-  frequencyVariation: 5
+  spawnFrequency: 7
+  frequencyVariation: 3
   vehicles:
   - vehicle: {fileID: 6834951405783043257, guid: cd3cecfeef1952a41943d7d927d1fdc1,
       type: 3}
@@ -22,5 +22,14 @@ MonoBehaviour:
       type: 3}
     frequency: 1
   - vehicle: {fileID: 6834951405783043257, guid: 22a9b7f97d705334e916fd6ad5ab88b7,
+      type: 3}
+    frequency: 1
+  - vehicle: {fileID: 6834951405783043257, guid: 5a0c124a227559140adb0016358df33f,
+      type: 3}
+    frequency: 1
+  - vehicle: {fileID: 6834951405783043257, guid: 3d552d721dc61e34f951a3a7cf6539dd,
+      type: 3}
+    frequency: 1
+  - vehicle: {fileID: 6834951405783043257, guid: afcefa7f7a79add4eb36a8f76242ca9c,
       type: 3}
     frequency: 1
