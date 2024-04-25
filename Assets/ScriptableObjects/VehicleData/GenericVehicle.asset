@@ -15,7 +15,7 @@ MonoBehaviour:
   mass: 1000
   maxSpeed: 20
   maxAcceleration: 5
-  brakeAcceleration: 5
+  brakeAcceleration: 10
   turnSpeed: 0.2
   triggerDistance: 1
   accelerationCurve:

@@ -103,6 +103,37 @@ MonoBehaviour:
   detectionSphereRadius: 1
   <AdjecentRoadConnector>k__BackingField: {fileID: 0}
   <roadConnectorType>k__BackingField: 0
+--- !u!1 &5392172191067843418
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6929882056155385375}
+  m_Layer: 0
+  m_Name: SP2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6929882056155385375
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5392172191067843418}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: 0.93520963, z: -0, w: 0.35409456}
+  m_LocalPosition: {x: -15.3, y: 0, z: 3.69}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8448483960112534847}
+  m_LocalEulerAnglesHint: {x: 0, y: 138.524, z: 0}
 --- !u!1 &5426086232171192742
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,6 +274,37 @@ MonoBehaviour:
   detectionSphereRadius: 1
   <AdjecentRoadConnector>k__BackingField: {fileID: 0}
   <roadConnectorType>k__BackingField: 0
+--- !u!1 &6374887802462588717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6104117514602422683}
+  m_Layer: 0
+  m_Name: SP1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6104117514602422683
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6374887802462588717}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.4397543, z: -0, w: 0.89811814}
+  m_LocalPosition: {x: 16.25, y: 0, z: -5.35}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8448483960112534847}
+  m_LocalEulerAnglesHint: {x: 0, y: -52.176, z: 0}
 --- !u!1 &7687596269843434590
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,6 +371,7 @@ Transform:
   m_Children:
   - {fileID: 2013798674348572681}
   - {fileID: 3435554258749365272}
+  - {fileID: 8448483960112534847}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8209699488292506040
@@ -459,6 +522,11 @@ MonoBehaviour:
   roadType: {fileID: 11400000, guid: 3e444fad0df884b4c89d8c16e9bb896c, type: 2}
   <MaxAllowedSpeed>k__BackingField: 20
   splineContainer: {fileID: 8209699488292506040}
+  overridenSplineResolution: 50
+  overrideSplineResolution: 0
+  <SpawnPoints>k__BackingField:
+  - {fileID: 6104117514602422683}
+  - {fileID: 6929882056155385375}
   incomming:
   - {fileID: 7470040772191034507}
   - {fileID: 4834353892871475802}
@@ -476,6 +544,39 @@ MonoBehaviour:
     routes:
     - splineIndex: 1
       priority: 1
+--- !u!1 &8322271368581211791
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8448483960112534847}
+  m_Layer: 0
+  m_Name: SpawnPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8448483960112534847
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8322271368581211791}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6104117514602422683}
+  - {fileID: 6929882056155385375}
+  m_Father: {fileID: 5706246364762786797}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8655426422561103949
 GameObject:
   m_ObjectHideFlags: 0

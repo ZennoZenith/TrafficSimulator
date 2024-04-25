@@ -14,8 +14,8 @@ TagManager:
   - UI
   - RoadConnector
   - Vehicle
-  - 
-  - 
+  - IgnoreRaycast
+  - TrafficLight
   - 
   - 
   - 

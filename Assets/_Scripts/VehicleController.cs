@@ -38,6 +38,7 @@ public class VehicleController : MonoBehaviour {
     public bool Initialized { get; private set; } = false;
 
     private void Awake() {
+        gameObject.SetActive(false);
         if (VehicleDriverAI == null) {
             VehicleDriverAI = GetComponent<VehicleDriverAI>();
         }
@@ -48,14 +49,15 @@ public class VehicleController : MonoBehaviour {
     }
 
     public void Initialize() {
+        gameObject.SetActive(true);
         //vehicleDriverAI.Initialize();
         //pointsToFollow = vehicleDriverAI.PointsToFollow;
         Initialized = true;
     }
 
     public void DeInitialize() {
-
         Initialized = false;
+        gameObject.SetActive(false);
     }
 
     private void FixedUpdate() {
@@ -96,11 +98,18 @@ public class VehicleController : MonoBehaviour {
     }
 
     private void HandleBrake() {
+        //if (Mathf.Abs(Speed) < 0.5f) {
+        // If Abs is not in use means that vehicle cannot have negative speed;
+        if (Speed < 0.1f) {
+            Speed = 0;
+            return;
+        }
         if (brakeState == BrakeState.Brake) {
-            if (Mathf.Abs(Speed) < 0.1f)
-                Speed = 0;
-            else
-                Speed -= Mathf.Sign(Speed) * vehicleData.brakeAcceleration * Time.fixedDeltaTime;
+            Speed -= Mathf.Sign(Speed) * vehicleData.brakeAcceleration * Time.fixedDeltaTime;
+            return;
+        }
+        if (brakeState == BrakeState.HandBrake) {
+            Speed -= Mathf.Sign(Speed) * vehicleData.brakeAcceleration * 10 * Time.fixedDeltaTime;
             return;
         }
     }
@@ -110,23 +119,17 @@ public class VehicleController : MonoBehaviour {
             HandleBrake();
             return;
         }
+        // Supposing speed cannot be negative
+        if (Speed < 0f) {
+            Speed = 0;
+            return;
+        }
         acceleration = vehicleData.maxAcceleration * vehicleData.accelerationCurve.Evaluate(Utils.InverseLerpUnclamped(0, vehicleData.maxSpeed, Speed));
         Speed += acceleration * Time.fixedDeltaTime;
     }
 
 
     #region  Debug
-    public float debugAcceleration;
-
-    [Range(-10f, 30f)]
-    public float debugSpeed;
-    private void OnDrawGizmosSelected() {
-        debugAcceleration = vehicleData.accelerationCurve.Evaluate(Utils.InverseLerpUnclamped(0, vehicleData.maxSpeed, debugSpeed));
-        //debugAcceleration = Utils.InverseLerpUnclamped(0, vehicleData.maxSpeed, debugSpeed);
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(transform.position, InputVector * 10);
-    }
     #endregion
 
 }

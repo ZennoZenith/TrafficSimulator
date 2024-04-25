@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   splineResolution: 10
-  pathVectorY: 0.5
+  pathVectorY: 0
+  frontRaySensorLength: 30
   numberOfHeuristicPoints: 1
   retrySpawnTime: 0
   showGraphNode: 1

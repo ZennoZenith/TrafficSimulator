@@ -5,6 +5,8 @@ public class GameSettingsScriptableObject : ScriptableObject {
     public int splineResolution;
     public float pathVectorY;
 
+    public float frontRaySensorLength;
+
     [Tooltip("Number of next points to consider for heuristic calculation")]
     public int numberOfHeuristicPoints;
 

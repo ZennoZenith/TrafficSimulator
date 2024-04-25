@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Splines;
 
 
 public class VehicleDriverAI : MonoBehaviour {
@@ -11,11 +8,14 @@ public class VehicleDriverAI : MonoBehaviour {
 
     [SerializeField] private VehicleDataScriptableObject vehicleType;
     [SerializeField] private GameSettingsScriptableObject gameSettings;
-    [SerializeField] private Transform carFrontPosition;
+    [SerializeField] private VehicleController vehicleController;
+    [SerializeField] private Transform frontRay;
+    [SerializeField] private Transform sideRay;
     [SerializeField] private List<RoadSetup> shortestPathNodes;
     [field: SerializeField] public GraphGenerator GraphGenerator { get; private set; }
 
     public bool Initialized { get; private set; } = false;
+    public Vector3 SpawnedAt { get; private set; }
 
     public List<Vector3> PointsToFollow { get; private set; } = new();
     public List<int> PointsToNodesIndex { get; private set; } = new();
@@ -24,13 +24,25 @@ public class VehicleDriverAI : MonoBehaviour {
     int pointsToFollowLength;
     int currentFollowingPointIndex;
     int shortestPathNodesLength;
-    public int currentNodeIndex;
+    int currentNodeIndex;
 
 
     [Header("Debug")]
     public bool showDebugLines;
     public RoadSetup fromNode;
     public RoadSetup toNode;
+
+    private int ignoreLayer;
+    private void Awake() {
+        ignoreLayer = ~LayerMask.GetMask("TrafficLight", "Ignore Raycast", "RoadConnector");
+        vehicleController = GetComponent<VehicleController>();
+    }
+
+    //- TODO: remove
+    private void Start() {
+        Initialize(null, fromNode, toNode);
+    }
+    //-
 
     public void Initialize(GraphGenerator gg, RoadSetup fromNode, RoadSetup toNode) {
         this.fromNode = fromNode;
@@ -40,6 +52,7 @@ public class VehicleDriverAI : MonoBehaviour {
     }
     public void Initialize(GraphGenerator gg) {
         if (gg == null && GraphGenerator == null) {
+            DeInitialize();
             return;
         }
         else if (GraphGenerator == null && gg != null) {
@@ -47,8 +60,11 @@ public class VehicleDriverAI : MonoBehaviour {
         }
 
         shortestPathNodes = GraphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
-        if (shortestPathNodes == null && gameSettings.showDebugMessage) {
+        //if (shortestPathNodes == null && gameSettings.showDebugMessage) {
+        if (shortestPathNodes == null) {
             Debug.Log($"No path found between {fromNode.transform.name} and {toNode.transform.name}.");
+            DeInitialize();
+            return;
         }
         PointsToFollow.Clear();
 
@@ -60,15 +76,20 @@ public class VehicleDriverAI : MonoBehaviour {
         SetAllPathToFollowVectors();
         CalculateHeuristicSpeeds();
 
-        //SetPathToFollowVectors(shortestPathNodes[currentNodeIndex], null, shortestPathNodes[currentNodeIndex + 1]);
-
-        //if (shortestPathNodesLength > currentNodeIndex + 2)
-        //    SetPathToFollowVectors(shortestPathNodes[currentNodeIndex + 1], shortestPathNodes[currentNodeIndex], shortestPathNodes[currentNodeIndex + 2]);
-
-
-
         pointsToFollowLength = PointsToFollow.Count;
         currentFollowingPointIndex = 0;
+
+        // Set spawn location
+        Transform temp = fromNode.GetSpawnPointNearestTo(PointsToFollow[0]);
+        if (temp != null) {
+            transform.position = temp.position;
+            transform.forward = temp.forward;
+        }
+        else {
+            transform.position = PointsToFollow[0];
+            transform.forward = PointsToFollow[1] - PointsToFollow[0];
+        }
+        SpawnedAt = transform.position;
 
 
         //string temp = "";
@@ -84,8 +105,8 @@ public class VehicleDriverAI : MonoBehaviour {
         PointsToFollow.Clear();
         PointsToNodesIndex.Clear();
         HeuristicMaxSpeed.Clear();
-
         Initialized = false;
+        vehicleController.DeInitialize();
     }
 
     private int SetAllPathToFollowVectors() {
@@ -171,35 +192,8 @@ public class VehicleDriverAI : MonoBehaviour {
     //}
 
 
-    public Vector3[] GetVectorsFromSpline(Spline spline, Transform transformPoint) {
-        Vector3[] points = { };
-        //Debug.Log(spline.EvaluatePosition(t));
-        points.Append(transformPoint.TransformPoint(spline.EvaluatePosition(t)));
-        return points;
-    }
-
-    float forwardAmount;
-    float turnAmount;
     Vector3 inputVector;
-
-    //public (Vector3, bool) GetNextPointToFollow() {
-    //    while (currentFollowingPointIndex < pointsToFollowLength) {
-    //        if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < vehicleType.triggerDistance) {
-    //            currentFollowingPointIndex++;
-    //            currentNodeIndex = GetNodeIndexFromVectorIndex(currentFollowingPointIndex);
-    //        }
-    //        else { break; }
-
-    //    }
-
-    //    if (currentFollowingPointIndex >= pointsToFollowLength)
-    //        return (PointsToFollow[pointsToFollowLength - 1], false);
-
-    //    return (PointsToFollow[currentFollowingPointIndex], false);
-
-    //}
-
-
+    BrakeState brakeState;
     /// <summary>
     /// <br>Calculates AI Input</br>
     /// </summary>
@@ -228,53 +222,100 @@ public class VehicleDriverAI : MonoBehaviour {
             return (Vector3.zero, Vector3.zero, 0f, BrakeState.HandBrake);
             //return (Vector3.zero, PointsToFollow[pointsToFollowLength - 1], 0f, BrakeState.HandBrake);
         }
-        //return (PointsToFollow[currentFollowingPointIndex], false);
 
         MoveDirectionCorrection();
-        return (inputVector, PointsToFollow[currentFollowingPointIndex], HeuristicMaxSpeed[currentNodeIndex], BrakeState.NoBrake);
+        brakeState = CollisionCorrection();
 
-        //TurnSpeedCorrection();
-        //(inputVector, isBrakePressed) = vehicleDriverAI.GetData();
+        return (inputVector, PointsToFollow[currentFollowingPointIndex], HeuristicMaxSpeed[currentNodeIndex], brakeState);
+    }
 
+    float hitDistance;
+    Transform hitTransform;
+    RaycastHit hit;
+    //float previousRelativeVelocity;
+    //float previousHitTime;
+    private BrakeState CollisionCorrection() {
+        if (!FrontCollisionDetection(out hit)) {
+            //previousRelativeVelocity = 0;
+            //previousHitTime = Time.time;
+            return BrakeState.NoBrake;
+        }
+
+        Transform hitTransform = hit.transform;
+
+        if (hitTransform.TryGetComponent<VehicleController>(out var hitVehicle)) {
+            return HandleVehicleCollision(hitVehicle);
+        }
+
+        return HandleTrafficLightCollision();
+
+        //hit.transform
     }
 
     private void MoveDirectionCorrection() {
-        //forwardAmount = 0f;
-        //turnAmount = 0f;
-
-        //Vector3 dirToMovePositionNormalizedLS = carFrontPosition.InverseTransformDirection(PointsToFollow[currentFollowingPointIndex] - carFrontPosition.position).normalized;
-        //forwardAmount = dirToMovePositionNormalizedLS.z;
-        //if (Mathf.Abs(forwardAmount) < 0.2f)
-        //    forwardAmount = -0.5f;
-
-        //turnAmount = Mathf.Sign(forwardAmount) * dirToMovePositionNormalizedLS.x;
-
-        //inputVector.x = turnAmount;
-        //inputVector.z = forwardAmount;
-
         inputVector = (PointsToFollow[currentFollowingPointIndex] - transform.position).normalized;
+    }
 
+    private BrakeState HandleVehicleCollision(VehicleController hitVehicle) {
+        hitDistance = hit.distance;
+        Vector3 relativeVector = (hitVehicle.transform.forward * hitVehicle.Speed) - (frontRay.transform.forward * vehicleController.Speed);
+        //float dot = Vector3.Dot(hitVehicle.transform.forward * hitVehicle.Speed, frontRay.transform.forward * vehicleController.Speed);
+        float relativeVelocity = Vector3.Dot(relativeVector, frontRay.transform.forward);
+        //float relativeVelocity = hitVehicle.Speed - dot * vehicleController.Speed;
+        //Debug.Log(relativeVelocity);
+
+        if (hitVehicle.Speed < 0.2f && hitDistance < 1f) {
+            return BrakeState.HandBrake;
+        }
+
+        // if following vehicle is > 8 meters away
+        if (hitDistance < 0.5f && relativeVelocity < 1f) {
+            return BrakeState.HandBrake;
+        }
+        else if (hitDistance < 15f && relativeVelocity < -3f) {
+            return BrakeState.Brake;
+        }
+        else if (hitDistance < 20f && relativeVelocity < -5f) {
+            return BrakeState.Brake;
+        }
+
+        return BrakeState.NoBrake;
+    }
+    private BrakeState HandleTrafficLightCollision() {
+        return BrakeState.NoBrake;
+    }
+
+    //public bool TrafficLightDetection(out RaycastHit hit) {
+    //    // if (Physics.Raycast(item.rayOrigin.position, item.rayOrigin.forward, out hit, item.rayLength))
+    //    if (Physics.Raycast(
+    //      frontRay.position,
+    //      new Vector3(frontRay.forward.x, 0, frontRay.forward.z),
+    //      out hit,
+    //      frontRayLength,
+    //      LayerMask.GetMask("TrafficLight"))) {
+    //        return true;
+    //    }
+    //    return false;
+    //}
+
+    private bool FrontCollisionDetection(out RaycastHit hit) {
+
+        return Physics.BoxCast(
+          frontRay.position,
+          frontRay.localScale / 2,
+          new Vector3(frontRay.forward.x, 0, frontRay.forward.z),
+          out hit,
+          frontRay.rotation,
+          gameSettings.frontRaySensorLength,
+          LayerMask.GetMask("TrafficLight", "Vehicle"));
 
     }
 
-    //void TurnSpeedCorrection() {
-    //    if (turnTargetSquaredDistance < GameSettings.APPLY_BRAKE_DISTANCE_SQUARE) {
-    //        float sqRt = Mathf.Sqrt(turnTargetSquaredDistance);
-    //        if (sqRt < 6f)
-    //            targetSpeed = GameSettings.TRUN_SPEED;
-    //        else
-    //            targetSpeed = Util.Interpolate(0, GameSettings.APPLY_BRAKE_DISTANCE, GameSettings.TRUN_SPEED, carPhysicsData.MaxSpeed, sqRt);
-    //    }
-    //    else {
-    //        targetSpeed = -1f;
-    //    }
-    //}
+
 
 
     #region Debug Methods
 
-    [Range(0f, 2f)]
-    public float t;
     private void OnDrawGizmosSelected() {
         if (gameSettings.showDebugPathfindingLines && showDebugLines) {
             DisplayShortestPathDebug();
@@ -288,6 +329,20 @@ public class VehicleDriverAI : MonoBehaviour {
             Gizmos.color = Color.black;
             if (currentFollowingPointIndex < pointsToFollowLength)
                 Gizmos.DrawSphere(PointsToFollow[currentFollowingPointIndex], 0.3f);
+
+            // ----------------------------------------------------------------
+            Gizmos.color = Color.red;
+            bool m_HitDetect = Physics.BoxCast(frontRay.position, frontRay.localScale / 2, new Vector3(frontRay.forward.x, 0, frontRay.forward.z), out RaycastHit m_Hit, frontRay.rotation, gameSettings.frontRaySensorLength, ignoreLayer);
+
+            //Check if there has been a hit yet
+            if (m_HitDetect) {
+                //Draw a Ray forward from GameObject toward the hit
+                Gizmos.DrawLine(frontRay.position, m_Hit.point);
+                //Draw a cube that extends to where the hit exists
+                Gizmos.DrawWireSphere(m_Hit.point, 0.3f);
+            }
+
+            Gizmos.DrawRay(frontRay.position, frontRay.forward * gameSettings.frontRaySensorLength);
         }
     }
 

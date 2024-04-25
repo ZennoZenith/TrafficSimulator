@@ -37,6 +37,7 @@ public class RoadSetup : MonoBehaviour {
     [SerializeField] private SplineContainer splineContainer;
     [SerializeField] private int overridenSplineResolution = 50;
     [SerializeField] private bool overrideSplineResolution;
+    [field: SerializeField] public Transform[] SpawnPoints { get; private set; }
     [SerializeField] private RoadConnector[] incomming;
     [SerializeField] private RoadConnector[] outgoing;
     [SerializeField] private RoutesMap[] routesMap;
@@ -70,6 +71,21 @@ public class RoadSetup : MonoBehaviour {
         Initialized = false;
     }
 
+
+    public Transform GetSpawnPointNearestTo(Vector3 point) {
+        if (SpawnPoints.Length < 1)
+            return null;
+        float minDistance = Vector3.Distance(point, SpawnPoints[0].position);
+        Transform nearestSpawnPoint = SpawnPoints[0];
+        for (int i = 1; i < SpawnPoints.Length; i++) {
+            float distance = Vector3.Distance(point, SpawnPoints[i].position);
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestSpawnPoint = SpawnPoints[i];
+            }
+        }
+        return nearestSpawnPoint;
+    }
 
 
     /// <summary>

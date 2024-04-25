@@ -14,10 +14,12 @@ public class GraphGenerator : MonoBehaviour {
 
     private void Awake() {
         vehicleSpawnerManager = GetComponent<VehicleSpawnerManager>();
+        GenerateGraph();
+
     }
 
     private void Start() {
-        GenerateGraph();
+        //GenerateGraph();
     }
     public void GenerateGraph() {
         // Get all children gameobject with "RoadSetup" component
