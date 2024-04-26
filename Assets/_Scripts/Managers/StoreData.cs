@@ -10,19 +10,28 @@ public struct VehicleRuntimeData {
     public int TotalTimeTaken;
 }
 
-public class StoreData : SingletonPersistent<MonoBehaviour> {
+public class StoreData : Singleton<MonoBehaviour> {
 
     [SerializeField] private GameSettingsScriptableObject gameSettings;
     private static readonly string PATH = Application.streamingAssetsPath + "/Runtime_Data/";
     private static string fileNameBase = "";
     private static readonly List<string> fileNamesWritten = new();
     private static float bufferTime;
+    private static bool disable;
     private void Start() {
         bufferTime = gameSettings.bufferTime;
+        disable = gameSettings.disableDataGeneration;
+
     }
+
+
 
     //[MenuItem("Tools/Write file")]
     public static void WriteString(string dataToWrite, string fileName = null) {
+        if (disable)
+            return;
+
+
         if (string.IsNullOrEmpty(fileName)) {
             fileName = "Unknown";
         }

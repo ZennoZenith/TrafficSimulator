@@ -5,6 +5,7 @@ public class GameSettingsScriptableObject : ScriptableObject {
     [Tooltip("Time after which writing to file happens in sec")]
     public float bufferTime;
     public int defaultTargetFrameRate;
+    public bool disableDataGeneration;
 
     public float timeScale;
 
@@ -42,5 +43,17 @@ public class GameSettingsScriptableObject : ScriptableObject {
     public float maxGreenLightTime;
     //public float defautRedTime;
 
+    [Header("ML")]
+    public bool usML;
+    public ML_Algorithm mL_Algorithm;
+    public int REWARD_MULTIPLYER1 = 2000;
 
+
+
+}
+
+public enum ML_Algorithm {
+    None,
+    SignalOptimization,
+    PhaseOptimization
 }

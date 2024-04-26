@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider), typeof(Rigidbody))]
 public class IntersectionDataCalculator : MonoBehaviour {
 
+    public int TotalNumberOfVehicles { get; private set; } = 0;
     private int throughput = 0;
 
     private void Start() {
@@ -20,6 +21,7 @@ public class IntersectionDataCalculator : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         throughput++;
+        TotalNumberOfVehicles++;
     }
 
 

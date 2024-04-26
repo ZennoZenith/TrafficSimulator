@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -15,6 +16,8 @@ public class TrafficLightSetup : MonoBehaviour {
 
     [field: SerializeField] public RoadSetup RoadSetup { get; private set; }
     [SerializeField] private GameSettingsScriptableObject gameSettings;
+    [SerializeField] private TraficSignalMLData traficSignalMLData;
+    [SerializeField] private TrafficSignalMlAgent trafficSignalMlAgent;
     [SerializeField] private GameObject LineRendererPrefab;
     [SerializeField] private TextMeshPro TimingUI;
     [field: SerializeField] public Phase[] Phases { get; private set; }
@@ -23,9 +26,20 @@ public class TrafficLightSetup : MonoBehaviour {
     [field: SerializeField] public int CurrentPhaseIndex { get; private set; }
     [field: SerializeField] public int PreviousPhaseIndex { get; private set; }
 
+    float greenLightTime;
+    bool mlInitialized = false;
+    private int lastNumberOfVehicles = 0;
+    private float lastCheckedTime = 0;
+
+    private IntersectionDataCalculator intersectionDataCalculator;
     private void Awake() {
         RoadSetup = GetComponent<RoadSetup>();
+        traficSignalMLData = GetComponent<TraficSignalMLData>();
+        intersectionDataCalculator = GetComponent<IntersectionDataCalculator>();
+        trafficSignalMlAgent = GetComponent<TrafficSignalMlAgent>();
     }
+
+
     void Start() {
         CurrentPhaseIndex = 0;
         PreviousPhaseIndex = Phases.Length - 1;
@@ -57,7 +71,7 @@ public class TrafficLightSetup : MonoBehaviour {
     int timePassed = 0;
     IEnumerator Tick() {
         while (true) {
-            TimingUI.text = (Phases[CurrentPhaseIndex].greenLightTime - timePassed).ToString();
+            TimingUI.text = (greenLightTime - timePassed).ToString();
             timePassed++;
             yield return new WaitForSeconds(1f);
         }
@@ -65,11 +79,34 @@ public class TrafficLightSetup : MonoBehaviour {
 
     IEnumerator SignalCycle() {
         while (true) {
+            if (gameSettings.usML && Time.time > gameSettings.bufferTime && !mlInitialized) {
+                mlInitialized = true;
+            }
+            int numberOfVehicles = intersectionDataCalculator.TotalNumberOfVehicles;
+            float throughput = (numberOfVehicles - lastNumberOfVehicles) / (Time.time - lastCheckedTime);
+            lastNumberOfVehicles = numberOfVehicles;
+            lastCheckedTime = Time.time;
+
+            if (!mlInitialized)
+                ChangePhaseTo(GetNextPhase());
+            else if (gameSettings.mL_Algorithm == ML_Algorithm.SignalOptimization) {
+                (float[] observations, float reward) = traficSignalMLData.GetObservationsAndRewards(CurrentPhaseIndex, throughput);
+                //ChangePhaseTo(GetNextPhase());
+                ChangeToNextPhaseWithTimeInterpolate(trafficSignalMlAgent.ConsumeAction(reward, observations));
+                //print($"reward: {reward}");
+            }
+            else if (gameSettings.mL_Algorithm == ML_Algorithm.SignalOptimization) {
+                throw new NotImplementedException();
+            }
+
+
+
+
             RenderPhaseSignalLine();
-            yield return new WaitForSeconds(Phases[CurrentPhaseIndex].greenLightTime);
-            ChangePhaseTo(GetNextPhase());
+            yield return new WaitForSeconds(greenLightTime);
         }
     }
+
 
     int GetNextPhase() {
         return (CurrentPhaseIndex + 1) % Phases.Length;
@@ -82,6 +119,15 @@ public class TrafficLightSetup : MonoBehaviour {
 
         PreviousPhaseIndex = CurrentPhaseIndex;
         CurrentPhaseIndex = nextPhaseIndex;
+        greenLightTime = Phases[CurrentPhaseIndex].greenLightTime;
+    }
+
+    public void ChangeToNextPhaseWithTimeInterpolate(float time) {
+        timePassed = 0;
+        int index = GetNextPhase();
+        greenLightTime = Mathf.FloorToInt(Mathf.Lerp(Phases[index].minGreenLightTime, Phases[index].maxGreenLightTime, (time + 1) / 2));
+        PreviousPhaseIndex = CurrentPhaseIndex;
+        CurrentPhaseIndex = index;
     }
 
     void RenderPhaseSignalLine() {
@@ -100,8 +146,15 @@ public class TrafficLightSetup : MonoBehaviour {
         return -1;
     }
 
-
-
-
+    internal float AdaptiveTrafficLight(int numberOfCarsInQueue) {
+        if (numberOfCarsInQueue == 0)
+            return 0f;
+        if (numberOfCarsInQueue == 1)
+            return minGreenLightTime;
+        float returnValue = minGreenLightTime + numberOfCarsInQueue * timeToCrossIntersection;
+        if (returnValue > maxGreenLightTime)
+            returnValue = maxGreenLightTime;
+        return returnValue;
+    }
 
 }
