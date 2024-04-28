@@ -35,26 +35,46 @@ namespace Simulator.ML {
             ActionReceiveBuffer[actionIndex] = action;
         }
 
+        //protected override void Awake() {
 
-        private void Awake() {
+        //}
+
+
+
+        protected override void Awake() {
+            base.Awake();
             if (!gameSettings.usML)
                 enabled = false;
 
             //decisionCoroutine = StartCoroutine(DecisionCoroutine());
             //StartCoroutine(Temp());
+
+            Academy.Instance.AutomaticSteppingEnabled = false;
+
+            //InvokeRepeating(nameof(Test), 0f, 5f);
         }
 
         //public override void OnEpisodeBegin() {
         //base.OnEpisodeBegin();
         //Reset();
         //}
+        void Test() {
+            print("Decision requested");
+            Academy.Instance.EnvironmentStep();
+            print("Decision complete");
 
+        }
 
         //public void Reset() {
         //    //requested = true;
 
         //}
 
+        public override void Initialize() {
+            base.Initialize();
+            //Academy.Instance.AutomaticSteppingEnabled = false;
+            //Academy.Instance.EnvironmentStep();
+        }
 
         public override void CollectObservations(VectorSensor sensor) {
             //base.CollectObservations(sensor);
@@ -64,8 +84,10 @@ namespace Simulator.ML {
         public override void OnActionReceived(ActionBuffers actions) {
             //base.OnActionReceived(actions);
             //float time = actions.ContinuousActions[0];
-            //print($"action received: {actions.ContinuousActions[0]}");
             AddToActionBuffer(actions.ContinuousActions[0]);
+            print($"action received: {actions.ContinuousActions[0]}");
+
+
 
         }
 

@@ -4,4 +4,10 @@ namespace Utilities {
             return (float)(value - a) / (b - a);
         }
     }
+
+    public interface IInitializable {
+        bool IsInitialized { get; set; }
+        void Initialise();
+        void DeInitialise();
+    }
 }

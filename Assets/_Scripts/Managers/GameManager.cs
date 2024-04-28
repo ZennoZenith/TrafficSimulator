@@ -2,46 +2,27 @@ using Simulator.ScriptableObject;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using Utilities;
 
 namespace Simulator.Manager {
-    public class GameManager : MonoBehaviour {
+    public class GameManager : SingletonPersistent<GameManager> {
         public GameSettingsScriptableObject gameSettings;
-        public float updateInterval = 0.5f; // Interval to update FPS count
-        private float accumulatedFPS = 0f; // Accumulated FPS in the current interval
-        private int framesRendered = 0; // Number of frames rendered in the current interval
-        private float timeLeft; // Time left before updating FPS count
 
-        public bool showFpsCount;
         [SerializeField] private TextMeshProUGUI FpsCounterUI;
         [SerializeField] private TextMeshProUGUI GameSpeedUILabel;
 
         void Start() {
-            Time.timeScale = gameSettings.timeScale;
+            FpsCounter.Setup(gameSettings.updateInterval);
             Application.targetFrameRate = gameSettings.defaultTargetFrameRate;
-            timeLeft = updateInterval;
+
+            Time.timeScale = gameSettings.timeScale;
             UpdateGameSpeedUI();
         }
 
         void Update() {
-            if (showFpsCount)
-                CalculateFpsCount();
-        }
+            if (gameSettings.showFpsCount)
+                FpsCounterUI.text = Mathf.RoundToInt(FpsCounter.CalculateFpsCount()).ToString();
 
-        void CalculateFpsCount() {
-            timeLeft -= Time.deltaTime;
-            accumulatedFPS += Time.timeScale / Time.deltaTime;
-            framesRendered++;
-
-            // Update FPS count
-            if (timeLeft <= 0.0f) {
-                float averageFPS = accumulatedFPS / framesRendered;
-                //Debug.Log("FPS: " + averageFPS);
-                FpsCounterUI.text = Mathf.RoundToInt(averageFPS).ToString();
-                // Reset counters for the next interval
-                accumulatedFPS = 0f;
-                framesRendered = 0;
-                timeLeft = updateInterval;
-            }
         }
 
         public void IncreaseGameSpeed() {
@@ -68,6 +49,7 @@ namespace Simulator.Manager {
         internal void UpdateGameSpeedUI() {
             GameSpeedUILabel.text = Mathf.RoundToInt(Time.timeScale).ToString();
         }
+
     }
 
 #if UNITY_EDITOR
