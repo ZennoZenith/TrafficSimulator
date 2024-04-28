@@ -1,5 +1,4 @@
-﻿using Simulator.ScriptableObject;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -14,26 +13,12 @@ namespace Utilities {
 
     public class StoreData : Singleton<MonoBehaviour> {
 
-        [SerializeField] private GameSettingsScriptableObject gameSettings;
         private static readonly string PATH = Application.streamingAssetsPath + "/Runtime_Data/";
         private static string fileNameBase = "";
         private static readonly List<string> fileNamesWritten = new();
-        private static float bufferTime;
-        private static bool disable;
-        private void Start() {
-            bufferTime = gameSettings.bufferTime;
-            disable = gameSettings.disableDataGeneration;
-
-        }
-
-
 
         //[MenuItem("Tools/Write file")]
         public static void WriteString(string dataToWrite, string fileName = null) {
-            if (disable)
-                return;
-
-
             if (string.IsNullOrEmpty(fileName)) {
                 fileName = "Unknown";
             }
@@ -51,12 +36,6 @@ namespace Utilities {
                     headerData = $"intersectionName,throughput";
                 fileNamesWritten.Add(fileName);
                 writer.WriteLine(headerData);
-            }
-
-
-
-            if (Time.time > bufferTime) {
-                writer.WriteLine(dataToWrite);
             }
 
             writer.Flush();
