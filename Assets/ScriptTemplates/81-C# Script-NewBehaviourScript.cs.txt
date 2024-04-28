@@ -1,0 +1,12 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+#ROOTNAMESPACEBEGIN#
+namespace Simulator{
+
+    public class #SCRIPTNAME# : MonoBehaviour {
+        #NOTRIM#
+    }
+}
+#ROOTNAMESPACEEND#

@@ -146,15 +146,19 @@ public class TrafficLightSetup : MonoBehaviour {
         return -1;
     }
 
-    internal float AdaptiveTrafficLight(int numberOfCarsInQueue) {
-        if (numberOfCarsInQueue == 0)
-            return 0f;
-        if (numberOfCarsInQueue == 1)
-            return minGreenLightTime;
-        float returnValue = minGreenLightTime + numberOfCarsInQueue * timeToCrossIntersection;
-        if (returnValue > maxGreenLightTime)
-            returnValue = maxGreenLightTime;
-        return returnValue;
-    }
+    //internal float AdaptiveTrafficLight(int numberOfCarsInQueue) {
+    //    if (numberOfCarsInQueue == 0)
+    //        return 0f;
+    //    if (numberOfCarsInQueue == 1)
+    //        return minGreenLightTime;
+    //    float returnValue = minGreenLightTime + numberOfCarsInQueue * timeToCrossIntersection;
+    //    if (returnValue > maxGreenLightTime)
+    //        returnValue = maxGreenLightTime;
+    //    return returnValue;
+    //}
+
+    //private void OnValidate() {
+
+    //}
 
 }

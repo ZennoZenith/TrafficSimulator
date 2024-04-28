@@ -34,6 +34,6 @@ MonoBehaviour:
   redMaterial: {fileID: 2100000, guid: af757dfe5edcb1741a9e0e6a3ef9279a, type: 2}
   minGreenLightTime: 0
   maxGreenLightTime: 0
-  usML: 1
-  mL_Algorithm: 1
+  usML: 0
+  mL_Algorithm: 0
   REWARD_MULTIPLYER1: 2000
