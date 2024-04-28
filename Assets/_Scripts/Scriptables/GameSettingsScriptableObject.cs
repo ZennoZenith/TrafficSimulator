@@ -1,59 +1,62 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "GameSettings", menuName = "ScriptableObjects/GameSettings", order = 1)]
-public class GameSettingsScriptableObject : ScriptableObject {
-    [Tooltip("Time after which writing to file happens in sec")]
-    public float bufferTime;
-    public int defaultTargetFrameRate;
-    public bool disableDataGeneration;
 
-    public float timeScale;
+namespace Simulator.ScriptableObject {
+    [CreateAssetMenu(fileName = "GameSettings", menuName = "ScriptableObjects/GameSettings", order = 1)]
+    public class GameSettingsScriptableObject : UnityEngine.ScriptableObject {
+        [Tooltip("Time after which writing to file happens in sec")]
+        public float bufferTime;
+        public int defaultTargetFrameRate;
+        public bool disableDataGeneration;
 
-    public int splineResolution;
-    public float pathVectorY;
+        public float timeScale;
 
-    [Tooltip("Speed which will be considered as rest")]
-    public float considerStopSpeed;
+        public int splineResolution;
+        public float pathVectorY;
 
-    public float frontRaySensorLength;
+        [Tooltip("Speed which will be considered as rest")]
+        public float considerStopSpeed;
 
-    [Tooltip("Number of next points to consider for heuristic calculation")]
-    public int numberOfHeuristicPoints;
+        public float frontRaySensorLength;
 
-    [Header("Spawner")]
-    public int retrySpawnTime;
+        [Tooltip("Number of next points to consider for heuristic calculation")]
+        public int numberOfHeuristicPoints;
 
-    [Header("Graph")]
-    public bool showGraphNode;
-    public bool showGraphLine;
-    public bool printGraphDetails;
-    public float nodeSphereRadius;
+        [Header("Spawner")]
+        public int retrySpawnTime;
 
-    //[Space(5)]
-    [Header("Pathfinding")]
-    public bool showDebugPathfindingLines;
-    public bool showDebugMessage;
+        [Header("Graph")]
+        public bool showGraphNode;
+        public bool showGraphLine;
+        public bool printGraphDetails;
+        public float nodeSphereRadius;
 
-    [Header("Trafic Signal Timings")]
-    public float defautGreenTime;
-    public float defautYellowTime;
-    public Material greenMaterial;
-    public Material redMaterial;
-    public float minGreenLightTime;
-    public float maxGreenLightTime;
-    //public float defautRedTime;
+        //[Space(5)]
+        [Header("Pathfinding")]
+        public bool showDebugPathfindingLines;
+        public bool showDebugMessage;
 
-    [Header("ML")]
-    public bool usML;
-    public ML_Algorithm mL_Algorithm;
-    public int REWARD_MULTIPLYER1 = 2000;
+        [Header("Trafic Signal Timings")]
+        public float defautGreenTime;
+        public float defautYellowTime;
+        public Material greenMaterial;
+        public Material redMaterial;
+        public float minGreenLightTime;
+        public float maxGreenLightTime;
+        //public float defautRedTime;
+
+        [Header("ML")]
+        public bool usML;
+        public ML_Algorithm mL_Algorithm;
+        public int REWARD_MULTIPLYER1 = 2000;
 
 
 
-}
+    }
 
-public enum ML_Algorithm {
-    None,
-    SignalOptimization,
-    PhaseOptimization
+    public enum ML_Algorithm {
+        None,
+        SignalOptimization,
+        PhaseOptimization
+    }
 }

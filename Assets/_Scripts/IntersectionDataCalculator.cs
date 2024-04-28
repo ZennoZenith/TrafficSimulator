@@ -1,28 +1,30 @@
 using System.Collections;
 using UnityEngine;
+using Utilities;
 
-[RequireComponent(typeof(BoxCollider), typeof(Rigidbody))]
-public class IntersectionDataCalculator : MonoBehaviour {
+namespace Simulator.RuntimeData {
+    [RequireComponent(typeof(BoxCollider), typeof(Rigidbody))]
 
-    public int TotalNumberOfVehicles { get; private set; } = 0;
-    private int throughput = 0;
+    public class IntersectionDataCalculator : MonoBehaviour {
 
-    private void Start() {
-        StartCoroutine(Tick());
-    }
+        public int TotalNumberOfVehicles { get; private set; } = 0;
+        private int throughput = 0;
 
-    private IEnumerator Tick() {
-        while (true) {
-            yield return new WaitForSeconds(60f); //60 sec
-            StoreData.WriteIntesectionThroughput(transform.name, throughput);
-            throughput = 0;
+        private void Start() {
+            StartCoroutine(Tick());
+        }
+
+        private IEnumerator Tick() {
+            while (true) {
+                yield return new WaitForSeconds(60f); //60 sec
+                StoreData.WriteIntesectionThroughput(transform.name, throughput);
+                throughput = 0;
+            }
+        }
+
+        private void OnTriggerEnter(Collider other) {
+            throughput++;
+            TotalNumberOfVehicles++;
         }
     }
-
-    private void OnTriggerEnter(Collider other) {
-        throughput++;
-        TotalNumberOfVehicles++;
-    }
-
-
 }

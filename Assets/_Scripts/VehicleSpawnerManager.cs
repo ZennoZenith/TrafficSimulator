@@ -1,106 +1,110 @@
+using Simulator.AI;
+using Simulator.Road;
+using Simulator.ScriptableObject;
+using Simulator.Vehicle;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(GraphGenerator))]
-public class VehicleSpawnerManager : MonoBehaviour {
-    [System.Serializable]
-    public struct SpawnerInfo {
-        public SpawnerDataScriptableObject spawnerData;
-        public RoadSetup roadSetup;
-    }
-
-    [SerializeField] private float noSpawnRadius;
-    [field: SerializeField] public SpawnerInfo[] Spawners { get; private set; }
-    [field: SerializeField] public RoadSetup[] Despawners { get; private set; }
-    [SerializeField] private GameSettingsScriptableObject gameSettings;
-
-    private GraphGenerator graphGenerator;
-
-    private void Awake() {
-        graphGenerator = GetComponent<GraphGenerator>();
-    }
-
-    private void Start() {
-        foreach (var spawnerInfo in Spawners) {
-            StartCoroutine(SpawnCorouting(spawnerInfo));
+namespace Simulator.Manager {
+    [RequireComponent(typeof(GraphGenerator))]
+    public class VehicleSpawnerManager : MonoBehaviour {
+        [System.Serializable]
+        public struct SpawnerInfo {
+            public SpawnerDataScriptableObject spawnerData;
+            public RoadSetup roadSetup;
         }
 
-    }
+        [SerializeField] private float noSpawnRadius;
+        [field: SerializeField] public SpawnerInfo[] Spawners { get; private set; }
+        [field: SerializeField] public RoadSetup[] Despawners { get; private set; }
+        [SerializeField] private GameSettingsScriptableObject gameSettings;
 
-    private IEnumerator SpawnCorouting(SpawnerInfo spawnerInfo) {
-        SpawnerDataScriptableObject spawnerData = spawnerInfo.spawnerData;
+        private GraphGenerator graphGenerator;
 
-        float nextSpawnTime;
-        List<int> vehicleFrequencyList = new();
-        int vehicleFrequencySum = 0;
-        VehicleFrequency[] vehicles = spawnerData.vehicles;
-        int numberOfVehicles = spawnerData.vehicles.Length;
-
-        for (int i = 0; i < numberOfVehicles; i++) {
-            vehicleFrequencySum += spawnerData.vehicles[i].frequency;
-            vehicleFrequencyList.Add(vehicleFrequencySum);
+        private void Awake() {
+            graphGenerator = GetComponent<GraphGenerator>();
         }
 
-        VehicleDriverAI lastSpawnedVehicle = null;
-        while (true) {
-            nextSpawnTime = 60f / (spawnerData.spawnFrequency + Random.Range(-spawnerData.frequencyVariation, spawnerData.frequencyVariation));
-
-            if (lastSpawnedVehicle == null) {
-                lastSpawnedVehicle = Spawn(spawnerInfo.roadSetup, vehicles, vehicleFrequencyList, vehicleFrequencySum, numberOfVehicles);
-            }
-            else if (Vector3.Distance(lastSpawnedVehicle.SpawnedAt, lastSpawnedVehicle.transform.position) > noSpawnRadius) {
-                lastSpawnedVehicle = Spawn(spawnerInfo.roadSetup, vehicles, vehicleFrequencyList, vehicleFrequencySum, numberOfVehicles);
+        private void Start() {
+            foreach (var spawnerInfo in Spawners) {
+                StartCoroutine(SpawnCorouting(spawnerInfo));
             }
 
-
-            //print(nextSpawnTime);
-            yield return new WaitForSeconds(nextSpawnTime);
-        }
-    }
-    private VehicleDriverAI Spawn(RoadSetup fromRoad, VehicleFrequency[] vehicles, List<int> vehicleFrequencyList, int vehicleFrequencySum, int numberOfVehicles = -1) {
-        if (numberOfVehicles == -1) {
-            numberOfVehicles = vehicles.Length;
         }
 
-        if (!fromRoad.Initialized)
-            return null;
+        private IEnumerator SpawnCorouting(SpawnerInfo spawnerInfo) {
+            SpawnerDataScriptableObject spawnerData = spawnerInfo.spawnerData;
 
-        int randIndex = Random.Range(0, vehicleFrequencySum);
-        int spawnVehicleIndex = numberOfVehicles - 1;
-        for (int i = 0; i < numberOfVehicles; i++) {
-            if (randIndex < vehicleFrequencyList[i]) {
-                spawnVehicleIndex = i;
-                break;
+            float nextSpawnTime;
+            List<int> vehicleFrequencyList = new();
+            int vehicleFrequencySum = 0;
+            VehicleFrequency[] vehicles = spawnerData.vehicles;
+            int numberOfVehicles = spawnerData.vehicles.Length;
+
+            for (int i = 0; i < numberOfVehicles; i++) {
+                vehicleFrequencySum += spawnerData.vehicles[i].frequency;
+                vehicleFrequencyList.Add(vehicleFrequencySum);
+            }
+
+            VehicleDriverAI lastSpawnedVehicle = null;
+            while (true) {
+                nextSpawnTime = 60f / (spawnerData.spawnFrequency + Random.Range(-spawnerData.frequencyVariation, spawnerData.frequencyVariation));
+
+                if (lastSpawnedVehicle == null) {
+                    lastSpawnedVehicle = Spawn(spawnerInfo.roadSetup, vehicles, vehicleFrequencyList, vehicleFrequencySum, numberOfVehicles);
+                }
+                else if (Vector3.Distance(lastSpawnedVehicle.SpawnedAt, lastSpawnedVehicle.transform.position) > noSpawnRadius) {
+                    lastSpawnedVehicle = Spawn(spawnerInfo.roadSetup, vehicles, vehicleFrequencyList, vehicleFrequencySum, numberOfVehicles);
+                }
+
+
+                //print(nextSpawnTime);
+                yield return new WaitForSeconds(nextSpawnTime);
             }
         }
+        private VehicleDriverAI Spawn(RoadSetup fromRoad, VehicleFrequency[] vehicles, List<int> vehicleFrequencyList, int vehicleFrequencySum, int numberOfVehicles = -1) {
+            if (numberOfVehicles == -1) {
+                numberOfVehicles = vehicles.Length;
+            }
 
-        RoadSetup despawnNode = SelectRandomDespawnLocation(fromRoad);
-        if (despawnNode == null) {
-            return null;
+            if (!fromRoad.Initialized)
+                return null;
+
+            int randIndex = Random.Range(0, vehicleFrequencySum);
+            int spawnVehicleIndex = numberOfVehicles - 1;
+            for (int i = 0; i < numberOfVehicles; i++) {
+                if (randIndex < vehicleFrequencyList[i]) {
+                    spawnVehicleIndex = i;
+                    break;
+                }
+            }
+
+            RoadSetup despawnNode = SelectRandomDespawnLocation(fromRoad);
+            if (despawnNode == null) {
+                return null;
+            }
+
+            //GameObject vehicle = Instantiate(vehicles[spawnVehicleIndex].vehicle, fromRoad.transform.position, Quaternion.identity);
+            GameObject vehicle = ObjectPoolManager.SpawnObject(vehicles[spawnVehicleIndex].vehicle, ObjectPoolManager.PoolType.GameObject);
+
+            VehicleController vc = vehicle.GetComponent<VehicleController>();
+
+            vc.Initialize();
+            vc.VehicleDriverAI.Initialize(graphGenerator, fromRoad, despawnNode);
+
+            return vc.VehicleDriverAI;
+
         }
 
-        //GameObject vehicle = Instantiate(vehicles[spawnVehicleIndex].vehicle, fromRoad.transform.position, Quaternion.identity);
-        GameObject vehicle = ObjectPoolManager.SpawnObject(vehicles[spawnVehicleIndex].vehicle, ObjectPoolManager.PoolType.GameObject);
+        private RoadSetup SelectRandomDespawnLocation(RoadSetup from) {
+            if (from.ReachableNodes.Count == 0) {
+                return null;
+            }
 
-        VehicleController vc = vehicle.GetComponent<VehicleController>();
-
-        vc.Initialize();
-        vc.VehicleDriverAI.Initialize(graphGenerator, fromRoad, despawnNode);
-
-        return vc.VehicleDriverAI;
-
-    }
-
-    private RoadSetup SelectRandomDespawnLocation(RoadSetup from) {
-        if (from.ReachableNodes.Count == 0) {
-            return null;
+            int index = Random.Range(0, from.ReachableNodes.Count);
+            return from.ReachableNodes[index];
         }
-
-        int index = Random.Range(0, from.ReachableNodes.Count);
-        return from.ReachableNodes[index];
     }
 
 }
-
-//private 

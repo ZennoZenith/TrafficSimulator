@@ -7,6 +7,17 @@ namespace Simulator{
 
     public class #SCRIPTNAME# : MonoBehaviour {
         #NOTRIM#
+        
+        #region DEBUG   
+        // [Header("Debug")]
+        #NOTRIM#    
+        #endregion
+
+#if UNITY_EDITOR
+    
+#endif
+
     }
+
 }
 #ROOTNAMESPACEEND#
