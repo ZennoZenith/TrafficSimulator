@@ -15,6 +15,6 @@ MonoBehaviour:
   showGraphNode: 1
   showGraphLine: 1
   printGraphDetails: 0
-  nodeSphereRadius: 1
+  nodeSphereRadius: 0.1
   showDebugPathfindingLines: 1
   showDebugMessage: 1

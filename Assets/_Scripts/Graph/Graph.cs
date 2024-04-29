@@ -82,9 +82,11 @@ namespace Simulator.Graph {
 
         // https://www.youtube.com/watch?v=T_m27bhVQQQ
         private List<T> BFSAlgorithm(T src, T dest) {
-            List<T> nodes = new();
             // HashSet<Node> visitedNodes = new();
             Queue<QueueStruct> queue = new();
+
+
+            /// Key: To node , Value.Item1: FromNode, Item2: Cost
             Dictionary<T, (T, int)> pathAndCost = new();
 
 
@@ -92,6 +94,7 @@ namespace Simulator.Graph {
 
             while (queue.Count > 0) {
                 QueueStruct queueStruct = queue.Dequeue();
+                //Debug.Log($"from:{queueStruct.fromNode.Name}, to:{queueStruct.toNode.Name}, weight:{queueStruct.weight}");
 
                 if (pathAndCost.ContainsKey(queueStruct.toNode)) {
                     if (pathAndCost[queueStruct.toNode].Item2 < queueStruct.weight)
@@ -111,12 +114,16 @@ namespace Simulator.Graph {
 
                 foreach (var nodeEdge in edgeNodesOfNode) {
                     //if (queueStruct.fromNode == queueStruct.toNode || queueStruct.fromNode == nodeEdge.IncommingFrom) {
+                    if (queueStruct.fromNode.Equals(nodeEdge.Dest))
+                        continue;
+
                     queue.Enqueue(new QueueStruct {
                         fromNode = queueStruct.toNode,
                         toNode = (T)nodeEdge.Dest,
                         weight = queueStruct.weight + nodeEdge.Weight
                     });
                 }
+
             }
 
             /// Printing shortest path
@@ -127,10 +134,20 @@ namespace Simulator.Graph {
             T tempNode = dest;
             // int weight = pathAndCost[tempNode].Item2;
 
+            //Debug.Log(src.Name);
+            //Debug.Log(tempNode.Name);
+
+            List<T> nodes = new();
             do {
                 nodes.Add(tempNode);
                 tempNode = pathAndCost[tempNode].Item1;
-            } while (tempNode.Equals(src));
+            } while (!tempNode.Equals(src));
+
+            //foreach (var item in pathAndCost) {
+            //    Debug.Log($"toNode:{item.Key.Name}, fromNode:{item.Value.Item1.Name}, cost:{item.Value.Item2}");
+            //}
+            //Debug.Log(nodes.Count);
+
 
             nodes.Add(src);
 
@@ -150,8 +167,5 @@ namespace Simulator.Graph {
             return nodes;
         }
 
-        public override bool AddNode(T node) {
-            throw new System.NotImplementedException();
-        }
     }
 }

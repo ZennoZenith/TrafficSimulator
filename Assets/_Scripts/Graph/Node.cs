@@ -49,6 +49,7 @@ namespace Simulator.Graph {
 
         //List<Edge<RoadSetup>> INode<RoadSetup>.InternalEdges => throw new System.NotImplementedException();
 
+
         public Node(string name, float3 position, RoadSetup roadSetup) {
             Name = name;
             Edges = new();

@@ -2,7 +2,6 @@ using Simulator.Graph;
 using Simulator.Manager;
 using Simulator.ScriptableObject;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,25 +17,31 @@ namespace Simulator.Road {
         private readonly List<Node> nodes = new();
 
         #region Unity Methods
-        private void Awake() {
-        }
+        //private void Awake() {
+        //}
 
         private void Start() {
             GenerateGraph();
         }
         #endregion
 
+        public static int number = 0;
+        public static char character = 'A';
         public void GenerateGraph() {
+            number = 0;
+            character = 'A';
             // Get all children gameobject with "RoadSetup" component
             nodes.Clear();
             DirectedGraph.Clear();
 
             var allRoadSetups = transform.GetComponentsInChildren<RoadSetup>();
 
+            foreach (RoadSetup roadSetup in allRoadSetups)
+                roadSetup.DeInitialize();
+
             foreach (RoadSetup roadSetup in allRoadSetups) {
                 roadSetup.Initialize();
-                //node.ConvertSplinesToVectors();
-                nodes.Concat(roadSetup.GraphNodes);
+                nodes.AddRange(roadSetup.GraphNodes);
             }
 
             //Debug.Log($"Number of nodes: {nodes.Count}");
@@ -78,6 +83,7 @@ namespace Simulator.Road {
                 DirectedGraph.PrintNodes();
                 DirectedGraph.PrintGraph();
             }
+
         }
 
         #region Debug Methods
@@ -98,9 +104,9 @@ namespace Simulator.Road {
                     Vector3 p1 = node.position;
                     Vector3 p2 = ((Node)edge.Dest).position;
                     float thickness = 3f;
-
+                    Gizmos.color = Color.red;
                     Handles.Label((p1 + p2) / 2, $"{edge.Weight}");
-                    Handles.DrawBezier(p1, p2, p1, p2, Color.blue, null, thickness);
+                    Handles.DrawBezier(p1, p2, p1, p2, Color.red, null, thickness);
                 }
             }
         }
@@ -110,7 +116,7 @@ namespace Simulator.Road {
             foreach (var node in nodes) {
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawSphere(node.position, debugSettings.nodeSphereRadius);
-                //Handles.Label(node.transform.position + new Vector3(0, 5, 0), node.name);
+                Handles.Label((Vector3)node.position + new Vector3(0, .7f, 0), node.Name);
             }
         }
 

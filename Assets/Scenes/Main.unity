@@ -1310,6 +1310,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 552585961}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &606841957 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 116942308270896224, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+    type: 3}
+  m_PrefabInstance: {fileID: 1640249806}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1e7913356dc7244b14ebe96e049b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &608070833
 GameObject:
   m_ObjectHideFlags: 0
@@ -2247,6 +2259,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1042783644}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1052602650 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7189129942051976444, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+    type: 3}
+  m_PrefabInstance: {fileID: 1640249806}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1e7913356dc7244b14ebe96e049b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1113394053
 GameObject:
   m_ObjectHideFlags: 0
@@ -2339,8 +2363,8 @@ MonoBehaviour:
   graphicsSettings: {fileID: 11400000, guid: 1f0326133528e6a47a47b6876b9c7f06, type: 2}
   FpsCounterUI: {fileID: 2116529563}
   GameSpeedUILabel: {fileID: 2086595519}
-  fromNode: {fileID: 466983766}
-  toNode: {fileID: 2078983076}
+  fromNode: {fileID: 1052602650}
+  toNode: {fileID: 606841957}
   graphGenerator: {fileID: 1812339764}
 --- !u!1001 &1234360090
 PrefabInstance:

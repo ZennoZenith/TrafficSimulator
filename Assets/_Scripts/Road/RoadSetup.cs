@@ -57,12 +57,13 @@ namespace Simulator.Road {
         #endregion
 
         public void Initialize() {
-            foreach (var item in incomming) {
+            foreach (var item in incomming)
                 item.Initialize();
+            foreach (var item in outgoing) {
+                item.Initialize();
+
                 GraphNodes.Add(item.GraphNode);
             }
-            foreach (var item in outgoing)
-                item.Initialize();
             IsInitialized = true;
         }
 
@@ -93,8 +94,10 @@ namespace Simulator.Road {
 
         public void SetupNodeEdgesFromRouteMap() {
             foreach (var route in routesMap) {
-                //if (route.to.GraphNode != null)
-                route.from.GraphNode?.AddEdge(new Edge<INode>(route.from.GraphNode));
+                //if (route.from.GraphNode != null) {
+                //    Debug.Log($"From: {route.from.GraphNode.Name}, To: {route.to.GraphNode.Name}");
+                //}
+                route.from.GraphNode?.AddEdge(new Edge<INode>(route.to.GraphNode));
             }
         }
 

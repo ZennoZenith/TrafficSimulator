@@ -27,6 +27,10 @@ namespace Simulator.Manager {
 
         }
 
+        internal void UpdateGameSpeedUI() {
+            GameSpeedUILabel.text = Mathf.RoundToInt(Time.timeScale).ToString();
+        }
+
         public void ResetGraphicsSettings() {
             FpsCounter.Setup(graphicsSettings.updateInterval);
             Application.targetFrameRate = graphicsSettings.defaultTargetFrameRate;
@@ -53,31 +57,35 @@ namespace Simulator.Manager {
             UpdateGameSpeedUI();
         }
 
-        internal void UpdateGameSpeedUI() {
-            GameSpeedUILabel.text = Mathf.RoundToInt(Time.timeScale).ToString();
-        }
+
+
 
         #region Debug
         [Header("Debug")]
         public RoadConnector fromNode;
         public RoadConnector toNode;
         public GraphGenerator graphGenerator;
-        public void DisplayShortestPathDebug() {
-            List<Node> shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode.GraphNode, toNode.GraphNode);
+
+        List<Node> shortestPathNodes;
+        private void OnDrawGizmosSelected() {
 
             if (fromNode == null || toNode == null || shortestPathNodes == null)
                 return;
 
+
             for (int i = 0; i < shortestPathNodes.Count - 1; i++) {
                 Vector3 p1 = shortestPathNodes[i].position;
                 Vector3 p2 = shortestPathNodes[i + 1].position;
-                //Debug.Log(shortestPathNodes[i].name);
-
-                // Handles.Label((p1 + p2) / 2, $"{weights[i]}");
 #if UNITY_EDITOR
                 float thickness = 3f;
                 Handles.DrawBezier(p1, p2, p1, p2, Color.magenta, null, thickness);
 #endif
+            }
+        }
+        public void DisplayShortestPathDebug() {
+            shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode.GraphNode, toNode.GraphNode);
+            if (shortestPathNodes == null) {
+                Debug.Log($"No shortest path found from: {fromNode.GraphNode?.Name} to: {toNode.GraphNode?.Name}");
             }
         }
         #endregion
@@ -98,10 +106,10 @@ namespace Simulator.Manager {
             if (GUILayout.Button("Decrease Speed")) {
                 gameSettings.DecreaseGameSpeed();
             }
-            if (GUILayout.Button("Reset Speed")) {
-                gameSettings.ResetGameSpeed();
-            }
 
+            if (GUILayout.Button("Calcualate shortest path")) {
+                gameSettings.DisplayShortestPathDebug();
+            }
         }
     }
 #endif

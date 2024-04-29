@@ -34,9 +34,9 @@ namespace Simulator.Road {
         #endregion
 
         public void Initialize() {
-            IsInitialized = true;
             SetAdjecentRoadConnector();
             SetupGraphNode();
+            IsInitialized = true;
         }
 
         public void DeInitialize() {
@@ -83,10 +83,18 @@ namespace Simulator.Road {
             return true;
         }
 
+
         private void SetupGraphNode() {
             if (roadConnectorType == RoadConnectorType.Incomming) return;
 
-            GraphNode = new(transform.name, transform.position, ParentRoadSetup);
+            GraphNode = new($"{GraphGenerator.character}{GraphGenerator.number}", transform.position, ParentRoadSetup);
+
+            GraphGenerator.number++;
+            if (GraphGenerator.number == 9) {
+                GraphGenerator.character++;
+                GraphGenerator.number = 0;
+            }
+
             if (AdjecentRoadConnector != null) {
                 AdjecentRoadConnector.GraphNode = GraphNode;
             }
