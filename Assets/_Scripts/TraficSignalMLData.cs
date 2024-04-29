@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Simulator.ML {
     public class TraficSignalMLData : MonoBehaviour {
-        [SerializeField] private GameSettingsScriptableObject gameSettings;
+        [SerializeField] private MLAlgorithmSO mlAlgorithmSettings;
 
         [field: SerializeField] public Transform[] incommingAreas { get; private set; }
         //private int lastNumberOfVehicles = 0;
@@ -68,7 +68,7 @@ namespace Simulator.ML {
         }
 
         private float CalculateRewards(float vehicleThroughput) {
-            float rewards = vehicleThroughput * gameSettings.REWARD_MULTIPLYER1;
+            float rewards = vehicleThroughput * mlAlgorithmSettings.REWARD_MULTIPLYER1;
 
             int observationIndex = 1;
             for (int areaIndex = 0; areaIndex < NUM_OF_AREA; areaIndex++) {

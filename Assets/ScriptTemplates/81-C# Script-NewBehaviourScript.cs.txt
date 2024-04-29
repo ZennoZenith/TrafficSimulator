@@ -1,20 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 #ROOTNAMESPACEBEGIN#
-public class #SCRIPTNAME# : MonoBehaviour {
-    #NOTRIM#
+    public class #SCRIPTNAME# : MonoBehaviour {
+        #region Public Fields
+        #NOTRIM#
+        #endregion
         
-    #region DEBUG   
-    // [Header("Debug")]
-    #NOTRIM#    
-    #endregion
+        
+        #region Unity Methods
+        #NOTRIM#
+        #endregion
+
+        #region DEBUG   
+        // [Header("Debug")]
+        #NOTRIM#    
+        #endregion
+
+
+
+        #region Private Methods
+        #NOTRIM#    
+        #endregion
+
 
 #if UNITY_EDITOR
     
 #endif
 
-}
+    }
 #ROOTNAMESPACEEND#
 

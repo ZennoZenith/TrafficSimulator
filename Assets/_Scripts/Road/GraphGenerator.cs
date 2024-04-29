@@ -10,7 +10,8 @@ namespace Simulator.Road {
     [RequireComponent(typeof(VehicleSpawnerManager))]
     public class GraphGenerator : MonoBehaviour {
         // Start is called before the first frame update
-        [SerializeField] private GameSettingsScriptableObject gameSettings;
+        [SerializeField] private SplineDataSO splineSettings;
+        [SerializeField] private DebugSettingsSO debugSettings;
         [SerializeField] private VehicleSpawnerManager vehicleSpawnerManager;
         public Graph.Graph DirectedGraph { get; private set; } = new();
 
@@ -31,7 +32,7 @@ namespace Simulator.Road {
             DirectedGraph.Clear();
 
             foreach (RoadSetup node in transform.GetComponentsInChildren<RoadSetup>()) {
-                node.ConvertSplinesToVectors(gameSettings.splineResolution);
+                node.ConvertSplinesToVectors();
                 nodes.Add(node);
             }
 
@@ -77,7 +78,7 @@ namespace Simulator.Road {
                 }
             }
 
-            if (gameSettings.printGraphDetails) {
+            if (debugSettings.printGraphDetails) {
                 DirectedGraph.PrintNodes();
                 DirectedGraph.PrintGraph();
             }
@@ -87,10 +88,10 @@ namespace Simulator.Road {
 #if UNITY_EDITOR
 
         private void OnDrawGizmosSelected() {
-            if (gameSettings.showGraphNode)
+            if (debugSettings.showGraphNode)
                 ShowNodes();
 
-            if (gameSettings.showGraphLine)
+            if (debugSettings.showGraphLine)
                 ShowGraphEdges();
 
 
@@ -112,7 +113,7 @@ namespace Simulator.Road {
         private void ShowNodes() {
             foreach (RoadSetup node in nodes) {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawSphere(node.transform.position, gameSettings.nodeSphereRadius);
+                Gizmos.DrawSphere(node.transform.position, debugSettings.nodeSphereRadius);
                 //Handles.Label(node.transform.position + new Vector3(0, 5, 0), node.name);
             }
         }

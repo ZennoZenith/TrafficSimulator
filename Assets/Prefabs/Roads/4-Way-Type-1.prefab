@@ -1959,7 +1959,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c5c3f03604c58343a7be0b4e0155e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
+  splineSettings: {fileID: 11400000, guid: 54962606bbe628a4d9c1e8f8886fc1aa, type: 2}
   <RoadTypeSO>k__BackingField: {fileID: 11400000, guid: 3e444fad0df884b4c89d8c16e9bb896c,
     type: 2}
   <MaxAllowedSpeed>k__BackingField: 7
@@ -2041,6 +2041,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <RoadSetup>k__BackingField: {fileID: 5089281458586516534}
+  trafficSignalSettings: {fileID: 11400000, guid: b8ee69785d175de49b5fc94e1e8c6ac1,
+    type: 2}
+  dataGenerationTime: {fileID: 11400000, guid: f63e28b51c400c944a04c18a96eba838, type: 2}
+  mlAlgorrithmSettings: {fileID: 11400000, guid: 4b3b210cbdbbd2f4ba1f3e81bf41c559,
+    type: 2}
   gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
   traficSignalMLData: {fileID: 0}
   trafficSignalMlAgent: {fileID: 0}
@@ -2091,6 +2096,7 @@ MonoBehaviour:
   TeamId: 0
   m_UseChildSensors: 1
   m_UseChildActuators: 1
+  m_DeterministicInference: 0
   m_ObservableAttributeHandling: 0
 --- !u!114 &5518126046284269865
 MonoBehaviour:
@@ -2122,6 +2128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DecisionPeriod: 20
+  DecisionStep: 0
   TakeActionsBetweenDecisions: 1
 --- !u!114 &7615519220734013857
 MonoBehaviour:
@@ -2135,7 +2142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 939ceefd90d976d47bf75a9458791f2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
+  mlAlgorithmSettings: {fileID: 0}
   <incommingAreas>k__BackingField:
   - {fileID: 3591964376156155769}
   - {fileID: 1990011107007482634}

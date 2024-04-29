@@ -286,15 +286,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <VehicleType>k__BackingField: {fileID: 11400000, guid: 5c18410eed8ebec48ac234f613856132,
     type: 2}
-  gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
+  <VehicleSettings>k__BackingField: {fileID: 11400000, guid: 394971b0beb988e4db42cb62c798a83e,
+    type: 2}
+  debugSettings: {fileID: 11400000, guid: 04a5a1a9cbec40d40ab58872e76bf526, type: 2}
   vehicleController: {fileID: 3937444468051832230}
   frontRay: {fileID: 5543694189479784521}
   sideRay: {fileID: 6491575356514691585}
-  <ShortestPathNodes>k__BackingField: []
   <GraphGenerator>k__BackingField: {fileID: 0}
   showDebugLines: 0
-  fromNode: {fileID: 0}
-  toNode: {fileID: 0}
 --- !u!114 &3937444468051832230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -307,7 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10251fc85f294284a97779812c2df9b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UImanager: {fileID: 0}
+  UIManager: {fileID: 0}
   speedTextUI: {fileID: 0}
   <VehicleDriverAI>k__BackingField: {fileID: 473570593322093136}
   vehicleData: {fileID: 11400000, guid: 5c18410eed8ebec48ac234f613856132, type: 2}
@@ -347,7 +346,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0412085732782924093f4aca7801f1ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
 --- !u!1001 &7393163828220736764
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b803c0133888a14ba57fc7286b7ff1d, type: 3}
+  m_Name: DefaultSignalSettings
+  m_EditorClassIdentifier: 
+  defautGreenTime: 30
+  defautYellowTime: 3
+  greenMaterial: {fileID: 2100000, guid: 7883f2b4ee78fb04ea5ad8b275998414, type: 2}
+  redMaterial: {fileID: 2100000, guid: af757dfe5edcb1741a9e0e6a3ef9279a, type: 2}
+  minGreenLightTime: 10
+  maxGreenLightTime: 60

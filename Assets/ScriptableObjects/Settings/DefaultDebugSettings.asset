@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7ec0506e91d8ca47b96a3ab38997143, type: 3}
+  m_Name: DefaultDebugSettings
+  m_EditorClassIdentifier: 
+  showGraphNode: 1
+  showGraphLine: 1
+  printGraphDetails: 0
+  nodeSphereRadius: 1
+  showDebugPathfindingLines: 1
+  showDebugMessage: 1

@@ -518,7 +518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c5c3f03604c58343a7be0b4e0155e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
+  splineSettings: {fileID: 11400000, guid: 25d2354d8b00a014ea4cfb4db294f344, type: 2}
   <RoadTypeSO>k__BackingField: {fileID: 11400000, guid: 91d92da9da6b6a04e8a87d3a01a3e286,
     type: 2}
   <MaxAllowedSpeed>k__BackingField: 20

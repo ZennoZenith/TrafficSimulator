@@ -1,5 +1,6 @@
 using Simulator.AI;
 using Simulator.Manager;
+using Simulator.ScriptableObject;
 using System;
 using TMPro;
 using UnityEditor;
@@ -16,10 +17,10 @@ namespace Simulator.Vehicle {
 
     [RequireComponent(typeof(VehicleDriverAI))]
     public class VehicleController : MonoBehaviour {
-        [SerializeField] private UIManagerScriptableObject UImanager;
+        [SerializeField] private UIManagerSO UIManager;
         [SerializeField] private TextMeshProUGUI speedTextUI;
         [field: SerializeField] public VehicleDriverAI VehicleDriverAI { get; private set; }
-        [SerializeField] private VehicleDataScriptableObject vehicleData;
+        [SerializeField] private VehicleDataSO vehicleData;
         [SerializeField] private Vector3 targetPosition;
 
         //private List<Vector3> pointsToFollow;

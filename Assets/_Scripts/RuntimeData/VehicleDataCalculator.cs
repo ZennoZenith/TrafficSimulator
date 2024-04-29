@@ -10,7 +10,6 @@ namespace Simulator.RuntimeData {
 
     [RequireComponent(typeof(VehicleController), typeof(VehicleDriverAI))]
     public class VehicleDataCalculator : MonoBehaviour {
-        [SerializeField] private GameSettingsScriptableObject gameSettings;
 
         private VehicleController vehicleController;
         private VehicleDriverAI vehicleDriverAI;
@@ -36,9 +35,11 @@ namespace Simulator.RuntimeData {
         private RoadSetup intersectionRoadSetup;
         private Coroutine tickCoroutine;
 
+        private VehicleSettingsSO vehicleSettings;
         private void Awake() {
             vehicleController = GetComponent<VehicleController>();
             vehicleDriverAI = GetComponent<VehicleDriverAI>();
+            vehicleSettings = vehicleDriverAI.VehicleSettings;
         }
 
         void OnEnable() {
@@ -53,7 +54,7 @@ namespace Simulator.RuntimeData {
             while (true) {
                 yield return new WaitForSeconds(1f);
 
-                if (vehicleController.Speed < gameSettings.considerStopSpeed) {
+                if (vehicleController.Speed < vehicleSettings.considerStopSpeed) {
                     TotalWaitTime++;
                     WaitTimeBeforeReachingIntersesction++;
                 }

@@ -1,4 +1,6 @@
+using Simulator.Road;
 using Simulator.ScriptableObject;
+using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -6,23 +8,27 @@ using Utilities;
 
 namespace Simulator.Manager {
     public class GameManager : SingletonPersistent<GameManager> {
-        public GameSettingsScriptableObject gameSettings;
+        public GameSettingsSO gameSettings;
+        public GraphicSettingsSO graphicsSettings;
 
         [SerializeField] private TextMeshProUGUI FpsCounterUI;
         [SerializeField] private TextMeshProUGUI GameSpeedUILabel;
 
         void Start() {
-            FpsCounter.Setup(gameSettings.updateInterval);
-            Application.targetFrameRate = gameSettings.defaultTargetFrameRate;
-
-            Time.timeScale = gameSettings.timeScale;
+            ResetGraphicsSettings();
+            Time.timeScale = gameSettings.defalultTimeScale;
             UpdateGameSpeedUI();
         }
 
         void Update() {
-            if (gameSettings.showFpsCount)
+            if (graphicsSettings.showFpsCount)
                 FpsCounterUI.text = Mathf.RoundToInt(FpsCounter.CalculateFpsCount()).ToString();
 
+        }
+
+        public void ResetGraphicsSettings() {
+            FpsCounter.Setup(graphicsSettings.updateInterval);
+            Application.targetFrameRate = graphicsSettings.defaultTargetFrameRate;
         }
 
         public void IncreaseGameSpeed() {
@@ -42,13 +48,38 @@ namespace Simulator.Manager {
         }
 
         public void ResetGameSpeed() {
-            Time.timeScale = gameSettings.timeScale;
+            Time.timeScale = gameSettings.defalultTimeScale;
             UpdateGameSpeedUI();
         }
 
         internal void UpdateGameSpeedUI() {
             GameSpeedUILabel.text = Mathf.RoundToInt(Time.timeScale).ToString();
         }
+
+        #region Debug
+        [Header("Debug")]
+        public RoadSetup fromNode;
+        public RoadSetup toNode;
+        public GraphGenerator graphGenerator;
+        public void DisplayShortestPathDebug() {
+            List<RoadSetup> shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
+
+            if (fromNode == null || toNode == null || shortestPathNodes == null)
+                return;
+
+            for (int i = 0; i < shortestPathNodes.Count - 1; i++) {
+                Vector3 p1 = shortestPathNodes[i].transform.position;
+                Vector3 p2 = shortestPathNodes[i + 1].transform.position;
+                //Debug.Log(shortestPathNodes[i].name);
+
+                // Handles.Label((p1 + p2) / 2, $"{weights[i]}");
+#if UNITY_EDITOR
+                float thickness = 3f;
+                Handles.DrawBezier(p1, p2, p1, p2, Color.magenta, null, thickness);
+#endif
+            }
+        }
+        #endregion
 
     }
 

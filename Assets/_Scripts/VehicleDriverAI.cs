@@ -8,12 +8,13 @@ using UnityEngine;
 
 namespace Simulator.AI {
     public class VehicleDriverAI : MonoBehaviour {
-        [field: SerializeField] public VehicleDataScriptableObject VehicleType { get; private set; }
-        [SerializeField] private GameSettingsScriptableObject gameSettings;
+        [field: SerializeField] public VehicleDataSO VehicleType { get; private set; }
+        [field: SerializeField] public VehicleSettingsSO VehicleSettings { get; set; }
+        [SerializeField] private DebugSettingsSO debugSettings;
         [SerializeField] private VehicleController vehicleController;
         [SerializeField] private Transform frontRay;
         [SerializeField] private Transform sideRay;
-        [field: SerializeField] public List<RoadSetup> ShortestPathNodes { get; private set; }
+        public List<RoadSetup> ShortestPathNodes { get; private set; }
         [field: SerializeField] public GraphGenerator GraphGenerator { get; private set; }
 
         public bool Initialized { get; private set; } = false;
@@ -31,8 +32,8 @@ namespace Simulator.AI {
 
         [Header("Debug")]
         public bool showDebugLines;
-        public RoadSetup fromNode;
-        public RoadSetup toNode;
+        private RoadSetup fromNode;
+        private RoadSetup toNode;
 
         private int ignoreLayer;
         private void Awake() {
@@ -153,13 +154,13 @@ namespace Simulator.AI {
 
         private void CalculateHeuristicSpeeds() {
             int i;
-            for (i = 0; i < shortestPathNodesLength - gameSettings.numberOfHeuristicPoints; i++) {
+            for (i = 0; i < shortestPathNodesLength - VehicleSettings.numberOfHeuristicPoints; i++) {
                 float speed = ShortestPathNodes[i].MaxAllowedSpeed;
                 // Heuristic calculation algorithm
-                for (int j = 0; j < gameSettings.numberOfHeuristicPoints; j++) {
+                for (int j = 0; j < VehicleSettings.numberOfHeuristicPoints; j++) {
                     speed += Mathf.Clamp(ShortestPathNodes[i + j + 1].MaxAllowedSpeed, 0, ShortestPathNodes[i].MaxAllowedSpeed);
                 }
-                speed /= gameSettings.numberOfHeuristicPoints + 1;
+                speed /= VehicleSettings.numberOfHeuristicPoints + 1;
                 HeuristicMaxSpeed.Add(speed);
             }
 
@@ -351,7 +352,7 @@ namespace Simulator.AI {
               new Vector3(frontRay.forward.x, 0, frontRay.forward.z),
               out hit,
               frontRay.rotation,
-              gameSettings.frontRaySensorLength,
+              VehicleSettings.frontRaySensorLength,
               LayerMask.GetMask("TrafficLight", "Vehicle"));
 
         }
@@ -372,7 +373,7 @@ namespace Simulator.AI {
         #region Debug Methods
 
         private void OnDrawGizmosSelected() {
-            if (gameSettings.showDebugPathfindingLines && showDebugLines) {
+            if (debugSettings.showDebugPathfindingLines && showDebugLines) {
                 DisplayShortestPathDebug();
 
                 Gizmos.color = Color.cyan;
@@ -387,7 +388,7 @@ namespace Simulator.AI {
 
                 // ----------------------------------------------------------------
                 Gizmos.color = Color.red;
-                bool m_HitDetect = Physics.BoxCast(frontRay.position, frontRay.localScale / 2, new Vector3(frontRay.forward.x, 0, frontRay.forward.z), out RaycastHit m_Hit, frontRay.rotation, gameSettings.frontRaySensorLength, ignoreLayer);
+                bool m_HitDetect = Physics.BoxCast(frontRay.position, frontRay.localScale / 2, new Vector3(frontRay.forward.x, 0, frontRay.forward.z), out RaycastHit m_Hit, frontRay.rotation, VehicleSettings.frontRaySensorLength, ignoreLayer);
                 //bool m_HitDetect = Physics.BoxCast(frontRay.position, frontRay.localScale / 2, new Vector3(frontRay.forward.x, 0, frontRay.forward.z), out RaycastHit m_Hit, frontRay.rotation, 30, ignoreLayer);
 
                 //Check if there has been a hit yet
@@ -398,7 +399,7 @@ namespace Simulator.AI {
                     Gizmos.DrawWireSphere(m_Hit.point, 0.3f);
                 }
 
-                Gizmos.DrawRay(frontRay.position, frontRay.forward * gameSettings.frontRaySensorLength);
+                Gizmos.DrawRay(frontRay.position, frontRay.forward * VehicleSettings.frontRaySensorLength);
                 //Gizmos.DrawRay(frontRay.position, frontRay.forward * 30);
             }
         }
@@ -431,25 +432,5 @@ namespace Simulator.AI {
         #endregion
 
     }
-
-
-#if UNITY_EDITOR
-    [CustomEditor(typeof(VehicleDriverAI))]
-    public class VehicleDriverAIEditor : Editor {
-        public override void OnInspectorGUI() {
-            //base.OnInspectorGUI();
-
-            DrawDefaultInspector();
-
-            VehicleDriverAI vehicleDriverAI = (VehicleDriverAI)target;
-
-            if (GUILayout.Button("Initialize")) {
-                vehicleDriverAI.Initialize(null, vehicleDriverAI.fromNode, vehicleDriverAI.toNode);
-            }
-
-        }
-    }
-
-#endif
 
 }

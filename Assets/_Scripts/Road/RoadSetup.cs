@@ -24,13 +24,15 @@ namespace Simulator.Road {
         }
 
 
-        [SerializeField] private GameSettingsScriptableObject gameSettings;
-        [field: SerializeField] public RoadTypeScriptableObject RoadTypeSO { get; private set; }
+        [SerializeField] private SplineDataSO splineSettings;
+        [field: SerializeField] public RoadTypeSO RoadTypeSO { get; private set; }
         [Tooltip("in meter per second")]
         [field: SerializeField] public float MaxAllowedSpeed { get; private set; }
         [SerializeField] private SplineContainer splineContainer;
-        [SerializeField] private int overridenSplineResolution = 50;
-        [SerializeField] private bool overrideSplineResolution;
+
+        [Tooltip("Set 0 to disable override"),]
+        //[SerializeField] private int overridenSplineResolution = 0;
+        //[SerializeField] private bool overrideSplineResolution;
         [field: SerializeField] public Transform[] SpawnPoints { get; private set; }
         [SerializeField] private RoadConnector[] incomming;
         [SerializeField] private RoadConnector[] outgoing;
@@ -87,11 +89,9 @@ namespace Simulator.Road {
         /// sets vector.y to 0
         /// </summary>
         /// <param name="resolution"></param>
-        public void ConvertSplinesToVectors(int resolution) {
+        public void ConvertSplinesToVectors() {
             int numberOfSplines = splineContainer.Splines.Count;
-
-            if (overrideSplineResolution)
-                resolution = overridenSplineResolution;
+            int resolution = splineSettings.splineResolution;
 
             RoutesAsVectors.Clear();
             for (int i = 0; i < numberOfSplines; i++) {
@@ -104,7 +104,7 @@ namespace Simulator.Road {
         }
 
         private Vector3 SetVectorY(float3 position) {
-            return new Vector3(position.x, gameSettings.pathVectorY, position.z);
+            return new Vector3(position.x, splineSettings.pathVectorY, position.z);
         }
 
         public EdgeData GetIncommingConnector(RoadSetup adjecentIncommingNode) {

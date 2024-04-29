@@ -371,13 +371,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c5c3f03604c58343a7be0b4e0155e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameSettings: {fileID: 11400000, guid: 0feaf37580b44d945a13e8efc1c5b2d6, type: 2}
+  splineSettings: {fileID: 11400000, guid: 54962606bbe628a4d9c1e8f8886fc1aa, type: 2}
   <RoadTypeSO>k__BackingField: {fileID: 11400000, guid: 480ccfe65f7712742a8fc0b618de31c1,
     type: 2}
-  <MaxAllowedSpeed>k__BackingField: 0
+  <MaxAllowedSpeed>k__BackingField: 3
   splineContainer: {fileID: 8209699488292506040}
-  overridenSplineResolution: 50
-  overrideSplineResolution: 0
   <SpawnPoints>k__BackingField: []
   incomming:
   - {fileID: 7470040772191034507}

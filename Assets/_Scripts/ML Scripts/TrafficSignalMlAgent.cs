@@ -13,7 +13,7 @@ namespace Simulator.ML {
         private int actionIndex = 0;
         private List<float> observations = new(121);
 
-        public GameSettingsScriptableObject gameSettings;
+        public GameSettingsSO gameSettings;
 
         public float ConsumeAction(float reward, float[] obseve) {
             AddReward(reward);

@@ -11,6 +11,7 @@ using UnityEngine;
 namespace Simulator.TrafficSignal {
     [RequireComponent(typeof(RoadSetup))]
     public class TrafficLightSetup : MonoBehaviour {
+        #region Public Fields
         [System.Serializable]
         public struct Phase {
             public List<int> splineIndex;
@@ -20,23 +21,32 @@ namespace Simulator.TrafficSignal {
         }
 
         [field: SerializeField] public RoadSetup RoadSetup { get; private set; }
-        [SerializeField] private GameSettingsScriptableObject gameSettings;
-        [SerializeField] private TraficSignalMLData traficSignalMLData;
-        [SerializeField] private TrafficSignalMlAgent trafficSignalMlAgent;
-        [SerializeField] private GameObject LineRendererPrefab;
-        [SerializeField] private TextMeshPro TimingUI;
         [field: SerializeField] public Phase[] Phases { get; private set; }
-
-
         [field: SerializeField] public int CurrentPhaseIndex { get; private set; }
         [field: SerializeField] public int PreviousPhaseIndex { get; private set; }
+
+        #endregion
+
+        [SerializeField] private SignalSettingsSO trafficSignalSettings;
+        [SerializeField] private DataGenerationSettingsSO dataGenerationTime;
+        [SerializeField] private MLAlgorithmSO mlAlgorrithmSettings;
+        [SerializeField] private GameSettingsSO gameSettings;
+        [SerializeField] private GameObject LineRendererPrefab;
+        [SerializeField] private TextMeshPro TimingUI;
+
+
 
         float greenLightTime;
         bool mlInitialized = false;
         private int lastNumberOfVehicles = 0;
         private float lastCheckedTime = 0;
 
+
         private IntersectionDataCalculator intersectionDataCalculator;
+        private TraficSignalMLData traficSignalMLData;
+        private TrafficSignalMlAgent trafficSignalMlAgent;
+
+        #region Unity Methods
         private void Awake() {
             RoadSetup = GetComponent<RoadSetup>();
             traficSignalMLData = GetComponent<TraficSignalMLData>();
@@ -54,6 +64,8 @@ namespace Simulator.TrafficSignal {
             StartCoroutine(SignalCycle());
             StartCoroutine(Tick());
         }
+        #endregion
+
 
         private List<LineRenderer> lineRenderers;
         void SetupLineRenderer() {
@@ -63,7 +75,7 @@ namespace Simulator.TrafficSignal {
                 t.SetParent(transform);
 
                 lineRenderers.Add(t.GetComponent<LineRenderer>());
-                lineRenderers[i].material = gameSettings.redMaterial;
+                lineRenderers[i].material = trafficSignalSettings.redMaterial;
                 lineRenderers[i].positionCount = RoadSetup.RoutesAsVectors[i].Count;
                 for (int j = 0; j < RoadSetup.RoutesAsVectors[i].Count; j++) {
                     lineRenderers[i].SetPosition(j, RoadSetup.RoutesAsVectors[i][j]);
@@ -84,7 +96,7 @@ namespace Simulator.TrafficSignal {
 
         IEnumerator SignalCycle() {
             while (true) {
-                if (gameSettings.usML && Time.time > gameSettings.bufferTime && !mlInitialized) {
+                if (gameSettings.usML && Time.time > dataGenerationTime.bufferTime && !mlInitialized) {
                     mlInitialized = true;
                 }
                 int numberOfVehicles = intersectionDataCalculator.TotalNumberOfVehicles;
@@ -94,13 +106,13 @@ namespace Simulator.TrafficSignal {
 
                 if (!mlInitialized)
                     ChangePhaseTo(GetNextPhase());
-                else if (gameSettings.mL_Algorithm == ML_Algorithm.SignalOptimization) {
+                else if (mlAlgorrithmSettings.mL_Algorithm == ML_Algorithm.SignalOptimization) {
                     (float[] observations, float reward) = traficSignalMLData.GetObservationsAndRewards(CurrentPhaseIndex, throughput);
                     //ChangePhaseTo(GetNextPhase());
                     ChangeToNextPhaseWithTimeInterpolate(trafficSignalMlAgent.ConsumeAction(reward, observations));
                     //print($"reward: {reward}");
                 }
-                else if (gameSettings.mL_Algorithm == ML_Algorithm.SignalOptimization) {
+                else if (mlAlgorrithmSettings.mL_Algorithm == ML_Algorithm.SignalOptimization) {
                     throw new NotImplementedException();
                 }
 
@@ -137,10 +149,10 @@ namespace Simulator.TrafficSignal {
 
         void RenderPhaseSignalLine() {
             foreach (var splineIndex in Phases[PreviousPhaseIndex].splineIndex) {
-                lineRenderers[splineIndex].material = gameSettings.redMaterial;
+                lineRenderers[splineIndex].material = trafficSignalSettings.redMaterial;
             }
             foreach (var splineIndex in Phases[CurrentPhaseIndex].splineIndex) {
-                lineRenderers[splineIndex].material = gameSettings.greenMaterial;
+                lineRenderers[splineIndex].material = trafficSignalSettings.greenMaterial;
             }
         }
 
