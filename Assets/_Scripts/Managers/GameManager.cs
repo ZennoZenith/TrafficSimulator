@@ -1,3 +1,4 @@
+using Simulator.Graph;
 using Simulator.Road;
 using Simulator.ScriptableObject;
 using System.Collections.Generic;
@@ -58,18 +59,18 @@ namespace Simulator.Manager {
 
         #region Debug
         [Header("Debug")]
-        public RoadSetup fromNode;
-        public RoadSetup toNode;
+        public RoadConnector fromNode;
+        public RoadConnector toNode;
         public GraphGenerator graphGenerator;
         public void DisplayShortestPathDebug() {
-            List<RoadSetup> shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
+            List<Node> shortestPathNodes = graphGenerator.DirectedGraph.FindShortestPath(fromNode.GraphNode, toNode.GraphNode);
 
             if (fromNode == null || toNode == null || shortestPathNodes == null)
                 return;
 
             for (int i = 0; i < shortestPathNodes.Count - 1; i++) {
-                Vector3 p1 = shortestPathNodes[i].transform.position;
-                Vector3 p2 = shortestPathNodes[i + 1].transform.position;
+                Vector3 p1 = shortestPathNodes[i].position;
+                Vector3 p2 = shortestPathNodes[i + 1].position;
                 //Debug.Log(shortestPathNodes[i].name);
 
                 // Handles.Label((p1 + p2) / 2, $"{weights[i]}");

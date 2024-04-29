@@ -61,12 +61,12 @@ namespace Simulator.RuntimeData {
 
                 TotalTimeTaken++;
 
-                if (TotalDistanceTraveled == 0 && vehicleDriverAI.Initialized) {
+                if (TotalDistanceTraveled == 0 && vehicleDriverAI.IsInitialized) {
                     TotalDistanceTraveled = vehicleDriverAI.DistanceToTravel();
                 }
 
 
-                var currentRoadSetup = vehicleDriverAI.ShortestPathNodes[vehicleDriverAI.CurrentNodeIndex];
+                var currentRoadSetup = vehicleDriverAI.ShortestPathNodes[vehicleDriverAI.CurrentNodeIndex].roadSetup;
 
                 if (currentRoadSetup.RoadTypeSO.isIntersection) {
                     ReachedAnIntersection = true;

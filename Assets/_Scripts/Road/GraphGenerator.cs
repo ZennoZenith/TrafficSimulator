@@ -2,78 +2,74 @@ using Simulator.Graph;
 using Simulator.Manager;
 using Simulator.ScriptableObject;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
 namespace Simulator.Road {
 
-    [RequireComponent(typeof(VehicleSpawnerManager))]
     public class GraphGenerator : MonoBehaviour {
         // Start is called before the first frame update
         [SerializeField] private SplineDataSO splineSettings;
         [SerializeField] private DebugSettingsSO debugSettings;
         [SerializeField] private VehicleSpawnerManager vehicleSpawnerManager;
-        public Graph.Graph DirectedGraph { get; private set; } = new();
+        public Graph.Graph<Node> DirectedGraph { get; private set; } = new();
 
-        private readonly List<RoadSetup> nodes = new();
+        private readonly List<Node> nodes = new();
 
+        #region Unity Methods
         private void Awake() {
-            vehicleSpawnerManager = GetComponent<VehicleSpawnerManager>();
-            GenerateGraph();
-
         }
 
         private void Start() {
-            //GenerateGraph();
+            GenerateGraph();
         }
+        #endregion
+
         public void GenerateGraph() {
             // Get all children gameobject with "RoadSetup" component
             nodes.Clear();
             DirectedGraph.Clear();
 
-            foreach (RoadSetup node in transform.GetComponentsInChildren<RoadSetup>()) {
-                node.ConvertSplinesToVectors();
-                nodes.Add(node);
+            var allRoadSetups = transform.GetComponentsInChildren<RoadSetup>();
+
+            foreach (RoadSetup roadSetup in allRoadSetups) {
+                roadSetup.Initialize();
+                //node.ConvertSplinesToVectors();
+                nodes.Concat(roadSetup.GraphNodes);
             }
 
             //Debug.Log($"Number of nodes: {nodes.Count}");
 
-            // Setup adjecent road connector for each node
+            // Add node to directed graph
             foreach (var node in nodes) {
-                node.Clear();
-                var froms = node.GetFromConnectors();
-                for (int i = 0; i < froms.Length; i++) {
-                    froms[i].SetAdjecentRoadConnector();
-                }
-                var tos = node.GetToConnectors();
-                for (int i = 0; i < tos.Length; i++) {
-                    //if (tos[i].connector == null) continue;
-                    tos[i].SetAdjecentRoadConnector();
-                }
-
-                // Add node to directed graph
                 DirectedGraph.AddNode(node);
             }
 
             // Setup edges of graph
-            foreach (var node in nodes) {
-                foreach (var outgoingConnector in node.GetToConnectors()) {
-                    if (outgoingConnector.AdjecentRoadConnector == null) continue;
-
-                    foreach (var incommingRoadSetup in node.GetAdjecentIncommingRoadSetupForOutgoingConnector(outgoingConnector)) {
-                        DirectedGraph.AddEdge(new EdgeData(node, outgoingConnector.AdjecentRoadConnector.ParentRoadSetup, incommingRoadSetup, outgoingConnector, outgoingConnector.AdjecentRoadConnector));
-                    }
-                }
-                node.Initialize();
+            foreach (RoadSetup roadSetup in allRoadSetups) {
+                roadSetup.SetupNodeEdgesFromRouteMap();
             }
 
-            // Setup reachable nodes from current node
-            foreach (VehicleSpawnerManager.SpawnerInfo from in vehicleSpawnerManager.Spawners) {
-                foreach (RoadSetup to in vehicleSpawnerManager.Despawners) {
-                    if (from.roadSetup == to) continue;
+            // Setup edges of graph
+            //foreach (var node in nodes) {
+            //    foreach (var outgoingConnector in node.GetToConnectors()) {
+            //        if (outgoingConnector.AdjecentRoadConnector == null) continue;
 
-                    if (DirectedGraph.FindShortestPath(from.roadSetup, to) != null) {
-                        from.roadSetup.AddReachableNode(to);
+            //        foreach (var incommingRoadSetup in node.GetAdjecentIncommingRoadSetupForOutgoingConnector(outgoingConnector)) {
+            //            DirectedGraph.AddEdge(new EdgeData(node, outgoingConnector.AdjecentRoadConnector.ParentRoadSetup, incommingRoadSetup, outgoingConnector, outgoingConnector.AdjecentRoadConnector));
+            //        }
+            //    }
+            //    node.Initialize();
+            //}
+
+            //Setup reachable nodes from current node
+            foreach (Spawner from in vehicleSpawnerManager.Spawners) {
+                foreach (DeSpawner to in vehicleSpawnerManager.Despawners) {
+                    if (from.RoadConnector == to) continue;
+
+                    if (DirectedGraph.FindShortestPath(from.RoadConnector.GraphNode, to.RoadConnector.GraphNode) != null) {
+                        from.RoadConnector.GraphNode.roadSetup.AddReachableNode(to.RoadConnector.GraphNode);
                     }
                 }
             }
@@ -97,10 +93,10 @@ namespace Simulator.Road {
 
         }
         private void ShowGraphEdges() {
-            foreach (RoadSetup node in nodes) {
+            foreach (var node in nodes) {
                 foreach (var edge in node.Edges) {
-                    Vector3 p1 = edge.Src.transform.position;
-                    Vector3 p2 = edge.Dest.transform.position;
+                    Vector3 p1 = node.position;
+                    Vector3 p2 = ((Node)edge.Dest).position;
                     float thickness = 3f;
 
                     Handles.Label((p1 + p2) / 2, $"{edge.Weight}");
@@ -111,9 +107,9 @@ namespace Simulator.Road {
 
 
         private void ShowNodes() {
-            foreach (RoadSetup node in nodes) {
+            foreach (var node in nodes) {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawSphere(node.transform.position, debugSettings.nodeSphereRadius);
+                Gizmos.DrawSphere(node.position, debugSettings.nodeSphereRadius);
                 //Handles.Label(node.transform.position + new Vector3(0, 5, 0), node.name);
             }
         }

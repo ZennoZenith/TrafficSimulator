@@ -1,42 +1,21 @@
-using Simulator.Road;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Simulator.Graph {
-    public class EdgeData {
-        public int Weight { get; private set; }
-        public RoadSetup Src { get; private set; }
-        public RoadSetup Dest { get; private set; }
-        public RoadSetup IncommingFrom { get; private set; }
-        public RoadConnector FromRoadConnector { get; private set; }
-        public RoadConnector ToRoadConnector { get; private set; }
-        public EdgeData(RoadSetup src, RoadSetup dest, RoadSetup incommingFrom, RoadConnector from, RoadConnector to, int weight = 1) {
-            Src = src;
-            Dest = dest;
-            IncommingFrom = incommingFrom;
-            FromRoadConnector = from;
-            ToRoadConnector = to;
-            this.Weight = weight;
-        }
+    public abstract class GraphBase<T>
+        where T : INode {
 
-        public override string ToString() {
-            return "(" + this.Src.name + "," + this.Dest.name + "," + this.FromRoadConnector.name + "," + this.ToRoadConnector.name + ")";
-        }
-    }
-
-    public class Graph {
-        private readonly List<RoadSetup> adjencyList;
-
-        public List<RoadSetup> AdjencyList {
+        protected readonly List<T> adjencyList;
+        public List<T> AdjencyList {
             get {
                 return adjencyList;
             }
         }
-        public Graph() {
-            adjencyList = new List<RoadSetup>();
+        public GraphBase() {
+            adjencyList = new List<T>();
         }
 
-        public bool AddNode(RoadSetup node) {
+        public virtual bool AddNode(T node) {
             if (adjencyList.Contains(node))
                 return false;
 
@@ -44,58 +23,69 @@ namespace Simulator.Graph {
             return true;
         }
 
-        public bool AddEdge(EdgeData edgeData) {
-            if (!adjencyList.Contains(edgeData.Src))
-                return false;
-            return edgeData.Src.AddEdge(edgeData);
-        }
-        public bool CheckEdge(RoadSetup src, RoadSetup dest) {
-            if (!adjencyList.Contains(src))
-                return false;
+        public void Clear() {
+            foreach (var item in adjencyList) {
+                item.Clear();
+            }
 
-            return src.CheckEdge(dest);
-        }
-        public EdgeData GetEdge(RoadSetup src, RoadSetup dest) {
-            return src.GetEdge(dest);
-        }
-
-        internal void Clear() {
             adjencyList.Clear();
         }
 
-        internal void PrintGraph() {
-            foreach (RoadSetup node in adjencyList) {
-                string temp = $"EdgeCount: {node.Edges.Count}, {node.name}";
-                foreach (EdgeData edge in node.Edges) {
-                    temp += $" -> {edge.Dest.name}";
+        public void PrintGraph() {
+            foreach (T node in adjencyList) {
+                string temp = $"EdgeCount: {node.Edges.Count}, {node.Name}";
+                foreach (Edge<INode> edge in node.Edges) {
+                    temp += $" -> {edge.Dest.Name}";
                 }
                 Debug.Log(temp);
             }
         }
 
         internal void PrintNodes() {
-            foreach (RoadSetup node in adjencyList) {
-                Debug.Log(node.transform.name);
+            foreach (T node in adjencyList) {
+                Debug.Log(node.Name);
             }
         }
+        public virtual bool AddEdge(T src, Edge<INode> edgeData) {
+            if (!adjencyList.Contains(src))
+                return false;
+            return src.AddEdge(edgeData);
+        }
 
-        internal List<RoadSetup> FindShortestPath(RoadSetup src, RoadSetup dest) {
+        public bool CheckEdge(T src, T dest) {
+            if (!adjencyList.Contains(src))
+                return false;
+
+            return src.CheckEdge(dest);
+        }
+
+        //public Edge<INode> GetEdge(T src, T dest) {
+        //    return src.GetEdge(dest);
+        //}
+
+
+    }
+
+    public class Graph<T> : GraphBase<T>
+        where T : INode {
+
+        internal List<T> FindShortestPath(T src, T dest) {
             return BFSAlgorithm(src, dest);
         }
 
         private struct QueueStruct {
-            public RoadSetup fromNode;
-            public RoadSetup toNode;
+            public T fromNode;
+            public T toNode;
             public int weight;
         }
 
 
         // https://www.youtube.com/watch?v=T_m27bhVQQQ
-        private List<RoadSetup> BFSAlgorithm(RoadSetup src, RoadSetup dest) {
-            List<RoadSetup> nodes = new();
+        private List<T> BFSAlgorithm(T src, T dest) {
+            List<T> nodes = new();
             // HashSet<Node> visitedNodes = new();
             Queue<QueueStruct> queue = new();
-            Dictionary<RoadSetup, (RoadSetup, int)> pathAndCost = new();
+            Dictionary<T, (T, int)> pathAndCost = new();
 
 
             queue.Enqueue(new QueueStruct { fromNode = src, toNode = src, weight = 0 });
@@ -114,19 +104,18 @@ namespace Simulator.Graph {
                     pathAndCost.Add(queueStruct.toNode, (queueStruct.fromNode, queueStruct.weight));
                 }
 
-                List<EdgeData> edgeNodesOfNode = queueStruct.toNode.Edges;
+                var edgeNodesOfNode = queueStruct.toNode.Edges;
 
                 if (edgeNodesOfNode.Count == 0)
                     continue;
 
-                foreach (EdgeData nodeEdge in edgeNodesOfNode) {
-                    if (queueStruct.fromNode == queueStruct.toNode || queueStruct.fromNode == nodeEdge.IncommingFrom) {
-                        queue.Enqueue(new QueueStruct {
-                            fromNode = nodeEdge.Src,
-                            toNode = nodeEdge.Dest,
-                            weight = queueStruct.weight + nodeEdge.Weight
-                        });
-                    }
+                foreach (var nodeEdge in edgeNodesOfNode) {
+                    //if (queueStruct.fromNode == queueStruct.toNode || queueStruct.fromNode == nodeEdge.IncommingFrom) {
+                    queue.Enqueue(new QueueStruct {
+                        fromNode = queueStruct.toNode,
+                        toNode = (T)nodeEdge.Dest,
+                        weight = queueStruct.weight + nodeEdge.Weight
+                    });
                 }
             }
 
@@ -135,13 +124,13 @@ namespace Simulator.Graph {
                 return null;
             }
 
-            RoadSetup tempNode = dest;
+            T tempNode = dest;
             // int weight = pathAndCost[tempNode].Item2;
 
             do {
                 nodes.Add(tempNode);
                 tempNode = pathAndCost[tempNode].Item1;
-            } while (tempNode != src);
+            } while (tempNode.Equals(src));
 
             nodes.Add(src);
 
@@ -155,8 +144,14 @@ namespace Simulator.Graph {
             // Debug.Log("number of nodes: " + nodes.Count);
             // Debug.Log(temp);
 
+            if (0 == nodes.Count)
+                return null;
+
             return nodes;
         }
 
+        public override bool AddNode(T node) {
+            throw new System.NotImplementedException();
+        }
     }
 }

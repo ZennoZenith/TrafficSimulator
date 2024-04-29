@@ -1,30 +1,31 @@
+using Simulator.Road;
 using UnityEngine;
 
-#ROOTNAMESPACEBEGIN#
-    public class #SCRIPTNAME# : MonoBehaviour {
+namespace Simulator {
+    public class DeSpawner : MonoBehaviour {
         #region Public Fields
-        #NOTRIM#
+
         #endregion
-        
-        
+        [field: SerializeField] public RoadConnector RoadConnector { get; private set; }
+
         #region Unity Methods
-        #NOTRIM#
+
         #endregion
-        
+
         #region Private Methods
-        #NOTRIM#    
+
         #endregion
 
         #region DEBUG   
         // [Header("Debug")]
-        #NOTRIM#    
+
         #endregion
 
 
 #if UNITY_EDITOR
-    
+
 #endif
 
     }
-#ROOTNAMESPACEEND#
+}
 

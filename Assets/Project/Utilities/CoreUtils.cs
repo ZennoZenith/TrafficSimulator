@@ -6,8 +6,8 @@ namespace Utilities {
     }
 
     public interface IInitializable {
-        bool IsInitialized { get; set; }
-        void Initialise();
-        void DeInitialise();
+        bool IsInitialized { get; }
+        void Initialize();
+        void DeInitialize();
     }
 }

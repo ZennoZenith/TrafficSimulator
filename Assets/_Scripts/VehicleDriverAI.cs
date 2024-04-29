@@ -1,3 +1,4 @@
+using Simulator.Graph;
 using Simulator.Road;
 using Simulator.ScriptableObject;
 using Simulator.TrafficSignal;
@@ -14,10 +15,10 @@ namespace Simulator.AI {
         [SerializeField] private VehicleController vehicleController;
         [SerializeField] private Transform frontRay;
         [SerializeField] private Transform sideRay;
-        public List<RoadSetup> ShortestPathNodes { get; private set; }
+        public List<Node> ShortestPathNodes { get; private set; }
         [field: SerializeField] public GraphGenerator GraphGenerator { get; private set; }
 
-        public bool Initialized { get; private set; } = false;
+        public bool IsInitialized { get; private set; } = false;
         public Vector3 SpawnedAt { get; private set; }
 
         public List<Vector3> PointsToFollow { get; private set; } = new();
@@ -32,8 +33,8 @@ namespace Simulator.AI {
 
         [Header("Debug")]
         public bool showDebugLines;
-        private RoadSetup fromNode;
-        private RoadSetup toNode;
+        private Node fromNode;
+        private Node toNode;
 
         private int ignoreLayer;
         private void Awake() {
@@ -47,7 +48,7 @@ namespace Simulator.AI {
         }
         //-
 
-        public void Initialize(GraphGenerator gg, RoadSetup fromNode, RoadSetup toNode) {
+        public void Initialize(GraphGenerator gg, Node fromNode, Node toNode) {
             this.fromNode = fromNode;
             this.toNode = toNode;
 
@@ -65,7 +66,7 @@ namespace Simulator.AI {
             ShortestPathNodes = GraphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
             //if (shortestPathNodes == null && gameSettings.showDebugMessage) {
             if (ShortestPathNodes == null) {
-                Debug.Log($"No path found between {fromNode.transform.name} and {toNode.transform.name}.");
+                Debug.Log($"No path found between {fromNode.Name} and {toNode.Name}.");
                 DeInitialize();
                 return;
             }
@@ -83,16 +84,16 @@ namespace Simulator.AI {
             currentFollowingPointIndex = 0;
 
             // Set spawn location
-            Transform temp = fromNode.GetSpawnPointNearestTo(PointsToFollow[0]);
-            if (temp != null) {
-                transform.position = temp.position;
-                transform.forward = temp.forward;
-            }
-            else {
-                transform.position = PointsToFollow[0];
-                transform.forward = PointsToFollow[1] - PointsToFollow[0];
-            }
-            SpawnedAt = transform.position;
+            //Transform temp = fromNode.GetSpawnPointNearestTo(PointsToFollow[0]);
+            //if (temp != null) {
+            //    transform.position = temp.position;
+            //    transform.forward = temp.forward;
+            //}
+            //else {
+            transform.position = PointsToFollow[0];
+            transform.forward = PointsToFollow[1] - PointsToFollow[0];
+            //}
+            SpawnedAt = PointsToFollow[0];
 
 
             //string temp = "";
@@ -101,34 +102,36 @@ namespace Simulator.AI {
             //}
             //Debug.Log(temp);
 
-            Initialized = true;
+            IsInitialized = true;
         }
 
         public void DeInitialize() {
             PointsToFollow.Clear();
             PointsToNodesIndex.Clear();
             HeuristicMaxSpeed.Clear();
-            Initialized = false;
+            IsInitialized = false;
             vehicleController.DeInitialize();
         }
 
         private int SetAllPathToFollowVectors() {
 
-            // For first node
+            //// For first node
             //var found = shortestPathNodes[0].GetRouteFromConnectors(null, edgeData.FromRoadConnector);
-            int numberOfPointsAdded = 0;
-            var found = ShortestPathNodes[0].GetRouteFromToNode(null, ShortestPathNodes[1]);
-            if (found != null) {
-                PointsToFollow.AddRange(found);
-                numberOfPointsAdded += found.Count;
-                PointsToNodesIndex.Add(numberOfPointsAdded);
-            }
+            //int numberOfPointsAdded = 0;
+            //var found = ShortestPathNodes[0].roadSetup.GetRouteFromToNode(null, ShortestPathNodes[1]);
+            //if (found != null) {
+            //    PointsToFollow.AddRange(found);
+            //    numberOfPointsAdded += found.Count;
+            //    PointsToNodesIndex.Add(numberOfPointsAdded);
+            //}
 
             // For in between nodes
+            List<Vector3> found;
+            int numberOfPointsAdded = 0;
             int len = ShortestPathNodes.Count;
             for (int i = 1; i < len - 1; i++) {
                 //found = shortestPathNodes[i].GetRouteFromConnectors(previousEdge.ToRoadConnector, edgeData.FromRoadConnector);
-                found = ShortestPathNodes[i].GetRouteFromToNode(ShortestPathNodes[i - 1], ShortestPathNodes[i + 1]);
+                found = ShortestPathNodes[i].roadSetup.GetRouteFromToNode(ShortestPathNodes[i - 1], ShortestPathNodes[i]);
 
                 if (found != null) {
                     PointsToFollow.AddRange(found);
@@ -138,13 +141,13 @@ namespace Simulator.AI {
             }
             // -------------
 
-            // For last node
-            found = ShortestPathNodes[len - 1].GetRouteFromToNode(ShortestPathNodes[len - 2], null);
-            if (found != null) {
-                PointsToFollow.AddRange(found);
-                numberOfPointsAdded += found.Count;
-                PointsToNodesIndex.Add(numberOfPointsAdded);
-            }
+            //// For last node
+            //found = ShortestPathNodes[len - 1].GetRouteFromToNode(ShortestPathNodes[len - 2], null);
+            //if (found != null) {
+            //    PointsToFollow.AddRange(found);
+            //    numberOfPointsAdded += found.Count;
+            //    PointsToNodesIndex.Add(numberOfPointsAdded);
+            //}
             // -------------
 
             return numberOfPointsAdded;
@@ -155,10 +158,10 @@ namespace Simulator.AI {
         private void CalculateHeuristicSpeeds() {
             int i;
             for (i = 0; i < shortestPathNodesLength - VehicleSettings.numberOfHeuristicPoints; i++) {
-                float speed = ShortestPathNodes[i].MaxAllowedSpeed;
+                float speed = ShortestPathNodes[i].roadSetup.MaxAllowedSpeed;
                 // Heuristic calculation algorithm
                 for (int j = 0; j < VehicleSettings.numberOfHeuristicPoints; j++) {
-                    speed += Mathf.Clamp(ShortestPathNodes[i + j + 1].MaxAllowedSpeed, 0, ShortestPathNodes[i].MaxAllowedSpeed);
+                    speed += Mathf.Clamp(ShortestPathNodes[i + j + 1].roadSetup.MaxAllowedSpeed, 0, ShortestPathNodes[i].roadSetup.MaxAllowedSpeed);
                 }
                 speed /= VehicleSettings.numberOfHeuristicPoints + 1;
                 HeuristicMaxSpeed.Add(speed);
@@ -167,7 +170,7 @@ namespace Simulator.AI {
             for (; i < shortestPathNodesLength; i++) {
                 float speed = 0;
                 for (int j = i; j < shortestPathNodesLength; j++) {
-                    speed += Mathf.Clamp(ShortestPathNodes[j].MaxAllowedSpeed, 0, ShortestPathNodes[i].MaxAllowedSpeed);
+                    speed += Mathf.Clamp(ShortestPathNodes[j].roadSetup.MaxAllowedSpeed, 0, ShortestPathNodes[i].roadSetup.MaxAllowedSpeed);
                 }
                 speed /= shortestPathNodesLength - i;
                 HeuristicMaxSpeed.Add(speed);
@@ -207,7 +210,7 @@ namespace Simulator.AI {
         /// <br>item4: BrakeState</br>
         /// </returns>
         public (Vector3, Vector3, float, BrakeState) CalculateAiInput() {
-            if (!Initialized)
+            if (!IsInitialized)
                 return (Vector3.zero, Vector3.zero, 0f, BrakeState.HandBrake);
 
 
@@ -305,17 +308,17 @@ namespace Simulator.AI {
             int intersectionNodeIndex;
             if (routeSplineIndex == -1) {
 
-                if (ShortestPathNodes[CurrentNodeIndex].transform == hitTrafficSignal.transform) {
+                if (ShortestPathNodes[CurrentNodeIndex].roadSetup.transform == hitTrafficSignal.transform) {
                     intersectionNodeIndex = CurrentNodeIndex;
                 }
-                else if (ShortestPathNodes[CurrentNodeIndex + 1].transform == hitTrafficSignal.transform) {
+                else if (ShortestPathNodes[CurrentNodeIndex + 1].roadSetup.transform == hitTrafficSignal.transform) {
                     intersectionNodeIndex = CurrentNodeIndex + 1;
                 }
                 else {
                     return BrakeState.NoBrake;
                 }
 
-                routeSplineIndex = hitTrafficSignal.RoadSetup.GetSplineIndexFromToNode(ShortestPathNodes[intersectionNodeIndex - 1], ShortestPathNodes[intersectionNodeIndex + 1]);
+                routeSplineIndex = hitTrafficSignal.RoadSetup.GetSplineIndexFromToNode(ShortestPathNodes[intersectionNodeIndex], ShortestPathNodes[intersectionNodeIndex + 1]);
 
             }
 
@@ -360,7 +363,7 @@ namespace Simulator.AI {
         internal float DistanceToTravel() {
             float distance = 0f;
             for (int i = 0; i < shortestPathNodesLength - 2; i++) {
-                distance += Vector3.Distance(ShortestPathNodes[i].transform.position, ShortestPathNodes[i + 1].transform.position);
+                distance += Vector3.Distance(ShortestPathNodes[i].position, ShortestPathNodes[i + 1].position);
             }
             return distance;
 
@@ -405,14 +408,14 @@ namespace Simulator.AI {
         }
 
         public void DisplayShortestPathDebug() {
-            List<RoadSetup> shortestPathNodes = GraphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
+            List<Node> shortestPathNodes = GraphGenerator.DirectedGraph.FindShortestPath(fromNode, toNode);
 
             if (fromNode == null || toNode == null || shortestPathNodes == null)
                 return;
 
             for (int i = 0; i < shortestPathNodes.Count - 1; i++) {
-                Vector3 p1 = shortestPathNodes[i].transform.position;
-                Vector3 p2 = shortestPathNodes[i + 1].transform.position;
+                Vector3 p1 = shortestPathNodes[i].position;
+                Vector3 p2 = shortestPathNodes[i + 1].position;
                 //Debug.Log(shortestPathNodes[i].name);
 
                 // Handles.Label((p1 + p2) / 2, $"{weights[i]}");

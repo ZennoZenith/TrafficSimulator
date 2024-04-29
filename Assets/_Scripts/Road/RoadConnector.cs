@@ -1,8 +1,10 @@
+using Simulator.Graph;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 
 namespace Simulator.Road {
-    public class RoadConnector : MonoBehaviour {
+    public class RoadConnector : MonoBehaviour, IInitializable {
         public enum RoadConnectorType {
             Incomming,
             Outgoing
@@ -16,12 +18,35 @@ namespace Simulator.Road {
 
         [field: SerializeField]
         public RoadConnectorType roadConnectorType { get; private set; }
+        public bool IsInitialized { get; private set; }
+        public Node GraphNode { get; private set; }
 
-        private void Start() {
+
+        #region Unity Methods
+        private void Awake() {
             SetParentRoadSetup();
         }
 
-        public RoadSetup SetParentRoadSetup() {
+        //private void OnEnable() {
+        //    Initialise();
+        //}
+
+        #endregion
+
+        public void Initialize() {
+            IsInitialized = true;
+            SetAdjecentRoadConnector();
+            SetupGraphNode();
+        }
+
+        public void DeInitialize() {
+            GraphNode = null;
+            AdjecentRoadConnector = null;
+            IsInitialized = false;
+        }
+
+
+        private RoadSetup SetParentRoadSetup() {
             if (ParentRoadSetup != null) {
                 return ParentRoadSetup;
             }
@@ -32,7 +57,7 @@ namespace Simulator.Road {
             return ParentRoadSetup;
         }
 
-        public bool SetAdjecentRoadConnector() {
+        private bool SetAdjecentRoadConnector() {
 
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionSphereRadius, LayerMask.GetMask("RoadConnector"));
 
@@ -57,5 +82,15 @@ namespace Simulator.Road {
 
             return true;
         }
+
+        private void SetupGraphNode() {
+            if (roadConnectorType == RoadConnectorType.Incomming) return;
+
+            GraphNode = new(transform.name, transform.position, ParentRoadSetup);
+            if (AdjecentRoadConnector != null) {
+                AdjecentRoadConnector.GraphNode = GraphNode;
+            }
+        }
+
     }
 }

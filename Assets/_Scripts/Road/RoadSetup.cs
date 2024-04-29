@@ -4,16 +4,20 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
+using Utilities;
 
 namespace Simulator.Road {
 
     [RequireComponent(typeof(SplineContainer))]
-    public class RoadSetup : MonoBehaviour {
+    public class RoadSetup : MonoBehaviour, IInitializable {
 
         [System.Serializable]
         public struct RoutesPriorities {
             public int splineIndex;
             public int priority;
+            public readonly float CalculateWeight(SplineContainer splineContainer, int splineIndex, int priority) {
+                return splineContainer.CalculateLength(splineIndex) * priority;
+            }
         }
 
         [System.Serializable]
@@ -38,10 +42,42 @@ namespace Simulator.Road {
         [SerializeField] private RoadConnector[] outgoing;
         [SerializeField] private RoutesMap[] routesMap;
         public List<List<Vector3>> RoutesAsVectors { get; private set; } = new();
-        public bool Initialized { get; private set; } = false;
-        public List<RoadSetup> ReachableNodes { get; private set; } = new();
+        public bool IsInitialized { get; private set; } = false;
+        public List<Node> ReachableNodes { get; private set; } = new();
+        public List<Node> GraphNodes = new();
 
-        public void AddReachableNode(RoadSetup node) {
+        #region Unity Methods
+        private void Awake() {
+            if (splineContainer == null)
+                splineContainer = GetComponent<SplineContainer>();
+
+            ConvertSplinesToVectors();
+        }
+
+        #endregion
+
+        public void Initialize() {
+            foreach (var item in incomming) {
+                item.Initialize();
+                GraphNodes.Add(item.GraphNode);
+            }
+            foreach (var item in outgoing)
+                item.Initialize();
+            IsInitialized = true;
+        }
+
+        public void DeInitialize() {
+            ReachableNodes.Clear();
+            GraphNodes.Clear();
+            foreach (var item in incomming)
+                item.DeInitialize();
+            foreach (var item in outgoing)
+                item.DeInitialize();
+
+            IsInitialized = false;
+        }
+
+        public void AddReachableNode(Node node) {
             ReachableNodes.Add(node);
         }
 
@@ -53,20 +89,14 @@ namespace Simulator.Road {
             return outgoing;
         }
 
-        private void Awake() {
-            if (splineContainer == null)
-                splineContainer = GetComponent<SplineContainer>();
-        }
 
-        public void Initialize() {
-            Initialized = true;
-        }
 
-        public void DeInitialize() {
-            ReachableNodes.Clear();
-            Initialized = false;
+        public void SetupNodeEdgesFromRouteMap() {
+            foreach (var route in routesMap) {
+                //if (route.to.GraphNode != null)
+                route.from.GraphNode?.AddEdge(new Edge<INode>(route.from.GraphNode));
+            }
         }
-
 
         public Transform GetSpawnPointNearestTo(Vector3 point) {
             if (SpawnPoints.Length < 1)
@@ -107,63 +137,67 @@ namespace Simulator.Road {
             return new Vector3(position.x, splineSettings.pathVectorY, position.z);
         }
 
-        public EdgeData GetIncommingConnector(RoadSetup adjecentIncommingNode) {
-            foreach (var incommingNode in incomming) {
-                if (incommingNode.AdjecentRoadConnector.ParentRoadSetup == adjecentIncommingNode) {
-                    foreach (var edge in incommingNode.AdjecentRoadConnector.ParentRoadSetup.Edges) {
-                        if (edge.Dest == this)
-                            return edge;
-                    }
-                }
-                //if (edge.Dest == adjecentIncommingNode)
-                //    return edge;
-            }
-            return null;
-        }
+        //public EdgeData GetIncommingConnector(RoadSetup adjecentIncommingNode) {
+        //    foreach (var incommingNode in incomming) {
+        //        if (incommingNode.AdjecentRoadConnector.ParentRoadSetup == adjecentIncommingNode) {
+        //            foreach (var edge in incommingNode.AdjecentRoadConnector.ParentRoadSetup.Edges) {
+        //                if (edge.Dest == this)
+        //                    return edge;
+        //            }
+        //        }
+        //        //if (edge.Dest == adjecentIncommingNode)
+        //        //    return edge;
+        //    }
+        //    return null;
+        //}
 
-        public EdgeData GetOutgoingConnector(RoadSetup adjecentOutgoingNode) {
-            foreach (var edge in edges) {
-                if (edge.Dest == adjecentOutgoingNode)
-                    return edge;
-            }
-            return null;
-        }
+        //public EdgeData GetOutgoingConnector(RoadSetup adjecentOutgoingNode) {
+        //    foreach (var edge in edges) {
+        //        if (edge.Dest == adjecentOutgoingNode)
+        //            return edge;
+        //    }
+        //    return null;
+        //}
 
-        public List<Vector3> GetRouteFromToNode(RoadSetup fromNode, RoadSetup toNode) {
-            if (fromNode == null && toNode == null)
+        public List<Vector3> GetRouteFromToNode(Node fromNode, Node toNode) {
+            //if (fromNode == null && toNode == null)
+            //    return null;
+
+            //if (fromNode == null && toNode != null) {
+            //    foreach (var route in routesMap) {
+            //        if (route.to.AdjecentRoadConnector == null)
+            //            continue;
+            //        if (route.to.AdjecentRoadConnector.GraphNode == toNode) {
+            //            int splineIndex = route.routes[0].splineIndex;
+            //            return RoutesAsVectors[splineIndex];
+            //        }
+            //    }
+            //    return null;
+            //}
+
+            //if (fromNode != null && toNode == null) {
+            //    foreach (var route in routesMap) {
+            //        if (route.from.AdjecentRoadConnector == null)
+            //            continue;
+            //        if (route.from.AdjecentRoadConnector.GraphNode == fromNode) {
+            //            int splineIndex = route.routes[0].splineIndex;
+            //            return RoutesAsVectors[splineIndex];
+            //        }
+            //    }
+            //    return null;
+            //}
+
+            if (fromNode == null || toNode == null)
                 return null;
 
-            if (fromNode == null && toNode != null) {
-                foreach (var route in routesMap) {
-                    if (route.to.AdjecentRoadConnector == null)
-                        continue;
-                    if (route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
-                        int splineIndex = route.routes[0].splineIndex;
-                        return RoutesAsVectors[splineIndex];
-                    }
-                }
-                return null;
-            }
-
-            if (fromNode != null && toNode == null) {
-                foreach (var route in routesMap) {
-                    if (route.from.AdjecentRoadConnector == null)
-                        continue;
-                    if (route.from.AdjecentRoadConnector.ParentRoadSetup == fromNode) {
-                        int splineIndex = route.routes[0].splineIndex;
-                        return RoutesAsVectors[splineIndex];
-                    }
-                }
-                return null;
-            }
 
             foreach (var route in routesMap) {
                 if (route.from.AdjecentRoadConnector == null)
                     continue;
                 if (route.to.AdjecentRoadConnector == null)
                     continue;
-                if (route.from.AdjecentRoadConnector.ParentRoadSetup == fromNode
-                    && route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
+                if (route.from.GraphNode == fromNode
+                    && route.to.GraphNode == toNode) {
                     int splineIndex = route.routes[MaxIndex(route.routes)].splineIndex;
                     //return routesAsVectors[route.routes.Max(t => t.priority)];
                     return RoutesAsVectors[splineIndex];
@@ -174,41 +208,18 @@ namespace Simulator.Road {
             return null;
         }
 
-        public int GetSplineIndexFromToNode(RoadSetup fromNode, RoadSetup toNode) {
-            if (fromNode == null && toNode == null)
+        public int GetSplineIndexFromToNode(Node fromNode, Node toNode) {
+            if (fromNode == null || toNode == null)
                 return -1;
 
-            if (fromNode == null && toNode != null) {
-                foreach (var route in routesMap) {
-                    if (route.to.AdjecentRoadConnector == null)
-                        continue;
-                    if (route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
-                        int splineIndex = route.routes[0].splineIndex;
-                        return splineIndex;
-                    }
-                }
-                return -1;
-            }
-
-            if (fromNode != null && toNode == null) {
-                foreach (var route in routesMap) {
-                    if (route.from.AdjecentRoadConnector == null)
-                        continue;
-                    if (route.from.AdjecentRoadConnector.ParentRoadSetup == fromNode) {
-                        int splineIndex = route.routes[0].splineIndex;
-                        return splineIndex;
-                    }
-                }
-                return -1;
-            }
 
             foreach (var route in routesMap) {
                 if (route.from.AdjecentRoadConnector == null)
                     continue;
                 if (route.to.AdjecentRoadConnector == null)
                     continue;
-                if (route.from.AdjecentRoadConnector.ParentRoadSetup == fromNode
-                    && route.to.AdjecentRoadConnector.ParentRoadSetup == toNode) {
+                if (route.from.GraphNode == fromNode
+                    && route.to.GraphNode == toNode) {
                     int splineIndex = route.routes[MaxIndex(route.routes)].splineIndex;
                     //return routesAsVectors[route.routes.Max(t => t.priority)];
                     return splineIndex;
@@ -232,45 +243,54 @@ namespace Simulator.Road {
             return maxIndex;
         }
 
-        public List<RoadSetup> GetAdjecentIncommingRoadSetupForOutgoingConnector(RoadConnector outgoingConnector) {
-            List<RoadSetup> roadSetups = new();
-            foreach (var route in routesMap) {
-                if (route.to == outgoingConnector && route.from.AdjecentRoadConnector != null) {
-                    roadSetups.Add(route.from.AdjecentRoadConnector.ParentRoadSetup);
-                }
-            }
-            return roadSetups;
-        }
+        //public List<RoadSetup> GetAdjecentIncommingRoadSetupForOutgoingConnector(RoadConnector outgoingConnector) {
+        //    List<RoadSetup> roadSetups = new();
+        //    foreach (var route in routesMap) {
+        //        if (route.to == outgoingConnector && route.from.AdjecentRoadConnector != null) {
+        //            roadSetups.Add(route.from.AdjecentRoadConnector.ParentRoadSetup);
+        //        }
+        //    }
+        //    return roadSetups;
+        //}
 
 
-        #region Graph related     
-        private readonly List<EdgeData> edges = new();
-        public List<EdgeData> Edges {
-            get {
-                return edges;
-            }
-        }
+        //#region Graph related     
+        //private readonly List<EdgeData> edges = new();
+        //public List<EdgeData> Edges {
+        //    get {
+        //        return edges;
+        //    }
+        //}
 
-        public bool AddEdge(EdgeData edgeData) {
-            edges.Add(edgeData);
-            return true;
-        }
 
-        public bool CheckEdge(RoadSetup dest) {
-            if (GetEdge(dest) == null)
-                return false;
-            return true;
-        }
+        //public bool AddEdge(EdgeData edgeData) {
+        //    edges.Add(edgeData);
+        //    return true;
+        //}
 
-        public EdgeData GetEdge(RoadSetup dest) {
-            return edges.Find(ne => ne.Dest == dest);
-        }
+        //public bool CheckEdge(RoadSetup dest) {
+        //    if (GetEdge(dest) == null)
+        //        return false;
+        //    return true;
+        //}
 
-        public void Clear() {
-            edges.Clear();
-        }
+        //public EdgeData GetEdge(RoadSetup dest) {
+        //    return edges.Find(ne => ne.Dest == dest);
+        //}
 
-        #endregion
+        //public void Clear() {
+        //    edges.Clear();
+        //}
+
+        //public void Initialise() {
+        //    throw new System.NotImplementedException();
+        //}
+
+        //public void DeInitialise() {
+        //    throw new System.NotImplementedException();
+        //}
+
+        //#endregion
 
         //[SerializeField] private Transform 
 
