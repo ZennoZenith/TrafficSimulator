@@ -757,6 +757,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77424da591e5c5646a6a1101e6c1b8c1, type: 3}
+--- !u!114 &329748749 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7174707984622703073, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+    type: 3}
+  m_PrefabInstance: {fileID: 1640249806}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20ff1c100b2fd07458570c7f27f3f1f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &352559137
 GameObject:
   m_ObjectHideFlags: 0
@@ -3120,6 +3132,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Env
       objectReference: {fileID: 0}
+    - target: {fileID: 960072558753953642, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2201671280473736833, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+        type: 3}
+      propertyPath: vehicleSpawnerManager
+      value: 
+      objectReference: {fileID: 329748749}
     - target: {fileID: 4075237264975755837, guid: 77424da591e5c5646a6a1101e6c1b8c1,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3168,6 +3190,41 @@ PrefabInstance:
     - target: {fileID: 4075237264975755837, guid: 77424da591e5c5646a6a1101e6c1b8c1,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402335702889178926, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5651588021232046387, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5779764706233009871, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+        type: 3}
+      propertyPath: vehicleSpawnerManager
+      value: 
+      objectReference: {fileID: 329748749}
+    - target: {fileID: 6397603786771090259, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+        type: 3}
+      propertyPath: vehicleSpawnerManager
+      value: 
+      objectReference: {fileID: 329748749}
+    - target: {fileID: 7174707984622703073, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+        type: 3}
+      propertyPath: <GraphGenerator>k__BackingField
+      value: 
+      objectReference: {fileID: 1812339764}
+    - target: {fileID: 7302371273769210987, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+        type: 3}
+      propertyPath: vehicleSpawnerManager
+      value: 
+      objectReference: {fileID: 329748749}
+    - target: {fileID: 9071108858044171066, guid: 77424da591e5c5646a6a1101e6c1b8c1,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

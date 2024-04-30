@@ -4,40 +4,57 @@ using Simulator.ScriptableObject;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Utilities;
 
 namespace Simulator.Road {
 
-    public class GraphGenerator : MonoBehaviour {
+    public class GraphGenerator : MonoBehaviour, IInitializable {
         // Start is called before the first frame update
         [SerializeField] private SplineDataSO splineSettings;
         [SerializeField] private DebugSettingsSO debugSettings;
         [SerializeField] private VehicleSpawnerManager vehicleSpawnerManager;
         public Graph.Graph<Node> DirectedGraph { get; private set; } = new();
 
-        private readonly List<Node> nodes = new();
+        public bool IsInitialized { get; private set; }
+        public static int number = 0;
+        public static char character = 'A';
 
+        private readonly List<Node> nodes = new();
+        private RoadSetup[] allRoadSetups;
         #region Unity Methods
         //private void Awake() {
+        //    allRoadSetups = transform.GetComponentsInChildren<RoadSetup>();
         //}
 
         private void Start() {
-            GenerateGraph();
+            Initialize();
         }
         #endregion
 
-        public static int number = 0;
-        public static char character = 'A';
-        public void GenerateGraph() {
+
+
+        public void Initialize() {
+            IsInitialized = true;
+            allRoadSetups = transform.GetComponentsInChildren<RoadSetup>();
+            GenerateGraph();
+        }
+
+        public void DeInitialize() {
+            if (IsInitialized) {
+                foreach (RoadSetup roadSetup in allRoadSetups)
+                    roadSetup.DeInitialize();
+                allRoadSetups = null;
+            }
+
+            IsInitialized = false;
+        }
+
+        private void GenerateGraph() {
             number = 0;
             character = 'A';
             // Get all children gameobject with "RoadSetup" component
             nodes.Clear();
             DirectedGraph.Clear();
-
-            var allRoadSetups = transform.GetComponentsInChildren<RoadSetup>();
-
-            foreach (RoadSetup roadSetup in allRoadSetups)
-                roadSetup.DeInitialize();
 
             foreach (RoadSetup roadSetup in allRoadSetups) {
                 roadSetup.Initialize();
@@ -120,6 +137,7 @@ namespace Simulator.Road {
             }
         }
 
+
         //private void ShowAllEdges() {
         //    GameObject[] roadObjects = GameObject.FindGameObjectsWithTag("Road");
         //    foreach (GameObject road in roadObjects) {
@@ -155,7 +173,7 @@ namespace Simulator.Road {
             GraphGenerator graphGenerator = (GraphGenerator)target;
 
             if (GUILayout.Button("Regenerate Graph")) {
-                graphGenerator.GenerateGraph();
+                graphGenerator.Initialize();
             }
 
         }

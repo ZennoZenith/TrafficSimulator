@@ -16,11 +16,20 @@ namespace Simulator {
         #endregion
 
 
-        [SerializeField] private GraphGenerator graphGenerator;
-        [SerializeField] private GameSettingsSO gameSettings;
+        [SerializeField] private VehicleSpawnerManager vehicleSpawnerManager;
         [SerializeField] private float noSpawnRadius;
 
+        private Coroutine coroutine;
         #region Unity Methods
+        private void OnEnable() {
+            coroutine = StartCoroutine(SpawnCorouting());
+        }
+
+        private void OnDisable() {
+            if (coroutine != null) {
+                StopCoroutine(coroutine);
+            }
+        }
 
         #endregion
 
@@ -39,6 +48,7 @@ namespace Simulator {
             return true;
 
         }
+
 
         private IEnumerator SpawnCorouting() {
             SpawnerDataSO spawnerData = SpawnerData;
@@ -92,7 +102,7 @@ namespace Simulator {
             VehicleController vc = vehicle.GetComponent<VehicleController>();
 
             vc.Initialize();
-            vc.VehicleDriverAI.Initialize(graphGenerator, fromRoad, despawnNode);
+            vc.VehicleDriverAI.Initialize(vehicleSpawnerManager.GraphGenerator, fromRoad, despawnNode);
 
             return vc.VehicleDriverAI;
 
