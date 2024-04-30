@@ -29,9 +29,35 @@
                 "source": false
               }
             }
+          },
+          {
+            "id": "8fddef390302bf2a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Data Set.md",
+                "mode": "source",
+                "backlinks": true,
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "8dac53dc81bf180b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Fleeting.md",
+                "mode": "source",
+                "backlinks": false,
+                "source": false
+              }
+            }
           }
         ],
-        "currentTab": 1
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -97,7 +123,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Road Generation.md",
+                "file": "Fleeting.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +140,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Road Generation.md",
+                "file": "Fleeting.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +163,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Road Generation.md"
+                "file": "Fleeting.md"
               }
             }
           },
@@ -177,11 +203,13 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "4fb5842985df21d9",
+  "active": "8dac53dc81bf180b",
   "lastOpenFiles": [
-    "Traffic Simulator Knaban.md",
+    "Data Set.md",
+    "Fleeting.md",
     "Road Generation.md",
     "Traffic Simulator.md",
+    "Traffic Simulator Knaban.md",
     "Zettelkasten/New computer setup.md",
     "Project/Mysql Railway Api database.md",
     "Zettelkasten/Rust.md",
@@ -205,8 +233,6 @@
     "Zettelkasten/Things to setup on new computer.md",
     "Project/Railway API web docs.md",
     "Project/Railway Demo Website.md",
-    "Zettelkasten/Portainer.md",
-    "Zettelkasten/Home server.md",
     "_assets/Pasted image 20230824094023.png",
     "Project/images/example-2.png",
     "_assets/Pasted image 20230813192729.png",
