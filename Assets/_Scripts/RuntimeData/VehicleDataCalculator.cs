@@ -1,5 +1,4 @@
 using Simulator.AI;
-using Simulator.Road;
 using Simulator.ScriptableObject;
 using Simulator.Vehicle;
 using System.Collections;
@@ -13,26 +12,26 @@ namespace Simulator.RuntimeData {
 
         private VehicleController vehicleController;
         private VehicleDriverAI vehicleDriverAI;
-        private bool _reachedAnIntersection;
+        //private bool _reachedAnIntersection;
 
         public bool Initialized { get; private set; } = false;
         public int TotalWaitTime { get; private set; }
         public float TotalDistanceTraveled { get; private set; }
         public int TotalTimeTaken { get; private set; }
 
-        public int WaitTimeBeforeReachingIntersesction { get; private set; }
-        public bool ReachedAnIntersection {
-            get { return _reachedAnIntersection; }
-            private set {
-                if (_reachedAnIntersection == true && value == false) {
-                    StoreData.WriteIntesectionWaitTime(intersectionRoadSetup.name, transform.name, WaitTimeBeforeReachingIntersesction);
-                    WaitTimeBeforeReachingIntersesction = 0;
-                }
-                _reachedAnIntersection = value;
-            }
-        }
+        //public int WaitTimeBeforeReachingIntersesction { get; private set; }
+        //public bool ReachedAnIntersection {
+        //    get { return _reachedAnIntersection; }
+        //    private set {
+        //        if (_reachedAnIntersection == true && value == false) {
+        //            StoreData.WriteIntesectionWaitTime(intersectionRoadSetup.name, transform.name, WaitTimeBeforeReachingIntersesction);
+        //            WaitTimeBeforeReachingIntersesction = 0;
+        //        }
+        //        _reachedAnIntersection = value;
+        //    }
+        //}
 
-        private RoadSetup intersectionRoadSetup;
+        //private RoadSetup intersectionRoadSetup;
         private Coroutine tickCoroutine;
 
         private VehicleSettingsSO vehicleSettings;
@@ -56,7 +55,7 @@ namespace Simulator.RuntimeData {
 
                 if (vehicleController.Speed < vehicleSettings.considerStopSpeed) {
                     TotalWaitTime++;
-                    WaitTimeBeforeReachingIntersesction++;
+                    //WaitTimeBeforeReachingIntersesction++;
                 }
 
                 TotalTimeTaken++;
@@ -66,25 +65,26 @@ namespace Simulator.RuntimeData {
                 }
 
 
-                var currentRoadSetup = vehicleDriverAI.ShortestPathNodes[vehicleDriverAI.CurrentNodeIndex].roadSetup;
+                //var currentRoadSetup = vehicleDriverAI.ShortestPathNodes[vehicleDriverAI.CurrentNodeIndex].roadSetup;
 
-                if (currentRoadSetup.RoadTypeSO.isIntersection) {
-                    ReachedAnIntersection = true;
-                    intersectionRoadSetup = currentRoadSetup;
-                }
-                else
-                    ReachedAnIntersection = false;
+                //if (currentRoadSetup.RoadTypeSO.isIntersection) {
+                //    ReachedAnIntersection = true;
+                //    intersectionRoadSetup = currentRoadSetup;
+                //}
+                //else
+                //    ReachedAnIntersection = false;
 
             }
         }
 
         private void Initialize() {
-            _reachedAnIntersection = false;
-            TotalWaitTime = WaitTimeBeforeReachingIntersesction = 0;
+            //_reachedAnIntersection = false;
+            //TotalWaitTime = WaitTimeBeforeReachingIntersesction = 0;
+            TotalWaitTime = 0;
             TotalTimeTaken = 0;
             TotalDistanceTraveled = 0;
 
-            ReachedAnIntersection = false;
+            //ReachedAnIntersection = false;
             tickCoroutine = StartCoroutine(Tick());
             Initialized = true;
         }

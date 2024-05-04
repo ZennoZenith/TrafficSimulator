@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbb1855ac492903458ed042e55e91304, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
-  defalultTimeScale: 1
+  defalultTimeScale: 2
+  numberOfHeuristicPoints: 2
   retryAfterSpawnTime: 1
-  usML: 0
+  warmupTime: 5

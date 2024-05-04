@@ -51,6 +51,14 @@ namespace Simulator {
 
 
         private IEnumerator SpawnCorouting() {
+            while (true) {
+                if (vehicleSpawnerManager.GraphGenerator.IsInitialized)
+                    break;
+                Debug.Log("GraphGenerator not yet initialized. Retrying in 1 second");
+                yield return new WaitForSeconds(1f);
+            }
+
+
             SpawnerDataSO spawnerData = SpawnerData;
 
             float nextSpawnTime;
@@ -74,7 +82,7 @@ namespace Simulator {
             }
         }
 
-        private VehicleDriverAI Spawn(Node fromRoad, VehicleFrequency[] vehicles, List<int> vehicleFrequencyList, int vehicleFrequencySum, int numberOfVehicles = -1) {
+        private VehicleDriverAI Spawn(Node fromNode, VehicleFrequency[] vehicles, List<int> vehicleFrequencyList, int vehicleFrequencySum, int numberOfVehicles = -1) {
             if (numberOfVehicles == -1) {
                 numberOfVehicles = vehicles.Length;
             }
@@ -91,7 +99,7 @@ namespace Simulator {
                 }
             }
 
-            Node despawnNode = SelectRandomDespawnLocation(fromRoad);
+            Node despawnNode = SelectRandomDespawnLocation(fromNode);
             if (despawnNode == null) {
                 return null;
             }
@@ -102,7 +110,7 @@ namespace Simulator {
             VehicleController vc = vehicle.GetComponent<VehicleController>();
 
             vc.Initialize();
-            vc.VehicleDriverAI.Initialize(vehicleSpawnerManager.GraphGenerator, fromRoad, despawnNode);
+            vc.VehicleDriverAI.Initialize(vehicleSpawnerManager.GraphGenerator, fromNode, despawnNode);
 
             return vc.VehicleDriverAI;
 

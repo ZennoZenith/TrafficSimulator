@@ -1,4 +1,5 @@
 using Simulator.Graph;
+using Simulator.Manager;
 using Simulator.Road;
 using Simulator.ScriptableObject;
 using Simulator.TrafficSignal;
@@ -25,9 +26,9 @@ namespace Simulator.AI {
         public List<int> PointsToNodesIndex { get; private set; } = new();
         public List<float> HeuristicMaxSpeed { get; private set; } = new();
 
-        int pointsToFollowLength;
-        int currentFollowingPointIndex;
-        int shortestPathNodesLength;
+        public int pointsToFollowLength;
+        public int currentFollowingPointIndex;
+        public int shortestPathNodesLength;
         public int CurrentNodeIndex { get; private set; }
 
 
@@ -38,7 +39,7 @@ namespace Simulator.AI {
 
         private int ignoreLayer;
         private void Awake() {
-            ignoreLayer = ~LayerMask.GetMask("Ignore Raycast", "RoadConnector");
+            ignoreLayer = ~LayerMask.GetMask("IgnoreRaycast", "RoadConnector");
             vehicleController = GetComponent<VehicleController>();
         }
 
@@ -72,7 +73,7 @@ namespace Simulator.AI {
             }
             PointsToFollow.Clear();
 
-            if (ShortestPathNodes.Count < 2)
+            if (ShortestPathNodes.Count < 3)
                 DeInitialize();
 
             CurrentNodeIndex = 0;
@@ -125,10 +126,14 @@ namespace Simulator.AI {
             //    PointsToNodesIndex.Add(numberOfPointsAdded);
             //}
 
-            // For in between nodes
             List<Vector3> found;
             int numberOfPointsAdded = 0;
             int len = ShortestPathNodes.Count;
+
+            // For first node
+            PointsToNodesIndex.Add(numberOfPointsAdded);
+
+            // For in between nodes
             for (int i = 1; i < len - 1; i++) {
                 //found = shortestPathNodes[i].GetRouteFromConnectors(previousEdge.ToRoadConnector, edgeData.FromRoadConnector);
                 found = ShortestPathNodes[i].roadSetup.GetRouteFromToNode(ShortestPathNodes[i - 1], ShortestPathNodes[i]);
@@ -141,13 +146,13 @@ namespace Simulator.AI {
             }
             // -------------
 
-            //// For last node
-            //found = ShortestPathNodes[len - 1].GetRouteFromToNode(ShortestPathNodes[len - 2], null);
-            //if (found != null) {
-            //    PointsToFollow.AddRange(found);
-            //    numberOfPointsAdded += found.Count;
-            //    PointsToNodesIndex.Add(numberOfPointsAdded);
-            //}
+            // For last node
+            found = ShortestPathNodes[len - 1].roadSetup.GetRouteFromToNode(ShortestPathNodes[len - 2], null);
+            if (found != null) {
+                PointsToFollow.AddRange(found);
+                numberOfPointsAdded += found.Count;
+                PointsToNodesIndex.Add(numberOfPointsAdded);
+            }
             // -------------
 
             return numberOfPointsAdded;
@@ -179,9 +184,10 @@ namespace Simulator.AI {
         }
 
 
-        private int GetNodeIndexFromVectorIndex(int pointToFollowIndex) {
+        private int GetNodeIndexFromPointToFollowIndex(int pointToFollowIndex) {
             for (int i = 0; i < shortestPathNodesLength; i++) {
                 if (pointToFollowIndex < PointsToNodesIndex[i])
+                    //return i;
                     return i;
             }
             return shortestPathNodesLength - 1;
@@ -200,6 +206,10 @@ namespace Simulator.AI {
 
         Vector3 inputVector;
         BrakeState brakeState;
+        public RoadSetup debugRoadSetup;
+        public int debugCurrentNodeIndex;
+        public int debugCurrentFollowingPointIndex;
+
         /// <summary>
         /// <br>Calculates AI Input</br>
         /// </summary>
@@ -217,7 +227,11 @@ namespace Simulator.AI {
             while (currentFollowingPointIndex < pointsToFollowLength) {
                 if (Vector3.Distance(PointsToFollow[currentFollowingPointIndex], transform.position) < VehicleType.triggerDistance) {
                     currentFollowingPointIndex++;
-                    CurrentNodeIndex = GetNodeIndexFromVectorIndex(currentFollowingPointIndex);
+                    CurrentNodeIndex = GetNodeIndexFromPointToFollowIndex(currentFollowingPointIndex);
+                    debugRoadSetup = ShortestPathNodes[CurrentNodeIndex].roadSetup;
+                    debugCurrentNodeIndex = CurrentNodeIndex;
+                    debugCurrentFollowingPointIndex = currentFollowingPointIndex;
+
                 }
                 else { break; }
 
@@ -305,26 +319,32 @@ namespace Simulator.AI {
 
         int routeSplineIndex = -1;
         private BrakeState HandleTrafficLightCollision(TrafficLightSetup hitTrafficSignal) {
-            int intersectionNodeIndex;
+            int intersectionNodeIndex = -1;
             if (routeSplineIndex == -1) {
 
-                if (ShortestPathNodes[CurrentNodeIndex].roadSetup.transform == hitTrafficSignal.transform) {
-                    intersectionNodeIndex = CurrentNodeIndex;
+                //GameManager.GameSettings.numberOfHeuristicPoints;
+                for (int i = CurrentNodeIndex; i < shortestPathNodesLength && i < GameManager.GameSettings.numberOfHeuristicPoints + CurrentNodeIndex;
+                     i++) {
+                    if (ShortestPathNodes[i].roadSetup == hitTrafficSignal.RoadSetup) {
+                        intersectionNodeIndex = i;
+                    }
+
                 }
-                else if (ShortestPathNodes[CurrentNodeIndex + 1].roadSetup.transform == hitTrafficSignal.transform) {
-                    intersectionNodeIndex = CurrentNodeIndex + 1;
-                }
-                else {
+                if (intersectionNodeIndex == -1) {
+                    routeSplineIndex = -1;
                     return BrakeState.NoBrake;
                 }
 
-                routeSplineIndex = hitTrafficSignal.RoadSetup.GetSplineIndexFromToNode(ShortestPathNodes[intersectionNodeIndex], ShortestPathNodes[intersectionNodeIndex + 1]);
+                routeSplineIndex = hitTrafficSignal.RoadSetup.GetSplineIndexFromToNode(ShortestPathNodes[intersectionNodeIndex - 1], ShortestPathNodes[intersectionNodeIndex]);
+                if (routeSplineIndex == -1) {
+                    Debug.Log("route index was -1", this.transform);
+                    //Debug.Log($"intersectionNodeIndex: {intersectionNodeIndex}", this.transform);
+                    //Debug.Break();
+                }
 
             }
 
             /// hitTrafficSignal.GetPhaseFromSplineIndex(routeSplineIndex) returns number of seconds remaining for changing signal
-            if (routeSplineIndex == -1)
-                Debug.Log("route index was 1", this.transform);
 
             if (routeSplineIndex == -1 || hitTrafficSignal.GetPhaseFromSplineIndex(routeSplineIndex) > 1) {
                 return BrakeState.NoBrake;

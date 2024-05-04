@@ -16,8 +16,8 @@ namespace Simulator.Road {
         public Graph.Graph<Node> DirectedGraph { get; private set; } = new();
 
         public bool IsInitialized { get; private set; }
-        public static int number = 0;
-        public static char character = 'A';
+        private static int number = 0;
+        private static char character = 'a';
 
         private readonly List<Node> nodes = new();
         private RoadSetup[] allRoadSetups;
@@ -49,9 +49,23 @@ namespace Simulator.Road {
             IsInitialized = false;
         }
 
+        public static (char, int) GetNewNodeName() {
+            char temp = character;
+            int n = number;
+            number++;
+            if (number == 9) {
+                character++;
+                number = 0;
+            }
+            if (character > 'z')
+                character = 'A';
+
+            return (temp, n);
+        }
+
         private void GenerateGraph() {
             number = 0;
-            character = 'A';
+            character = 'a';
             // Get all children gameobject with "RoadSetup" component
             nodes.Clear();
             DirectedGraph.Clear();

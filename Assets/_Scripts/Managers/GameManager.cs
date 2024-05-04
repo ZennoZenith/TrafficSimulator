@@ -11,10 +11,13 @@ namespace Simulator.Manager {
     public class GameManager : SingletonPersistent<GameManager> {
         public GameSettingsSO gameSettings;
         public GraphicSettingsSO graphicsSettings;
+        public static GameSettingsSO GameSettings { get; private set; }
 
         [SerializeField] private TextMeshProUGUI FpsCounterUI;
         [SerializeField] private TextMeshProUGUI GameSpeedUILabel;
 
+
+        #region Unity Methods
         void Start() {
             ResetGraphicsSettings();
             Time.timeScale = gameSettings.defalultTimeScale;
@@ -25,6 +28,14 @@ namespace Simulator.Manager {
             if (graphicsSettings.showFpsCount)
                 FpsCounterUI.text = Mathf.RoundToInt(FpsCounter.CalculateFpsCount()).ToString();
 
+        }
+
+        #endregion
+
+
+        [RuntimeInitializeOnLoadMethod]
+        public static void ResetGameSettings() {
+            GameSettings = GameManager.Instance.gameSettings;
         }
 
         internal void UpdateGameSpeedUI() {

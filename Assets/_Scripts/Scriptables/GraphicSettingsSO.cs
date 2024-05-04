@@ -9,7 +9,6 @@ namespace Simulator.ScriptableObject {
         [Tooltip("Interval to update FPS count in seconds")]
         public float updateInterval = 0.5f;
 
-
         #region DEBUG   
         // [Header("Debug")]
 

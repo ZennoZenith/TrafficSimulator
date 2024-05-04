@@ -57,8 +57,8 @@ namespace Simulator.ML {
             for (int areaIndex = 0; areaIndex < NUM_OF_AREA; areaIndex++) {
                 for (int j = 0; j < NUM_OF_VEHICLES_PER_AREA; j++) {
                     if (j < numberOfHits) {
-                        if (hitColliders[j].TryGetComponent(out vdc))
-                            observations[(areaIndex * observationIndex) + j + OFSET] = vdc.WaitTimeBeforeReachingIntersesction;
+                        //if (hitColliders[j].TryGetComponent(out vdc))
+                        //observations[(areaIndex * observationIndex) + j + OFSET] = vdc.WaitTimeBeforeReachingIntersesction;
                     }
                     else {
                         observations[(areaIndex * observationIndex) + j + OFSET] = -1;

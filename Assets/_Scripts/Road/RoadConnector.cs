@@ -1,10 +1,9 @@
 using Simulator.Graph;
 using System.Collections.Generic;
 using UnityEngine;
-using Utilities;
 
 namespace Simulator.Road {
-    public class RoadConnector : MonoBehaviour, IInitializable {
+    public class RoadConnector : MonoBehaviour {
         public enum RoadConnectorType {
             Incomming,
             Outgoing
@@ -33,10 +32,10 @@ namespace Simulator.Road {
 
         #endregion
 
-        public void Initialize() {
+        public bool Initialize() {
             SetAdjecentRoadConnector();
-            SetupGraphNode();
             IsInitialized = true;
+            return SetupGraphNode();
         }
 
         public void DeInitialize() {
@@ -84,21 +83,17 @@ namespace Simulator.Road {
         }
 
 
-        private void SetupGraphNode() {
-            if (roadConnectorType == RoadConnectorType.Incomming) return;
+        private bool SetupGraphNode() {
+            if (roadConnectorType != RoadConnectorType.Outgoing) return false;
 
-            GraphNode = new($"{GraphGenerator.character}{GraphGenerator.number}", transform.position, ParentRoadSetup);
+            (char temp, int n) = GraphGenerator.GetNewNodeName();
+            GraphNode = new($"{temp}{n}", transform.position, ParentRoadSetup);
 
-            GraphGenerator.number++;
-            if (GraphGenerator.number == 9) {
-                GraphGenerator.character++;
-                GraphGenerator.number = 0;
-            }
-
-            if (AdjecentRoadConnector != null) {
+            if (AdjecentRoadConnector != null)
                 AdjecentRoadConnector.GraphNode = GraphNode;
-            }
-        }
 
+            return true;
+
+        }
     }
 }

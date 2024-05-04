@@ -61,7 +61,6 @@ namespace Simulator.Road {
                 item.Initialize();
             foreach (var item in outgoing) {
                 item.Initialize();
-
                 GraphNodes.Add(item.GraphNode);
             }
             IsInitialized = true;
@@ -178,27 +177,27 @@ namespace Simulator.Road {
             //    return null;
             //}
 
-            //if (fromNode != null && toNode == null) {
-            //    foreach (var route in routesMap) {
-            //        if (route.from.AdjecentRoadConnector == null)
-            //            continue;
-            //        if (route.from.AdjecentRoadConnector.GraphNode == fromNode) {
-            //            int splineIndex = route.routes[0].splineIndex;
-            //            return RoutesAsVectors[splineIndex];
-            //        }
-            //    }
-            //    return null;
-            //}
+            if (fromNode != null && toNode == null) {
+                foreach (var route in routesMap) {
+                    //if (route.from.AdjecentRoadConnector == null)
+                    //    continue;
+                    if (route.from.GraphNode == fromNode) {
+                        int splineIndex = route.routes[0].splineIndex;
+                        return RoutesAsVectors[splineIndex];
+                    }
+                }
+                return null;
+            }
 
             if (fromNode == null || toNode == null)
                 return null;
 
 
             foreach (var route in routesMap) {
-                if (route.from.AdjecentRoadConnector == null)
-                    continue;
-                if (route.to.AdjecentRoadConnector == null)
-                    continue;
+                //if (route.from.AdjecentRoadConnector == null)
+                //    continue;
+                //if (route.to.AdjecentRoadConnector == null)
+                //    continue;
                 if (route.from.GraphNode == fromNode
                     && route.to.GraphNode == toNode) {
                     int splineIndex = route.routes[MaxIndex(route.routes)].splineIndex;

@@ -5,17 +5,9 @@ namespace Simulator.ScriptableObject {
     public class DataGenerationSettingsSO : UnityEngine.ScriptableObject {
 
         [Tooltip("Time after which writing to file happens in sec")]
-        public float bufferTime;
         public bool disableDataGeneration;
 
-        #region DEBUG   
-        // [Header("Debug")]
-
-        #endregion
-
-#if UNITY_EDITOR
-
-#endif
+        public int writeIntersectionThroughputPerNSec = 60; // default is 60 seconds
 
     }
 }

@@ -8,7 +8,7 @@ namespace Simulator.ScriptableObject {
 
         public float frontRaySensorLength;
 
-        [Tooltip("Number of next points to consider for heuristic calculation")]
+        [Tooltip("Number of next points to consider for heuristic speed calculation")]
         public int numberOfHeuristicPoints;
     }
 }

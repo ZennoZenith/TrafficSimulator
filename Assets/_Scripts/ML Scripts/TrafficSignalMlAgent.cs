@@ -43,8 +43,8 @@ namespace Simulator.ML {
 
         protected override void Awake() {
             base.Awake();
-            if (!gameSettings.usML)
-                enabled = false;
+            //if (!gameSettings.usML)
+            //    enabled = false;
 
             //decisionCoroutine = StartCoroutine(DecisionCoroutine());
             //StartCoroutine(Temp());
