@@ -1,6 +1,7 @@
 using Simulator.Graph;
 using Simulator.Manager;
 using Simulator.ScriptableObject;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -12,8 +13,12 @@ namespace Simulator.Road {
         // Start is called before the first frame update
         [SerializeField] private SplineDataSO splineSettings;
         [SerializeField] private DebugSettingsSO debugSettings;
+        [SerializeField] private GraphManagerSO graphManager;
         [SerializeField] private VehicleSpawnerManager vehicleSpawnerManager;
         public Graph.Graph<Node> DirectedGraph { get; private set; } = new();
+
+        public Action OnInitilized = () => { };
+        public Action OnDeinitilized = () => { };
 
         public bool IsInitialized { get; private set; }
         private static int number = 0;
@@ -32,14 +37,15 @@ namespace Simulator.Road {
         #endregion
 
 
-
         public void Initialize() {
             IsInitialized = true;
             allRoadSetups = transform.GetComponentsInChildren<RoadSetup>();
             GenerateGraph();
+            OnInitilized.Invoke();
         }
 
         public void DeInitialize() {
+            OnDeinitilized.Invoke();
             if (IsInitialized) {
                 foreach (RoadSetup roadSetup in allRoadSetups)
                     roadSetup.DeInitialize();

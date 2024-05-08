@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// namespace ROOTNAMESPACEBEGIN.ScriptableObject
 #ROOTNAMESPACEBEGIN#
     [CreateAssetMenu(menuName = "ScriptableObjects/#SCRIPTNAME#", fileName = "Default#SCRIPTNAME#", order = 99)]
     public class #SCRIPTNAME# : UnityEngine.ScriptableObject {

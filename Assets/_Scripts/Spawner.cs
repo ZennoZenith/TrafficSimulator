@@ -22,13 +22,13 @@ namespace Simulator {
         private Coroutine coroutine;
         #region Unity Methods
         private void OnEnable() {
-            coroutine = StartCoroutine(SpawnCorouting());
+            vehicleSpawnerManager.GraphGenerator.OnInitilized += OnGraphInitilized;
+            vehicleSpawnerManager.GraphGenerator.OnDeinitilized += OnGraphDeinitilized;
         }
 
         private void OnDisable() {
-            if (coroutine != null) {
-                StopCoroutine(coroutine);
-            }
+            vehicleSpawnerManager.GraphGenerator.OnInitilized -= OnGraphInitilized;
+            vehicleSpawnerManager.GraphGenerator.OnDeinitilized -= OnGraphDeinitilized;
         }
 
         #endregion
@@ -50,13 +50,26 @@ namespace Simulator {
         }
 
 
-        private IEnumerator SpawnCorouting() {
-            while (true) {
-                if (vehicleSpawnerManager.GraphGenerator.IsInitialized)
-                    break;
-                Debug.Log("GraphGenerator not yet initialized. Retrying in 1 second");
-                yield return new WaitForSeconds(1f);
+        private void OnGraphInitilized() {
+            coroutine = StartCoroutine(SpawnCorouting());
+        }
+
+        private void OnGraphDeinitilized() {
+            if (coroutine != null) {
+                StopCoroutine(coroutine);
             }
+        }
+
+
+
+
+        private IEnumerator SpawnCorouting() {
+            //while (true) {
+            //    if (vehicleSpawnerManager.GraphGenerator.IsInitialized)
+            //        break;
+            //    Debug.Log("GraphGenerator not yet initialized. Retrying in 1 second");
+            //    yield return new WaitForSeconds(1f);
+            //}
 
 
             SpawnerDataSO spawnerData = SpawnerData;
