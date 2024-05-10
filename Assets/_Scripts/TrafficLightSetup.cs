@@ -2,6 +2,7 @@ using Simulator.Manager;
 using Simulator.Road;
 using Simulator.ScriptableObject;
 using Simulator.SignalTiming;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -27,15 +28,12 @@ namespace Simulator.TrafficSignal {
     [RequireComponent(typeof(RoadSetup))]
     public class TrafficLightSetup : MonoBehaviour {
         #region Public Fields
-        [System.Serializable]
 
-        public delegate void OnPhaseChange();
-        public delegate void OnTickComplete();
+        public Action OnTickComplete = () => { };
+        public Action OnPhaseChange = () => { };
 
-        public OnTickComplete onTickComplete = () => { };
-        public OnPhaseChange onPhaseChange = () => { };
+        public TrafficSignalAlogrithm signalTimingAlgorithmType;
 
-        public TrafficSignalAlogrithm signalTimingAlgorithm;
 
 
         [field: SerializeField] public RoadSetup RoadSetup { get; private set; }
@@ -50,6 +48,11 @@ namespace Simulator.TrafficSignal {
         [SerializeField] private GameObject LineRendererPrefab;
         [SerializeField] private TextMeshPro TimingUI;
 
+        [SerializeField] private StaticSignalTimingSO staticSignalAlgorithm;
+        [SerializeField] private DynamicSignalTimingSO dynamicSignalAlgorithm;
+        [SerializeField] private MLSignalTimingOptimizationSO mlSignalTimingAlgorithm;
+        [SerializeField] private MLPhaseOptimizationSO mlPhaseOrderAlgorithm;
+
 
 
 
@@ -57,37 +60,26 @@ namespace Simulator.TrafficSignal {
         private float greenLightTime;
         public int LastNumberOfVehicles { get; private set; } = 0;
         public float LastCheckedTime { get; private set; } = 0;
-
-
-        //private IntersectionDataCalculator intersectionDataCalculator;
-        //private TraficSignalMLData traficSignalMLData;
-        //private TrafficSignalMlAgent trafficSignalMlAgent;
-        private ISignalTimingAlgorithm staticSignalAlgorithm;
-        private ISignalTimingAlgorithm dynamicSignalAlgorithm;
-        private ISignalTimingAlgorithm mlSignalOptimizationAlgorithm;
+        private TrafficSignalMlAgent mLSignalAgent;
 
 
         #region Unity Methods
         private void Awake() {
             RoadSetup = GetComponent<RoadSetup>();
-            //traficSignalMLData = GetComponent<TraficSignalMLData>();
-            //trafficSignalMlAgent = GetComponent<TrafficSignalMlAgent>();
 
-            staticSignalAlgorithm = new StaticSignalTiming(this);
-            dynamicSignalAlgorithm = new DynamicSignalTiming(this);
-            if (!TryGetComponent<MLSignalOptimizationAlgorithm>(out var temp)) {
-                mlSignalOptimizationAlgorithm = staticSignalAlgorithm;
+            if (!TryGetComponent<TrafficSignalMlAgent>(out var temp)) {
+                Debug.LogError("ML Agent component not found");
             }
             else {
-                mlSignalOptimizationAlgorithm = temp;
+                mLSignalAgent = temp;
             }
 
 
         }
 
         private void OnEnable() {
-            onTickComplete += UpdateSignalTimingUI;
-            onPhaseChange += RenderPhaseSignalLine;
+            OnTickComplete += UpdateSignalTimingUI;
+            OnPhaseChange += RenderPhaseSignalLine;
         }
 
 
@@ -102,8 +94,8 @@ namespace Simulator.TrafficSignal {
         }
 
         private void OnDisable() {
-            onTickComplete -= UpdateSignalTimingUI;
-            onPhaseChange -= RenderPhaseSignalLine;
+            OnTickComplete -= UpdateSignalTimingUI;
+            OnPhaseChange -= RenderPhaseSignalLine;
         }
 
         #endregion
@@ -130,66 +122,35 @@ namespace Simulator.TrafficSignal {
         private int timePassed = 0;
         IEnumerator Tick() {
             while (true) {
-                onTickComplete.Invoke();
+                OnTickComplete.Invoke();
                 timePassed++;
                 yield return new WaitForSeconds(1f);
             }
         }
 
         IEnumerator SignalCycle() {
-            //while (true) {
-            //    if (gameSettings.usML && Time.time > dataGenerationTime.bufferTime && !mlInitialized) {
-            //        mlInitialized = true;
-            //    }
-
-
-            //    int numberOfVehicles = intersectionDataCalculator.TotalNumberOfVehicles;
-            //    float throughput = (numberOfVehicles - lastNumberOfVehicles) / (Time.time - lastCheckedTime);
-            //    lastNumberOfVehicles = numberOfVehicles;
-            //    lastCheckedTime = Time.time;
-
-            //    if (!mlInitialized)
-            //        ChangePhaseTo(GetNextPhase(), -1);
-
-            //    else if (mlAlgorrithmSettings.mL_Algorithm == ML_Algorithm.SignalOptimization) {
-            //        (float[] observations, float reward) = traficSignalMLData.GetObservationsAndRewards(CurrentPhaseIndex, throughput);
-            //        //ChangePhaseTo(GetNextPhase());
-            //        ChangeToNextPhaseWithTimeInterpolate(trafficSignalMlAgent.ConsumeAction(reward, observations));
-            //        //print($"reward: {reward}");
-            //    }
-            //    else if (mlAlgorrithmSettings.mL_Algorithm == ML_Algorithm.SignalOptimization) {
-            //        throw new NotImplementedException();
-            //    }
-
-
-
-
-            //    RenderPhaseSignalLine();
-            //    yield return new WaitForSeconds(greenLightTime);
-            //}
 
             int tempNextPhaseIndex;
             float tempNextPhaseGreenLightTime;
 
             // This loop will run when simulation is not warmed up yet
             while (Time.time < GameManager.GameSettings.warmupTime) {
-                (tempNextPhaseIndex, tempNextPhaseGreenLightTime) = staticSignalAlgorithm.GetNextPhase();
+                (tempNextPhaseIndex, tempNextPhaseGreenLightTime) = staticSignalAlgorithm.GetNextPhase(this);
                 ChangePhaseTo(tempNextPhaseIndex, tempNextPhaseGreenLightTime);
                 yield return new WaitForSeconds(greenLightTime);
             }
 
 
             while (true) {
-                (tempNextPhaseIndex, tempNextPhaseGreenLightTime) = signalTimingAlgorithm switch {
-                    TrafficSignalAlogrithm.Static => staticSignalAlgorithm.GetNextPhase(),
-                    TrafficSignalAlogrithm.Dynamic => dynamicSignalAlgorithm.GetNextPhase(),
-                    TrafficSignalAlogrithm.SignalOptimizationML => mlSignalOptimizationAlgorithm.GetNextPhase(),
-                    TrafficSignalAlogrithm.PhaseOptimizationML => staticSignalAlgorithm.GetNextPhase(),
-                    _ => staticSignalAlgorithm.GetNextPhase(),
+                (tempNextPhaseIndex, tempNextPhaseGreenLightTime) = signalTimingAlgorithmType switch {
+                    TrafficSignalAlogrithm.Static => staticSignalAlgorithm.GetNextPhase(this),
+                    TrafficSignalAlogrithm.Dynamic => dynamicSignalAlgorithm.GetNextPhase(this),
+                    TrafficSignalAlogrithm.SignalOptimizationML => mlSignalTimingAlgorithm.GetNextPhase(this),
+                    TrafficSignalAlogrithm.PhaseOptimizationML => mlPhaseOrderAlgorithm.GetNextPhase(this),
+                    _ => staticSignalAlgorithm.GetNextPhase(this),
                 };
 
                 ChangePhaseTo(tempNextPhaseIndex, tempNextPhaseGreenLightTime);
-
                 yield return new WaitForSeconds(greenLightTime);
 
             }
@@ -219,7 +180,7 @@ namespace Simulator.TrafficSignal {
                 greenLightTime = nextGreenLightTime;
 
             //print($"CurrentPhaseIndex: {CurrentPhaseIndex}");
-            onPhaseChange.Invoke();
+            OnPhaseChange.Invoke();
         }
 
         private void RenderPhaseSignalLine() {

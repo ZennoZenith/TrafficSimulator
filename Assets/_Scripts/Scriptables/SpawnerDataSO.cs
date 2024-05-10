@@ -8,7 +8,7 @@ namespace Simulator.ScriptableObject {
         public int frequency;
     }
 
-    [CreateAssetMenu(fileName = "SpawnerData", menuName = "ScriptableObjects/SpawnerData", order = 2)]
+    [CreateAssetMenu(fileName = "SpawnerData", menuName = "ScriptableObjects/SpawnerData", order = 1)]
     public class SpawnerDataSO : UnityEngine.ScriptableObject {
         [Tooltip("Vehicle spawned per minute")]
         public float spawnFrequency;

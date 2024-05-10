@@ -2055,6 +2055,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dataGenerationSetting: {fileID: 11400000, guid: f63e28b51c400c944a04c18a96eba838,
     type: 2}
+  numberOfLegs: 4
+  vehiclesInLeg: 
   <TotalNumberOfVehicles>k__BackingField: 0
   <TotalNumberOfVehiclesWaitingInIntersection>k__BackingField: 0
 --- !u!114 &5089281458586516534
@@ -2148,7 +2150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46a37ef54f35fe645a604f918f9c585a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  signalTimingAlgorithm: 0
+  signalTimingAlgorithmType: 0
   <RoadSetup>k__BackingField: {fileID: 5089281458586516534}
   <Phases>k__BackingField:
   - splineIndex: 00000000010000000500000006000000
@@ -2164,6 +2166,11 @@ MonoBehaviour:
   LineRendererPrefab: {fileID: 769990336258863450, guid: c19da70a51fc11c4f8afaa6038f1a03a,
     type: 3}
   TimingUI: {fileID: 8794525421727183981}
+  staticSignalAlgorithm: {fileID: 11400000, guid: 54f8eb0992d4a0a4cb6966229c0f6373,
+    type: 2}
+  dynamicSignalAlgorithm: {fileID: 0}
+  mlSignalTimingAlgorithm: {fileID: 0}
+  mlPhaseOrderAlgorithm: {fileID: 0}
 --- !u!114 &2707357077255935848
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Simulator.ScriptableObject {
-    [CreateAssetMenu(menuName = "ScriptableObjects/Settings/DebugSettings", fileName = "DefaultDebugSettings", order = 3)]
+    [CreateAssetMenu(menuName = "ScriptableObjects/Settings/DebugSettings", fileName = "DefaultDebugSettings", order = 1)]
     public class DebugSettingsSO : UnityEngine.ScriptableObject {
         [Header("Graph")]
         public bool showGraphNode;

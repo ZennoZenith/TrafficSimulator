@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Simulator.ScriptableObject {
-    [CreateAssetMenu(fileName = "DefaultGraphicSettings", menuName = "ScriptableObjects/Settings/GraphicSettings", order = 2)]
+    [CreateAssetMenu(fileName = "DefaultGraphicSettings", menuName = "ScriptableObjects/Settings/GraphicSettings", order = 1)]
     public class GraphicSettingsSO : UnityEngine.ScriptableObject {
         public bool showFpsCount;
         public int defaultTargetFrameRate;

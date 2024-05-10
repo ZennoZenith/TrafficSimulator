@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Simulator.SignalTiming {
     [RequireComponent(typeof(TrafficLightSetup))]
-    public class MLSignalOptimizationAlgorithm : Agent, ISignalTimingAlgorithm {
+    public class TrafficSignalMlAgent : Agent, ISignalTimingAlgorithm {
         private float action;
 
         private TrafficLightSetup trafficLightSetup;
@@ -117,7 +117,7 @@ namespace Simulator.SignalTiming {
 
 
 
-        public (int, float) GetNextPhase() {
+        public (int, float) GetNextPhase(TrafficLightSetup trafficLightSetup) {
             AddReward(CalculateReward());
             //Debug.Log(GetCumulativeReward());
             EndEpisode();

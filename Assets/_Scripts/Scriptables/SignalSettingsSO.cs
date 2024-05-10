@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Simulator.ScriptableObject {
-    [CreateAssetMenu(menuName = "ScriptableObjects/Settings/SignalSettings", fileName = "DefaultSignalSettings", order = 6)]
+    [CreateAssetMenu(menuName = "ScriptableObjects/Settings/SignalSettings", fileName = "DefaultSignalSettings", order = 1)]
     public class SignalSettingsSO : UnityEngine.ScriptableObject {
 
         [Header("Trafic Signal Timings")]
