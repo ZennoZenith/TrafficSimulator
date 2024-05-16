@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 888014309869434125}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -47.27, y: 1.5, z: 2.18}
+  m_LocalPosition: {x: -100, y: 1.5, z: 2.18}
   m_LocalScale: {x: 1, y: 3.75, z: 3.75}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -250,7 +250,7 @@ Transform:
   m_GameObject: {fileID: 2757875734063645006}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -1.65, y: 1.5, z: -51.3}
+  m_LocalPosition: {x: -1.7, y: 1.5, z: -100}
   m_LocalScale: {x: 1, y: 3.75, z: 3.75}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -400,7 +400,7 @@ Transform:
   m_GameObject: {fileID: 2922235637508764216}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 47.52, y: 1.5, z: -4.25}
+  m_LocalPosition: {x: 100, y: 1.5, z: -4.25}
   m_LocalScale: {x: 1, y: 3.75, z: 3.75}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2056,7 +2056,6 @@ MonoBehaviour:
   dataGenerationSetting: {fileID: 11400000, guid: f63e28b51c400c944a04c18a96eba838,
     type: 2}
   numberOfLegs: 4
-  vehiclesInLeg: 
   <TotalNumberOfVehicles>k__BackingField: 0
   <TotalNumberOfVehiclesWaitingInIntersection>k__BackingField: 0
 --- !u!114 &5089281458586516534
@@ -2218,6 +2217,15 @@ MonoBehaviour:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
   MaxStep: 0
+  Ml_data:
+    OFSET: 1
+    NUM_OF_LEGS: 4
+    NUM_OF_VEHICLES_PER_LEG: 15
+    NUM_OF_OBSERVATIONS_PER_VEHICLE: 2
+    MINIMUM_GREEN_LIGHT_OFSET: 10
+    MAXIMUM_GREEN_LIGHT_OFSET: 10
+    observations: []
+    rewards: 0
 --- !u!114 &5281312792570623145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2263,7 +2271,7 @@ Transform:
   m_GameObject: {fileID: 8452957973613503329}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.70710677, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 3.26, y: 1.5, z: 48.55}
+  m_LocalPosition: {x: 3.3, y: 1.5, z: 100}
   m_LocalScale: {x: 1, y: 3.75, z: 3.75}
   m_ConstrainProportionsScale: 0
   m_Children: []

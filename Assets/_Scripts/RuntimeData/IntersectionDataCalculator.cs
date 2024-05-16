@@ -10,7 +10,7 @@ namespace Simulator.TrafficSignal {
     public class IntersectionDataCalculator : MonoBehaviour {
         [SerializeField] private DataGenerationSettingsSO dataGenerationSetting;
         [SerializeField] private int numberOfLegs;
-        [SerializeField] private int[] vehiclesInLeg;
+        //[SerializeField] private int[] vehiclesInLeg;
 
         #region Public Fields
         [field: SerializeField] public int TotalNumberOfVehicles { get; private set; } = 0;
@@ -20,7 +20,10 @@ namespace Simulator.TrafficSignal {
 
         private int throughput = 0;
         // Dictionary value: (legIndex, wait time at interection)
-        private readonly Dictionary<VehicleDataCalculator, (int, float)> vehiclesWaitingInIntersection = new();
+        //private readonly Dictionary<VehicleDataCalculator, (int, float)> vehiclesWaitingInIntersection = new();
+
+        // Dictionary value: (wait time at interection)
+        public readonly List<Dictionary<VehicleDataCalculator, float>> vehiclesWaitingAtLeg = new();
         private int waitTimeAtIntersection;
 
         private string Name;
@@ -28,7 +31,10 @@ namespace Simulator.TrafficSignal {
         #region Unity Methods
         private void Awake() {
             Name = transform.name;
-            vehiclesInLeg = new int[numberOfLegs];
+            //vehiclesInLeg = new int[numberOfLegs];
+            for (int i = 0; i < numberOfLegs; i++) {
+                vehiclesWaitingAtLeg.Add(new Dictionary<VehicleDataCalculator, float>());
+            }
         }
         private void Start() {
             StartCoroutine(Tick());
@@ -46,22 +52,28 @@ namespace Simulator.TrafficSignal {
         }
 
         internal void VehicleEntered(VehicleDataCalculator vehicleDataCalculator, int legIndex) {
-            if (vehiclesWaitingInIntersection.ContainsKey(vehicleDataCalculator))
-                vehiclesWaitingInIntersection.Add(vehicleDataCalculator, (legIndex, vehicleDataCalculator.TotalWaitTime));
-            vehiclesWaitingInIntersection[vehicleDataCalculator] = (legIndex, vehicleDataCalculator.TotalWaitTime);
+            if (vehiclesWaitingAtLeg[legIndex].ContainsKey(vehicleDataCalculator)) {
+                vehiclesWaitingAtLeg[legIndex].Add(vehicleDataCalculator, vehicleDataCalculator.TotalWaitTime);
+
+            }
+            //vehiclesWaitingAtLeg[vehicleDataCalculator] = (legIndex, vehicleDataCalculator.TotalWaitTime);
+            vehiclesWaitingAtLeg[legIndex][vehicleDataCalculator] = vehicleDataCalculator.TotalWaitTime;
             TotalNumberOfVehicles++;
-            vehiclesInLeg[legIndex]++;
+            //vehiclesInLeg[legIndex]++;
             TotalNumberOfVehiclesWaitingInIntersection++;
         }
 
         internal void VehicleExited(VehicleDataCalculator vehicleDataCalculator) {
-            if (vehiclesWaitingInIntersection.ContainsKey(vehicleDataCalculator)) {
-                (int i, float t) = vehiclesWaitingInIntersection[vehicleDataCalculator];
-                vehiclesWaitingInIntersection.Remove(vehicleDataCalculator);
-                waitTimeAtIntersection = Mathf.RoundToInt(vehicleDataCalculator.TotalWaitTime - t);
-                StoreData.WriteIntesectionWaitTime(Name, vehicleDataCalculator.name, waitTimeAtIntersection);
-                TotalNumberOfVehiclesWaitingInIntersection--;
-                vehiclesInLeg[i]--;
+            for (int i = 0; i < numberOfLegs; i++) {
+                if (vehiclesWaitingAtLeg[i].ContainsKey(vehicleDataCalculator)) {
+                    float t = vehiclesWaitingAtLeg[i][vehicleDataCalculator];
+                    vehiclesWaitingAtLeg[i].Remove(vehicleDataCalculator);
+                    waitTimeAtIntersection = Mathf.RoundToInt(vehicleDataCalculator.TotalWaitTime - t);
+                    StoreData.WriteIntesectionWaitTime(Name, vehicleDataCalculator.name, waitTimeAtIntersection);
+                    TotalNumberOfVehiclesWaitingInIntersection--;
+                    break;
+                }
+
             }
         }
     }
