@@ -79,14 +79,14 @@ namespace Simulator.SignalTiming {
         /// <returns> (phaseindex, greenlight time)</returns>
         public (int, float) GenerateAction() {
             AddReward(Ml_data.rewards);
-            Debug.Log($"Reward given: {Ml_data.rewards}");
+            //Debug.Log($"Reward given: {Ml_data.rewards}");
             //Debug.Log(GetCumulativeReward());
             EndEpisode();
 
-            print("Decision requested");
+            //print("Decision requested");
             Academy.Instance.EnvironmentStep();
             RequestDecision();
-            print("Decision complete");
+            //print("Decision complete");
 
             greenLightTime = ChangeToNextPhaseWithTimeInterpolate(action);
             return (-1, greenLightTime);
@@ -102,12 +102,12 @@ namespace Simulator.SignalTiming {
         public override void OnActionReceived(ActionBuffers actions) {
             //base.OnActionReceived(actions);
             action = actions.ContinuousActions[0];
-            print($"action received: {action}");
+            //print($"action received: {action}");
         }
 
         public void Reset() {
             //Ml_data.rewards = 0;
-            Debug.Log("New Episode began");
+            //Debug.Log("New Episode began");
             //int len = Ml_data.observations.Length;
             //for (int i = 0; i < len; i++) {
             //    Ml_data.observations[i] = -1f;
